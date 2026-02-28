@@ -1,0 +1,2 @@
+# For running tests only. CHIRP itself must be installed or on PYTHONPATH.
+pytest>=7.0.0
