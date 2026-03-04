@@ -16,7 +16,7 @@ driver ([../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)) entirely in Kotl
 
 ## Architecture (as built)
 
-```
+```mermaid
 flowchart LR
   subgraph android [Android App]
     UI[Channel List / Editor UI]
