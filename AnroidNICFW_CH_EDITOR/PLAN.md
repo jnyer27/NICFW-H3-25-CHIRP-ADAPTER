@@ -1,112 +1,238 @@
-# Android Channel Editor for TD-H3 nicFW V2.5
+# Android Channel Editor for TD-H3 nicFW V2.5 — Implementation Record
 
-## Context
-
-- **This repo** provides a Python CHIRP driver ([../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)): clone-mode read/write of the radio's 8 KB EEPROM over a **serial pipe** (38400 baud, 32-byte blocks, commands 0x45/0x46/0x30/0x31/0x49). Connection is via `radio.pipe` (opened by CHIRP; typically USB serial or "programming mode over BLE" per [../README.md](../README.md)).
-- **nicFWRemoteBT** is a separate nicsure project ([nicFWRemoteBT](https://github.com/nicsure/nicfwremotebt)): MAUI app (Android/Windows) that talks to nicFW devices over **Bluetooth serial**. There is no nicFWRemoteBT source in this repo; "use nicFWRemoteBT method" means: connect to the radio via **Bluetooth SPP** (serial profile) the same way that app does.
-- **Goal**: An **Android channel editor** that (1) uses **Bluetooth serial** for the link to the radio (nicFWRemoteBT-style), and (2) **leverages** the Python driver by reimplementing its protocol and EEPROM/channel layout so behavior matches CHIRP.
-
-Because the Python driver cannot run as the main app on Android, "leverage" is implemented by **reimplementing the protocol and layout** in Kotlin/Java using the Python driver and [nicfw2docs](https://github.com/nicsure/nicfw2docs) as the single source of truth.
+> This document was originally a design plan. It has been updated to reflect what was
+> actually built and discovered during implementation (March 2026).
 
 ---
 
-## Architecture
+## Overview
 
-```mermaid
+A fully functional Android app (Kotlin, minSdk 24, targetSdk 35) that edits the 198
+memory channels of a TD-H3 radio running nicFW V2.5 firmware over **Bluetooth Low
+Energy**. The app reimplements the protocol and EEPROM layout from the companion CHIRP
+driver ([../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)) entirely in Kotlin.
+
+---
+
+## Architecture (as built)
+
+```
 flowchart LR
   subgraph android [Android App]
-    UI[Channel Editor UI]
-    Logic[Protocol and EEPROM Logic]
-    BT[Bluetooth Serial Client]
+    UI[Channel List / Editor UI]
+    Logic[EepromParser + ToneCodec]
+    BLE[BleManager / BleRadioStream]
+    SPP[BtSerialManager fallback]
     UI --> Logic
-    Logic --> BT
+    Logic --> BLE
+    Logic --> SPP
   end
-  BT -->|SPP 38400 baud| Radio[TD-H3 nicFW 2.5]
+  BLE  -->|BLE GATT 0000ff00-…| Radio[TD-H3 nicFW 2.5]
+  SPP  -->|Classic SPP fallback| Radio
 ```
 
-- **Android app**: Kotlin (or Java) with minimum SDK ~24; no Python on device.
-- **Connection**: Android `BluetoothSocket` with SPP (e.g. `UUID` for Serial Port Profile). Baud rate 38400 and 8N1 must be applied if the radio/BT adapter exposes them; otherwise use the same as nicFWRemoteBT (SPP defaults are often 9600; if the radio accepts 38400 over BT, configure if the API allows).
-- **Protocol layer**: Same as [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) lines 271–350: enter programming (0x45), read block (0x30 + block index), write block (0x31 + index + 32 bytes + checksum), exit (0x46), reboot (0x49). Block size 32, 256 blocks = 8 KB.
-- **EEPROM / channel layout**: Same as driver's `MEM_FORMAT`: VFO A/B at 0x0000/0x0020, 198 channels at 0x0040 (32 bytes each, big-endian), settings at 0x1900 (magic 0xD82F). Frequencies in 10 Hz units; channel struct: rxFreq, txFreq, rxSubTone, txSubTone, txPower, groups, flags (bandwidth, modulation, etc.), name[12].
+### Key architecture decisions vs. original plan
+
+| Topic | Original plan | What was built |
+|---|---|---|
+| Bluetooth transport | Classic SPP only | **BLE primary** (matches radio); SPP kept as fallback |
+| BLE service UUID | n/a | `0000ff00-0000-1000-8000-00805f9b34fb` (from nicFWRemoteBT) |
+| Notify char | n/a | Auto-detected by `PROPERTY_NOTIFY` / `PROPERTY_INDICATE` |
+| Write char | n/a | Auto-detected by `PROPERTY_WRITE` / `PROPERTY_WRITE_NO_RESPONSE` |
+| Remote mode | n/a | nicFW `0x4a` = enable remote, `0x4b` = disable |
+| BLE framing | n/a | `BleRadioStream` buffers writes; `flush()` sends as one GATT write |
+| Target SDK | 34 | **35** |
 
 ---
 
-## Implementation Plan
+## Source layout
 
-### 1. Android project setup
-
-- Create an **Android application** in this folder (or as a sibling module to the parent repo).
-- Use **Kotlin**, **AndroidX**, and **Material**; target SDK 34, min SDK 24.
-- Request **Bluetooth** and **Bluetooth Connect** (Android 12+) permissions; optionally **Bluetooth Scan** for discovery.
-- No dependency on CHIRP or Python.
-
-### 2. Bluetooth serial connection (nicFWRemoteBT-style)
-
-- Use **Bluetooth Classic** SPP:
-  - Either **paired device picker** (list paired devices, user selects the radio) or **scan + pair** then connect.
-  - Connect via `BluetoothDevice.createRfcommSocketToServiceRecord(SPP_UUID)` (or the `createRfcommSocket(1)` fallback if the radio uses a non-standard SPP UUID).
-- **SPP UUID**: Use standard SPP UUID `00001101-0000-1000-8000-00805F9B34FB` unless nicFWRemoteBT or nicfw2docs specify otherwise (if you have access to nicFWRemoteBT source or nicFW docs, align with that).
-- Expose a **stream interface** (e.g. `InputStream` / `OutputStream`) used by the protocol layer with **timeouts** (e.g. 500 ms read timeout to mirror the Python driver).
-- Handle disconnect, reconnection, and permission flows in the UI.
-
-### 3. Protocol layer (mirror Python driver)
-
-- Implement in a dedicated package (e.g. `radio.protocol`):
-  - **Enter programming**: send `0x45`, expect `0x45` ack.
-  - **Exit programming**: send `0x46`, expect `0x46` ack.
-  - **Read block** (block 0..255): send `0x30`, `block_num`; read `0x30`, 32 bytes, 1-byte checksum; validate checksum (sum of 32 bytes % 256).
-  - **Write block**: send `0x31`, `block_num`, 32 bytes, checksum; expect `0x31` ack.
-  - **Reboot**: send `0x49`.
-- **Full download**: enter programming, read 256 blocks into an 8 KB buffer, exit programming.
-- **Full upload**: enter programming, write 256 blocks from buffer, exit programming, reboot.
-- Use the same **checksum** as the driver: `sum(data) % 256` ([../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) lines 267–268, 299–301, 308–315).
-- All I/O goes through the Bluetooth stream abstraction so the protocol code does not depend on Android APIs.
-
-### 4. EEPROM and channel model (mirror Python driver)
-
-- **EEPROM**: 8 KB byte array; parse according to V2.5 layout (big-endian).
-- **Channel struct** (32 bytes per channel, starting at 0x0040 for channel 0):
-  - Offsets and types as in [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) `MEM_FORMAT` (lines 76–91): rxFreq/txFreq (u32, 10 Hz), rxSubTone/txSubTone (u16), txPower (u8), groups (u16), flags (bandwidth, modulation, etc.), reserved[4], name[12].
-- **Data classes** (Kotlin): e.g. `Channel` (frequency Rx/Tx, duplex, power, name, mode, bandwidth, CTCSS/DTCS, groups) and **parsers/builders** that convert between byte buffer and `Channel`, matching `_channel_to_memory` / `_memory_to_channel` and `_decode_tone` / `_encode_tone` logic (lines 352–507).
-- **Constants**: Reuse driver's lists (e.g. `MODULATION_LIST`, `BANDWIDTH_LIST`, `GROUPS_LIST`, `POWERLEVEL_LIST`, tone encoding) so channel editor behavior matches CHIRP.
-- **Empty channel**: First 4 bytes `0xFFFFFFFF` → treat as empty ([../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) lines 569–571).
-- **Settings block**: At 0x1900, magic 0xD82F; optional for a first version (channel-only editor); later can expose key settings (e.g. squelch, Bluetooth on/off) if desired.
-
-### 5. Channel editor UI
-
-- **Connection screen**: Scan/select Bluetooth device; connect; show status (Connected / Disconnected).
-- **Download**: "Load from radio" → run full download, parse EEPROM, load channel list into memory.
-- **Channel list**: List channels 1–198; show frequency, name, duplex, power; indicate empty slots; tap to edit.
-- **Channel edit**: Form for frequency (Rx/Tx or simplex + offset), name (12 chars), power, mode (Auto/FM/AM/USB), bandwidth (Wide/Narrow), CTCSS/DTCS, groups (A–O). Validate frequency in VHF/UHF ranges and name length.
-- **Upload**: "Save to radio" → build EEPROM from current channel list (and existing settings block if not edited), then full upload; warn user before overwriting radio.
-- **Progress**: Show progress during download/upload (e.g. "Cloning" 1/256 … 256/256) as in the driver's `_do_status`.
-
-### 6. Testing and alignment with Python driver
-
-- **Unit tests**: Use a **mock Bluetooth stream** (e.g. in-memory `ByteArrayOutputStream` / `ByteArrayInputStream`) that replays or records the command/response sequence for download/upload. Optionally use a **prebuilt 8 KB image** (e.g. from [../tests/build_sample_image.py](../tests/build_sample_image.py)) to test EEPROM parsing and channel read/write without a real radio.
-- **Cross-check**: Ensure one channel (e.g. 146.52 MHz) parsed in the Android app matches `get_memory(1)` from the Python driver on the same image; same for `set_memory` roundtrip (optional script that compares Python vs Android on the same binary image).
-
-### 7. Documentation and repo layout
-
-- **README**: In this folder document: build (Android Studio / Gradle), permissions, how to pair the TD-H3, that it uses the same protocol as the CHIRP driver and nicFWRemoteBT-style Bluetooth serial.
-- **Reference**: Point to parent repo's [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) and [nicfw2docs](https://github.com/nicsure/nicfw2docs) for protocol and layout.
+```
+app/src/main/java/com/nicfw/tdh3editor/
+├── MainActivity.kt              # Channel list, BT connect, EEPROM load/save, dump export
+├── ChannelEditActivity.kt       # Per-channel editor form
+├── ChannelAdapter.kt            # RecyclerView adapter for channel list
+├── EepromHolder.kt              # Singleton EEPROM byte array shared between activities
+├── bluetooth/
+│   ├── BleManager.kt            # BLE scan, GATT connect, BleRadioStream
+│   └── BtSerialManager.kt       # Classic SPP fallback
+└── radio/
+    ├── Channel.kt               # Data class + display helpers
+    ├── EepromConstants.kt       # Lists, offsets, flat tone picker helpers
+    ├── EepromParser.kt          # Parse / write channel structs in 8 KB buffer
+    ├── Protocol.kt              # BLE/serial protocol (0x45/0x46/0x30/0x31/0x49)
+    ├── RadioStream.kt           # Abstract stream interface (BLE and SPP share it)
+    └── ToneCodec.kt             # Encode / decode CTCSS and DCS tone words
+```
 
 ---
 
-## Key files to use as spec
+## EEPROM and protocol (implemented)
 
-| Purpose | Source |
-|--------|--------|
-| Protocol (commands, block size, checksum) | [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) 206–217, 267–320 |
-| EEPROM layout (channel struct, settings) | [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) 38–201 |
-| Channel ↔ memory conversion, tones | [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) 352–507, 564–585 |
-| Constants (modes, groups, power, steps) | [../tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py) 219–253 |
-| Test image for parsing tests | [../tests/build_sample_image.py](../tests/build_sample_image.py), [../tests/test_tidradio_h3_nicfw25.py](../tests/test_tidradio_h3_nicfw25.py) |
+- **Size**: 8 KB, 256 blocks × 32 bytes each
+- **Commands**: `0x45` enter, `0x46` exit, `0x30` read block, `0x31` write block, `0x49` reboot
+- **Checksum**: `sum(32 bytes) % 256` — matches Python driver
+- **Channel base**: `0x0040`, 198 channels × 32 bytes
+- **Frequencies**: stored in 10 Hz units, big-endian u32
+- **Settings base**: `0x1900`, magic `0xD82F`
+- **Empty channel**: first 4 bytes == `0xFFFFFFFF`
 
 ---
 
-## Open points
+## Tone encoding — key discoveries
 
-- **Baud rate over BT**: The driver uses 38400 on wired serial. Over SPP, the radio or BT chip may fix baud rate; if configurable on the Android side, set 38400 to match; otherwise use device default and rely on nicFW compatibility.
-- **nicFWRemoteBT SPP details**: If you can get UUID or connection steps from nicFWRemoteBT source or nicsure docs, align the Android client (UUID, optional pin) for best compatibility.
-- **Scope**: Plan above is channel-focused (read/write 198 channels + optional basic settings). Full settings/band plans/scan presets can be added later using the same EEPROM layout from the driver.
+### CTCSS
+
+Stored as a u16 in units of 0.1 Hz (e.g. 192.8 Hz → 1928 = `0x0788`). Decoding was
+straightforward; display bugs were purely a UI issue (see below).
+
+### DCS — octal storage convention (confirmed from live EEPROM dump)
+
+The radio stores DCS codes as **the decimal integer value of their octal label**:
+
+| CHIRP label | Octal value | Decimal stored | EEPROM word |
+|---|---|---|---|
+| DCS 023 | 023₈ | 19 | `0x8013` |
+| DCS 754 | 754₈ | 492 | `0x81EC` |
+
+`ToneCodec` fix:
+```kotlin
+// decode: 19 → "13" (base-8) → 23 (CHIRP label shown to user)
+val chirpCode = raw9.toString(8).toInt()
+
+// encode: 23 → "23".toInt(8) → 19 (stored in EEPROM)
+val code = value.toInt().toString().toInt(8)
+```
+
+Bit layout of the u16 tone word:
+- Bit 15 set → DCS (vs CTCSS when clear and value 1–3000)
+- Bit 14 set → polarity R (inverted), clear → polarity N (normal)
+- Bits 8–0 → 9-bit DCS code (octal-as-decimal)
+
+---
+
+## UI — tone spinner redesign
+
+### Problem: Android Spinner adapter-swap race condition
+
+The original 3-spinner design (Mode + Value + Polarity) suffered a race condition:
+
+1. `setAdapter(newAdapter)` sets internal `mDataChanged = true`
+2. `setSelection(n)` posts a `SelectionNotifier` runnable
+3. While `mDataChanged` is true the runnable **re-posts itself** on every pass until
+   the Choreographer vsync layout traversal clears the flag
+4. By then `initializingTone = false` had already been cleared, so the mode spinner's
+   post-layout `selectionChanged()` called `applyToneValueAdapter()`, which swapped the
+   adapter back to a fresh instance and reset the selection to index 0 (= 67.0 Hz)
+
+A `lastMode` guard reduced the window but could not fully close it.
+
+### Solution: flat-list spinner (247 items, no adapter swapping)
+
+Each tone side (TX / RX) now has **one** spinner with a fixed adapter:
+
+| Index range | Contents |
+|---|---|
+| 0 | None |
+| 1 – 38 | CTCSS 67.0 Hz … CTCSS 250.3 Hz |
+| 39 – 142 | DCS 023 N … DCS 754 N |
+| 143 – 246 | DCS 023 R … DCS 754 R |
+
+`setSelection()` on a fixed adapter is safe — no adapter replacement means no race
+condition. Helper functions in `EepromConstants`:
+
+```kotlin
+fun toneToIndex(mode, value, polarity): Int   // Channel → spinner index
+fun indexToTone(idx): Triple<…>               // Spinner index → Channel fields
+```
+
+---
+
+## Features implemented
+
+### Channel list (MainActivity)
+- Loads all 198 channels from radio EEPROM over BLE
+- RecyclerView with card per channel showing:
+  - Channel number
+  - RX frequency (MHz)
+  - Channel name
+  - **TX / RX tone** (between name and offset — hidden when no tone is set)
+  - Duplex offset (`+600kHz`, `-600kHz`, `Split`, or blank)
+- Tap a channel card to open the channel editor
+
+### Channel editor (ChannelEditActivity)
+- RX frequency, duplex mode, offset / TX frequency
+- Channel name (12 chars)
+- Power level (N/T or 1–255)
+- Modulation (Auto / FM / AM / USB)
+- Bandwidth (Wide / Narrow)
+- TX Tone flat spinner (None + 38 CTCSS + 104 DCS-N + 104 DCS-R)
+- RX Tone flat spinner (same 247-item list)
+- Raw EEPROM debug line (hex word, 9-bit field, octal) for tone verification
+
+### Bluetooth connect (MainActivity)
+- **Scan for Radio (BLE)** — scans for the nicFW BLE service UUID, connects via GATT,
+  auto-detects notify and write characteristics
+- **Paired Devices (Classic BT)** — fallback SPP connect from paired device list
+
+### EEPROM dump export (MainActivity overflow menu)
+- "Save EEPROM dump…" saves:
+  - Raw `tdh3_eeprom_<timestamp>.bin` (8 KB)
+  - Tone analysis `tdh3_tones_<timestamp>.txt` (per-channel hex + decoded tones)
+- Shared via Android share sheet using `FileProvider`
+
+---
+
+## Bugs fixed during implementation
+
+| # | File | Bug | Fix |
+|---|---|---|---|
+| 1 | `EepromParser.kt` | `readU32Be` returned `Int` (overflow on high frequencies) | Added `.toLong()` to each term |
+| 2 | `EepromParser.kt` | Duplex detection inverted (`txf > rxf` gave `"-"` instead of `"+"`) | Swapped `"+"` / `"-"` assignment |
+| 3 | `EepromParser.kt` | `writeChannel` for split duplex wrote `offsetHz` instead of `freqTxHz` | Changed to write `c.freqTxHz` |
+| 4 | `Protocol.kt` | `write(Byte)` ambiguous in Kotlin 2.0+; compile error | Changed `.toByte()` calls to plain `Int` values |
+| 5 | `BtSerialManager.kt` | Missing `@SuppressLint("MissingPermission")` on `pairedDevices()` | Added annotation |
+| 6 | `ToneCodec.kt` | DCS decode returned raw decimal (19) not CHIRP label (023) | `raw9.toString(8).toInt()` conversion |
+| 7 | `ToneCodec.kt` | DCS encode did not convert octal label to stored decimal | `value.toInt().toString().toInt(8)` conversion |
+| 8 | `ChannelEditActivity.kt` | Spinner adapter-swap race reset CTCSS/DCS selection to index 0 | Replaced 3-spinner design with flat 247-item spinner |
+
+---
+
+## Permissions (AndroidManifest.xml)
+
+| Permission | Purpose |
+|---|---|
+| `BLUETOOTH_SCAN` | BLE device scan (Android 12+) |
+| `BLUETOOTH_CONNECT` | GATT connect (Android 12+) |
+| `BLUETOOTH` | Classic BT (Android < 12) |
+| `BLUETOOTH_ADMIN` | Classic BT (Android < 12) |
+| `ACCESS_FINE_LOCATION` | Required for BLE scan (Android < 12) |
+| `WRITE_EXTERNAL_STORAGE` (maxSdk 28) | EEPROM dump save (Android ≤ 9) |
+
+`FileProvider` authority: `${applicationId}.fileprovider`
+
+---
+
+## Build
+
+```bash
+cd AnroidNICFW_CH_EDITOR
+JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
+# APK → app/build/outputs/apk/debug/app-debug.apk
+```
+
+Toolchain: AGP 8.7.3 · Kotlin 2.0.21 · Gradle 9.1 · minSdk 24 · targetSdk 35
+
+---
+
+## Future work
+
+- **Settings editor**: expose key radio settings from the 0x1900 block (squelch,
+  Bluetooth name, scan lists, band plans)
+- **Upload progress**: per-block progress bar during EEPROM write (currently a
+  single indeterminate spinner)
+- **Channel groups**: UI for the A–O group assignments already parsed in `Channel.kt`
+- **Import / export**: read/write `.img` files compatible with the CHIRP driver so
+  channels can be transferred between the app and a desktop CHIRP session
+- **Release build + signing**: configure a keystore and produce a signed APK / AAB
+  for Play Store or direct distribution
