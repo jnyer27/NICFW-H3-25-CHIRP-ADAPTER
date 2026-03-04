@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nicfw.tdh3editor.bluetooth.BleManager
 import com.nicfw.tdh3editor.bluetooth.BtSerialManager
 import com.nicfw.tdh3editor.databinding.ActivityMainBinding
+import com.nicfw.tdh3editor.radio.ChirpCsvImporter
 import com.nicfw.tdh3editor.radio.EepromConstants
 import com.nicfw.tdh3editor.radio.EepromParser
 import com.nicfw.tdh3editor.radio.Protocol
@@ -80,6 +81,98 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // ─── CHIRP CSV file picker ────────────────────────────────────────────────
+    /**
+     * Launches the system file picker for a CSV file, reads the content on the IO
+     * dispatcher, parses it with [ChirpCsvImporter] to validate it, then starts
+     * [ChirpImportActivity] with the raw CSV text so the import screen can present
+     * the full preview and group-assignment UI.
+     */
+    private val csvPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@registerForActivityResult
+        if (eeprom == null) {
+            Toast.makeText(this, "Load EEPROM from radio before importing", Toast.LENGTH_SHORT).show()
+            return@registerForActivityResult
+        }
+        lifecycleScope.launch {
+            try {
+                // Read the file on the IO thread
+                val (csvText, commentsList) = withContext(Dispatchers.IO) {
+                    contentResolver.openInputStream(uri)?.use { stream ->
+                        val text = stream.bufferedReader().readText()
+                        // Extract comments in parallel with parse for the preview
+                        val comments = extractComments(text)
+                        Pair(text, comments)
+                    } ?: Pair("", emptyList<String>())
+                }
+
+                if (csvText.isBlank()) {
+                    Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val entries = ChirpCsvImporter.parse(csvText)
+                if (entries.isEmpty()) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "No valid CHIRP channels found in selected file",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@launch
+                }
+
+                // Launch the import preview / group-assignment screen
+                val intent = Intent(this@MainActivity, ChirpImportActivity::class.java).apply {
+                    putExtra(ChirpImportActivity.EXTRA_CSV_TEXT, csvText)
+                    putExtra(ChirpImportActivity.EXTRA_COMMENTS, ArrayList(commentsList))
+                }
+                startActivity(intent)
+
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Failed to read CSV: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    /**
+     * Extracts the optional "Comment" column from each data row in the CSV so the
+     * import preview can display location descriptions (e.g. "Baltimore, Pigtown").
+     * Returns a list parallel to the parsed [ChirpCsvImporter.ChirpEntry] list.
+     */
+    private fun extractComments(csvText: String): List<String> {
+        val lines = csvText.lines()
+        val headerIdx = lines.indexOfFirst { it.trimStart().startsWith("Location", ignoreCase = true) }
+        if (headerIdx < 0) return emptyList()
+
+        val headers = lines[headerIdx].split(",").map { it.trim().lowercase().trim('"') }
+        val commentIdx = headers.indexOf("comment")
+        if (commentIdx < 0) return emptyList()
+
+        val result = mutableListOf<String>()
+        for (i in (headerIdx + 1) until lines.size) {
+            val row = lines[i].trim()
+            if (row.isEmpty()) continue
+            // Quick split — comments may be quoted
+            val cols = buildList {
+                var inQ = false; val cur = StringBuilder()
+                for (c in row) when {
+                    c == '"' -> inQ = !inQ
+                    c == ',' && !inQ -> { add(cur.toString()); cur.clear() }
+                    else -> cur.append(c)
+                }
+                add(cur.toString())
+            }
+            result += if (commentIdx in cols.indices) cols[commentIdx].trim().trim('"') else ""
+        }
+        return result
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Lifecycle
     // ─────────────────────────────────────────────────────────────────────────
@@ -129,6 +222,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val hasEeprom = (eeprom != null)
+        menu.findItem(R.id.action_import_chirp)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
         return super.onPrepareOptionsMenu(menu)
@@ -136,6 +230,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_import_chirp -> {
+                // Open system file picker — accept CSV and plain-text MIME types
+                csvPickerLauncher.launch(arrayOf("text/csv", "text/comma-separated-values", "text/plain", "*/*"))
+                true
+            }
             R.id.action_save_dump -> { saveEepromDump(); true }
             R.id.action_edit_group_labels -> {
                 startActivity(Intent(this, GroupLabelEditActivity::class.java))
