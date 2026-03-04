@@ -16,6 +16,9 @@ import com.nicfw.tdh3editor.radio.EepromParser
  * Allows the user to view and edit the 15 group labels (A–O) stored at
  * EEPROM offset 0x1C90 (6 bytes each, null-padded ASCII).
  *
+ * Each label is limited to 5 printable characters; the 6th EEPROM byte is
+ * always the null terminator consumed by the radio firmware.
+ *
  * Changes are written into the in-memory [EepromHolder.eeprom] buffer and
  * [EepromHolder.groupLabels] immediately on save; they will be uploaded to
  * the radio the next time the user taps "Save to radio" in MainActivity.
@@ -77,7 +80,7 @@ class GroupLabelEditActivity : AppCompatActivity() {
             return
         }
 
-        // Collect edited labels (trimmed, max 6 chars enforced by XML maxLength)
+        // Collect edited labels (trimmed, max 5 chars enforced by XML maxLength)
         val updatedLabels = rows.map { (_, input) ->
             input.text?.toString()?.trim() ?: ""
         }

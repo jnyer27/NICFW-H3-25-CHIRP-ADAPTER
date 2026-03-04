@@ -21,20 +21,20 @@
         android:background="@android:color/transparent"
         android:text="A" />
 
-    <!-- Label text field (max 6 chars) -->
+    <!-- Label text field (max 5 chars — 6th EEPROM byte is the null terminator) -->
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginStart="8dp"
-        android:hint="Label (max 6 chars)"
+        android:hint="Label (max 5 chars)"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/groupLabelInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLength="6"
+            android:maxLength="5"
             android:maxLines="1"
             android:inputType="text|textCapCharacters" />
 
