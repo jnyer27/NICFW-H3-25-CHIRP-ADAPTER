@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.nicfw.tdh3editor.radio.Channel
+import com.nicfw.tdh3editor.radio.EepromConstants
 
 class ChannelAdapter(
     private val onChannelClick: (Channel) -> Unit
@@ -50,8 +51,9 @@ class ChannelAdapter(
                 channelName.text   = channel.name.ifEmpty { "-" }
                 channelDuplex.text = channel.displayDuplex()
 
-                // Groups
-                val groups = channel.displayGroups()
+                // Groups — show label text (e.g. "All", "MURS") when available;
+                // fall back to the letter code when the label is blank.
+                val groups = buildGroupsDisplay(channel)
                 channelGroups.text = groups
                 channelGroups.visibility = if (groups.isEmpty()) View.GONE else View.VISIBLE
 
@@ -63,6 +65,22 @@ class ChannelAdapter(
                 channelToneGroup.visibility = if (tx.isEmpty() && rx.isEmpty()) View.GONE else View.VISIBLE
             }
             card.setOnClickListener { onChannelClick(channel) }
+        }
+
+        /**
+         * Builds the groups display string for the card, preferring the user-defined
+         * label (e.g. "All", "MURS") over the raw letter code.
+         * Falls back to the letter when the label is blank or EEPROM hasn't been loaded.
+         */
+        private fun buildGroupsDisplay(channel: Channel): String {
+            val labels = EepromHolder.groupLabels
+            return listOf(channel.group1, channel.group2, channel.group3, channel.group4)
+                .filter { it != "None" }
+                .joinToString("  ") { letter ->
+                    val idx   = EepromConstants.GROUP_LETTERS.indexOf(letter)
+                    val label = labels.getOrNull(idx)?.trim() ?: ""
+                    if (label.isEmpty()) letter else label
+                }
         }
     }
 
