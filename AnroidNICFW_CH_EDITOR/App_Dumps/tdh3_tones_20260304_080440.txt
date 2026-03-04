@@ -1,0 +1,203 @@
+TD-H3 EEPROM Tone Debug  20260304_080440
+Format: Ch N  offset  RX=0xWWWW → raw9=DDD → decoded VAL  TX=0xWWWW → …
+================================================================================
+Ch   1  off=0x0040           RX: 0x8013 → raw9=19 (0x13) → decoded DTCS 19.0 pol=N   TX: 0x0000 → None
+Ch   2  off=0x0060           RX: 0x81EC → raw9=492 (0x1ec) → decoded DTCS 492.0 pol=N  TX: 0x0000 → None
+Ch   3  off=0x0080           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   4  off=0x00A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   5  off=0x00C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   6  off=0x00E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   7  off=0x0100           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   8  off=0x0120           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch   9  off=0x0140           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  10  off=0x0160           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  11  off=0x0180           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  12  off=0x01A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  13  off=0x01C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  14  off=0x01E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  15  off=0x0200           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  16  off=0x0220           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  17  off=0x0240           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  18  off=0x0260           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  19  off=0x0280           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  20  off=0x02A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  21  off=0x02C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  22  off=0x02E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  23  off=0x0300           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  24  off=0x0320           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  25  off=0x0340           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  26  off=0x0360           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  27  off=0x0380           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  28  off=0x03A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  29  off=0x03C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  30  off=0x03E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  31  off=0x0400           RX: 0x0788 → CTCSS 192.8 Hz                             TX: 0x0788 → CTCSS 192.8 Hz
+Ch  32  off=0x0420           RX: 0x0788 → CTCSS 192.8 Hz                             TX: 0x0788 → CTCSS 192.8 Hz
+Ch  33  off=0x0440           RX: 0x0000 → None                                       TX: 0x0585 → CTCSS 141.3 Hz
+Ch  34  off=0x0460  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  35  off=0x0480  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  36  off=0x04A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  37  off=0x04C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  38  off=0x04E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  39  off=0x0500  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  40  off=0x0520  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  41  off=0x0540           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  42  off=0x0560           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  43  off=0x0580           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  44  off=0x05A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  45  off=0x05C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  46  off=0x05E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  47  off=0x0600  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  48  off=0x0620  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  49  off=0x0640  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  50  off=0x0660  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  51  off=0x0680  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  52  off=0x06A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  53  off=0x06C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  54  off=0x06E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  55  off=0x0700  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  56  off=0x0720  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  57  off=0x0740  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  58  off=0x0760  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  59  off=0x0780  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  60  off=0x07A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  61  off=0x07C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  62  off=0x07E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  63  off=0x0800  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  64  off=0x0820  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  65  off=0x0840  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  66  off=0x0860  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  67  off=0x0880  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  68  off=0x08A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  69  off=0x08C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  70  off=0x08E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  71  off=0x0900  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  72  off=0x0920  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  73  off=0x0940  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  74  off=0x0960  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  75  off=0x0980  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  76  off=0x09A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  77  off=0x09C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch  78  off=0x09E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  79  off=0x0A00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  80  off=0x0A20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  81  off=0x0A40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  82  off=0x0A60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  83  off=0x0A80           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  84  off=0x0AA0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  85  off=0x0AC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  86  off=0x0AE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  87  off=0x0B00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  88  off=0x0B20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  89  off=0x0B40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  90  off=0x0B60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  91  off=0x0B80           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  92  off=0x0BA0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  93  off=0x0BC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  94  off=0x0BE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  95  off=0x0C00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  96  off=0x0C20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  97  off=0x0C40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  98  off=0x0C60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch  99  off=0x0C80  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 100  off=0x0CA0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 101  off=0x0CC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 102  off=0x0CE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 103  off=0x0D00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 104  off=0x0D20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 105  off=0x0D40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 106  off=0x0D60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 107  off=0x0D80           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 108  off=0x0DA0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 109  off=0x0DC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 110  off=0x0DE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 111  off=0x0E00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 112  off=0x0E20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 113  off=0x0E40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 114  off=0x0E60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 115  off=0x0E80           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 116  off=0x0EA0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 117  off=0x0EC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 118  off=0x0EE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 119  off=0x0F00           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 120  off=0x0F20           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 121  off=0x0F40           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 122  off=0x0F60           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 123  off=0x0F80           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 124  off=0x0FA0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 125  off=0x0FC0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 126  off=0x0FE0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 127  off=0x1000           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 128  off=0x1020           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 129  off=0x1040           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 130  off=0x1060           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 131  off=0x1080           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 132  off=0x10A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 133  off=0x10C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 134  off=0x10E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 135  off=0x1100           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 136  off=0x1120           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 137  off=0x1140           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 138  off=0x1160           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 139  off=0x1180           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 140  off=0x11A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 141  off=0x11C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 142  off=0x11E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 143  off=0x1200           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 144  off=0x1220           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 145  off=0x1240           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 146  off=0x1260           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 147  off=0x1280           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 148  off=0x12A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 149  off=0x12C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 150  off=0x12E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 151  off=0x1300  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 152  off=0x1320  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 153  off=0x1340  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 154  off=0x1360  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 155  off=0x1380  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 156  off=0x13A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 157  off=0x13C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 158  off=0x13E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 159  off=0x1400  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 160  off=0x1420           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 161  off=0x1440  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 162  off=0x1460  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 163  off=0x1480  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 164  off=0x14A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 165  off=0x14C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 166  off=0x14E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 167  off=0x1500  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 168  off=0x1520  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 169  off=0x1540  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 170  off=0x1560  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 171  off=0x1580  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 172  off=0x15A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 173  off=0x15C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 174  off=0x15E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 175  off=0x1600  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 176  off=0x1620  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 177  off=0x1640  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 178  off=0x1660  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 179  off=0x1680  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 180  off=0x16A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 181  off=0x16C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 182  off=0x16E0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 183  off=0x1700  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 184  off=0x1720  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 185  off=0x1740  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 186  off=0x1760  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 187  off=0x1780  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 188  off=0x17A0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 189  off=0x17C0  [empty]  RX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R  TX: 0xFFFF → raw9=511 (0x1ff) → decoded DTCS 511.0 pol=R
+Ch 190  off=0x17E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 191  off=0x1800           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 192  off=0x1820           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 193  off=0x1840           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 194  off=0x1860           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 195  off=0x1880           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 196  off=0x18A0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 197  off=0x18C0           RX: 0x0000 → None                                       TX: 0x0000 → None
+Ch 198  off=0x18E0           RX: 0x0000 → None                                       TX: 0x0000 → None
+================================================================================
+Done. Channels with all-zero tones omitted.
