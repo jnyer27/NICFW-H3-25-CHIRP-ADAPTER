@@ -1,0 +1,16 @@
+# Android build outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+/AnroidNICFW_CH_EDITOR/.gradle/
+/AnroidNICFW_CH_EDITOR/build/
+/AnroidNICFW_CH_EDITOR/app/build/
+/AnroidNICFW_CH_EDITOR/local.properties
+
+# IDE
+.idea/
+*.iml
+
+# Claude session data
+.claude/
