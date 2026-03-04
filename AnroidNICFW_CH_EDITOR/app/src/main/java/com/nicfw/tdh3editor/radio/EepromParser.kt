@@ -125,6 +125,40 @@ object EepromParser {
     fun parseAllChannels(eeprom: ByteArray): List<Channel> =
         (1..EepromConstants.NUM_CHANNELS).map { parseChannel(eeprom, it) }
 
+    /**
+     * Reads the 15 group labels (A–O) from 0x1C90.
+     * Each label is 6 bytes of null-padded ASCII. Returns a 15-element list of trimmed
+     * strings; blank labels become empty string "".
+     */
+    fun parseGroupLabels(eeprom: ByteArray): List<String> {
+        val base = EepromConstants.GROUP_LABELS_BASE
+        val size = EepromConstants.GROUP_LABEL_SIZE
+        return (0 until 15).map { i ->
+            val off = base + i * size
+            if (off + size > eeprom.size) return@map ""
+            val raw = eeprom.copyOfRange(off, off + size)
+            raw.toString(Charsets.US_ASCII)
+                .replace("\u0000", " ")
+                .replace("\u00FF", " ")
+                .trim()
+        }
+    }
+
+    /**
+     * Writes 15 group labels back into the EEPROM buffer at 0x1C90.
+     * Each label is truncated to 6 chars and null-padded to exactly 6 bytes.
+     */
+    fun writeGroupLabels(eeprom: ByteArray, labels: List<String>) {
+        val base = EepromConstants.GROUP_LABELS_BASE
+        val size = EepromConstants.GROUP_LABEL_SIZE
+        for (i in 0 until 15) {
+            val off = base + i * size
+            if (off + size > eeprom.size) break
+            val raw = (labels.getOrNull(i) ?: "").take(size).padEnd(size, '\u0000')
+            for (j in 0 until size) eeprom[off + j] = raw[j].code.toByte()
+        }
+    }
+
     private fun readU32Be(b: ByteArray, off: Int): Long {
         return ((b[off].toInt() and 0xFF).toLong() shl 24) or
             ((b[off + 1].toInt() and 0xFF).toLong() shl 16) or

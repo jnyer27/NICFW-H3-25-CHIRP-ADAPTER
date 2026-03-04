@@ -128,17 +128,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        // Only enable dump when EEPROM data is loaded
-        menu.findItem(R.id.action_save_dump)?.isEnabled = (eeprom != null)
+        val hasEeprom = (eeprom != null)
+        menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_save_dump) {
-            saveEepromDump()
-            return true
+        return when (item.itemId) {
+            R.id.action_save_dump -> { saveEepromDump(); true }
+            R.id.action_edit_group_labels -> {
+                startActivity(Intent(this, GroupLabelEditActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return super.onOptionsItemSelected(item)
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -258,6 +262,7 @@ class MainActivity : AppCompatActivity() {
         updateConnectionUi()
         EepromHolder.eeprom?.let { data ->
             eeprom = data
+            EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
             refreshChannelList(data)
         }
     }
@@ -502,6 +507,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 eeprom = data
                 EepromHolder.eeprom = data
+                EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
                 refreshChannelList(data)
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE

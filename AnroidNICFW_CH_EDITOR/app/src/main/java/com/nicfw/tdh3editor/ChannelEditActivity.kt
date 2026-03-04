@@ -67,8 +67,19 @@ class ChannelEditActivity : AppCompatActivity() {
         val toneAdapterRx = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.TONE_LABELS)
         binding.spinnerRxTone.adapter = toneAdapterRx
 
-        // ── Group spinners (Group 1–4, each: None / A–O) ───────────────────────
-        val groupAdapter = { ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.GROUPS_LIST) }
+        // ── Group spinners (Group 1–4, each: None / A – Label … O – Label) ──────
+        // Build spinner items that show the live label alongside each letter,
+        // e.g. "A – All", "B – MURS", "G – GMRS". Falls back to just the letter
+        // when the label is blank or the EEPROM hasn't been loaded yet.
+        val parsedLabels = EepromHolder.groupLabels
+        val groupSpinnerItems: List<String> = buildList {
+            add("None")
+            EepromConstants.GROUP_LETTERS.forEachIndexed { i, letter ->
+                val label = parsedLabels.getOrNull(i)?.trim() ?: ""
+                add(if (label.isEmpty()) letter else "$letter – $label")
+            }
+        }
+        val groupAdapter = { ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, groupSpinnerItems) }
         binding.spinnerGroup1.adapter = groupAdapter()
         binding.spinnerGroup2.adapter = groupAdapter()
         binding.spinnerGroup3.adapter = groupAdapter()

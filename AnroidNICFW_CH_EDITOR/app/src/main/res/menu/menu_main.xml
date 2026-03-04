@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_edit_group_labels"
+        android:title="Edit Group Labels…"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_save_dump"
         android:title="Save EEPROM dump…"
         app:showAsAction="never" />

@@ -19,6 +19,10 @@ object EepromConstants {
     const val NUM_CHANNELS = 198
     const val SETTINGS_BASE = 0x1900
 
+    // Group label table: 15 entries (A–O) × 6 bytes ASCII at 0x1C90
+    const val GROUP_LABELS_BASE = 0x1C90
+    const val GROUP_LABEL_SIZE  = 6
+
     // VHF/UHF bands (Hz)
     const val VHF_LOW = 136_000_000
     const val VHF_HIGH = 174_000_000
