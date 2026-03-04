@@ -52,17 +52,22 @@ app/src/main/java/com/nicfw/tdh3editor/
 ├── MainActivity.kt              # Channel list, BT connect, EEPROM load/save, dump export
 ├── ChannelEditActivity.kt       # Per-channel editor form
 ├── ChannelAdapter.kt            # RecyclerView adapter for channel list
-├── EepromHolder.kt              # Singleton EEPROM byte array shared between activities
+├── EepromHolder.kt              # Singleton EEPROM byte array + group labels shared between activities
+├── GroupLabelEditActivity.kt    # 15-row editor for group labels A–O
 ├── bluetooth/
 │   ├── BleManager.kt            # BLE scan, GATT connect, BleRadioStream
 │   └── BtSerialManager.kt       # Classic SPP fallback
 └── radio/
-    ├── Channel.kt               # Data class + display helpers
-    ├── EepromConstants.kt       # Lists, offsets, flat tone picker helpers
-    ├── EepromParser.kt          # Parse / write channel structs in 8 KB buffer
+    ├── Channel.kt               # Data class + display helpers (incl. groups, tones)
+    ├── EepromConstants.kt       # Lists, offsets, flat tone picker helpers, group label constants
+    ├── EepromParser.kt          # Parse / write channel structs + group labels in 8 KB buffer
     ├── Protocol.kt              # BLE/serial protocol (0x45/0x46/0x30/0x31/0x49)
     ├── RadioStream.kt           # Abstract stream interface (BLE and SPP share it)
     └── ToneCodec.kt             # Encode / decode CTCSS and DCS tone words
+
+app/src/main/res/layout/
+├── activity_group_label_edit.xml  # Toolbar + scrollable 15-row list + save/cancel buttons
+└── item_group_label_row.xml       # Reusable row: letter badge + TextInputEditText (max 6 chars)
 ```
 
 ---
@@ -76,6 +81,7 @@ app/src/main/java/com/nicfw/tdh3editor/
 - **Frequencies**: stored in 10 Hz units, big-endian u32
 - **Settings base**: `0x1900`, magic `0xD82F`
 - **Empty channel**: first 4 bytes == `0xFFFFFFFF`
+- **Group label table**: `0x1C90`, 15 labels (A–O) × 6 bytes null-padded ASCII
 
 ---
 
@@ -156,7 +162,8 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
   - Channel number
   - RX frequency (MHz)
   - Channel name
-  - **TX / RX tone** (between name and offset — hidden when no tone is set)
+  - **Active group labels** (e.g. "All  MURS" — resolved from EEPROM labels, hidden when all None)
+  - **TX / RX tone** (CTCSS Hz or DCS code+polarity — hidden when no tone is set)
   - Duplex offset (`+600kHz`, `-600kHz`, `Split`, or blank)
 - Tap a channel card to open the channel editor
 
@@ -168,7 +175,25 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
 - Bandwidth (Wide / Narrow)
 - TX Tone flat spinner (None + 38 CTCSS + 104 DCS-N + 104 DCS-R)
 - RX Tone flat spinner (same 247-item list)
+- **Group 1–4 spinners** — 2×2 grid; each shows "None" or "A – All", "B – MURS" etc.
+  (label text sourced live from `EepromHolder.groupLabels`)
 - Raw EEPROM debug line (hex word, 9-bit field, octal) for tone verification
+
+### Channel groups
+- Each channel has up to 4 group slots (A–O or None), stored as letter codes in the EEPROM
+- Group labels (max 6 chars each) are stored at `0x1C90` in the EEPROM (15 × 6 bytes ASCII)
+- `EepromParser.parseGroupLabels()` reads them after load; `writeGroupLabels()` saves edits
+- `EepromHolder.groupLabels` (15-item list) is populated on load and updated by the Group Label Editor
+- **Channel list** resolves letters → labels at bind time in `ChannelAdapter.buildGroupsDisplay()`
+- **Channel editor** spinner items show "A – All" format; selection index maps to `GROUPS_LIST` entry
+
+### Group Label Editor (GroupLabelEditActivity)
+- Opened via **⋮ overflow menu → Edit Group Labels…** (disabled until EEPROM is loaded)
+- 15 rows (A–O), each with a letter badge and a 6-char `TextInputEditText`
+- Pre-populated from `EepromHolder.groupLabels` on open
+- On Save: calls `EepromParser.writeGroupLabels()` to patch the in-memory EEPROM buffer,
+  updates `EepromHolder.groupLabels` so the rest of the app sees new labels immediately,
+  and shows a toast reminding the user to upload to radio to persist
 
 ### Bluetooth connect (MainActivity)
 - **Scan for Radio (BLE)** — scans for the nicFW BLE service UUID, connects via GATT,
@@ -231,7 +256,6 @@ Toolchain: AGP 8.7.3 · Kotlin 2.0.21 · Gradle 9.1 · minSdk 24 · targetSdk 35
   Bluetooth name, scan lists, band plans)
 - **Upload progress**: per-block progress bar during EEPROM write (currently a
   single indeterminate spinner)
-- **Channel groups**: UI for the A–O group assignments already parsed in `Channel.kt`
 - **Import / export**: read/write `.img` files compatible with the CHIRP driver so
   channels can be transferred between the app and a desktop CHIRP session
 - **Release build + signing**: configure a keystore and produce a signed APK / AAB

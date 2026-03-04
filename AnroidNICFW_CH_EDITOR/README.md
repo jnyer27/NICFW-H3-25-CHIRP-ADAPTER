@@ -13,9 +13,12 @@ the parent repo ([tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)).
 - **BLE scan & connect** — scans for the nicFW BLE service and connects automatically;
   no manual pairing step required in most cases
 - **Classic SPP fallback** — paired-device picker for older connection methods
-- **198-channel list** — shows frequency, name, TX/RX tone, and duplex offset at a glance
+- **198-channel list** — shows frequency, name, active group labels, TX/RX tone, and
+  duplex offset at a glance
 - **Per-channel editor** — frequency, duplex/offset, name, power, modulation, bandwidth,
-  TX tone, and RX tone (CTCSS in Hz or DCS with polarity)
+  TX tone, RX tone (CTCSS in Hz or DCS with polarity), and up to 4 group assignments
+- **Group Label Editor** — edit the 15 group labels (A–O) that are stored in the radio
+  EEPROM; labels are shown throughout the app in place of raw letter codes
 - **EEPROM dump export** — saves raw `.bin` + human-readable tone analysis `.txt` via
   the system share sheet (useful for debugging)
 
@@ -84,6 +87,7 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
    - Channel number
    - RX frequency (MHz)
    - Channel name
+   - Active group labels (e.g. "All  MURS" — blank if no groups are assigned)
    - TX / RX tone (CTCSS Hz or DCS code + polarity — blank if no tone is set)
    - Duplex offset (`+600kHz`, `-600kHz`, `Split`, or blank for simplex)
 4. **Edit a channel** — tap a card to open the editor:
@@ -92,14 +96,22 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
    - Power, modulation (Auto / FM / AM / USB), bandwidth (Wide / Narrow)
    - TX Tone and RX Tone — single dropdown with all options:
      *None*, 38 CTCSS tones (67.0 – 250.3 Hz), 104 DCS-N codes, 104 DCS-R codes
+   - Group 1–4 — assign up to 4 groups (A–O) from a dropdown showing the group label
 5. **Save to radio** — tap **Save**. The app writes the updated EEPROM back to the
    radio (with a confirmation prompt) and the radio reboots.
 
-### EEPROM dump (debugging)
+### Overflow menu (⋮)
 
-Tap the **⋮ overflow menu → Save EEPROM dump…** to export:
-- `tdh3_eeprom_<timestamp>.bin` — raw 8 KB image
-- `tdh3_tones_<timestamp>.txt` — per-channel tone word breakdown (hex, 9-bit, decoded)
+| Item | Description |
+|---|---|
+| **Edit Group Labels…** | Open the Group Label Editor (enabled after loading EEPROM) |
+| **Save EEPROM dump…** | Export raw `.bin` + tone analysis `.txt` via the share sheet |
+
+### Group Label Editor
+
+Tap **⋮ → Edit Group Labels…** to rename any of the 15 groups (A–O). Labels are stored
+directly in the radio EEPROM (6 chars each at offset `0x1C90`) and are updated throughout
+the app immediately on save. Tap **Save to radio** in the main screen to persist changes.
 
 ---
 
