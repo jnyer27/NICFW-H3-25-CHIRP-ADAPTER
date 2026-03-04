@@ -25,19 +25,22 @@ class ChannelAdapter(
     }
 
     class ViewHolder(private val card: MaterialCardView) : RecyclerView.ViewHolder(card) {
-        private val channelNumber:   TextView    = card.findViewById(R.id.channelNumber)
-        private val channelFreq:     TextView    = card.findViewById(R.id.channelFreq)
-        private val channelName:     TextView    = card.findViewById(R.id.channelName)
+        private val channelNumber:    TextView     = card.findViewById(R.id.channelNumber)
+        private val channelFreq:      TextView     = card.findViewById(R.id.channelFreq)
+        private val channelName:      TextView     = card.findViewById(R.id.channelName)
+        private val channelGroups:    TextView     = card.findViewById(R.id.channelGroups)
         private val channelToneGroup: LinearLayout = card.findViewById(R.id.channelToneGroup)
-        private val channelTxTone:   TextView    = card.findViewById(R.id.channelTxTone)
-        private val channelRxTone:   TextView    = card.findViewById(R.id.channelRxTone)
-        private val channelDuplex:   TextView    = card.findViewById(R.id.channelDuplex)
+        private val channelTxTone:    TextView     = card.findViewById(R.id.channelTxTone)
+        private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
+        private val channelDuplex:    TextView     = card.findViewById(R.id.channelDuplex)
 
         fun bind(channel: Channel, onChannelClick: (Channel) -> Unit) {
             channelNumber.text = card.context.getString(R.string.channel_number, channel.number)
             if (channel.empty) {
-                channelFreq.text  = card.context.getString(R.string.empty_channel)
-                channelName.text  = ""
+                channelFreq.text   = card.context.getString(R.string.empty_channel)
+                channelName.text   = ""
+                channelGroups.text = ""
+                channelGroups.visibility = View.GONE
                 channelDuplex.text = ""
                 channelTxTone.text = ""
                 channelRxTone.text = ""
@@ -47,6 +50,12 @@ class ChannelAdapter(
                 channelName.text   = channel.name.ifEmpty { "-" }
                 channelDuplex.text = channel.displayDuplex()
 
+                // Groups
+                val groups = channel.displayGroups()
+                channelGroups.text = groups
+                channelGroups.visibility = if (groups.isEmpty()) View.GONE else View.VISIBLE
+
+                // Tones
                 val tx = channel.displayTxTone()
                 val rx = channel.displayRxTone()
                 channelTxTone.text = if (tx.isNotEmpty()) "T: $tx" else ""

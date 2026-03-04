@@ -46,6 +46,15 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:text="" />
+
+            <!-- Active group letters, e.g. "A  B" — GONE when all None -->
+            <TextView
+                android:id="@+id/channelGroups"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:text="" />
         </LinearLayout>
 
         <!-- TX / RX tone summary — hidden when both are None -->

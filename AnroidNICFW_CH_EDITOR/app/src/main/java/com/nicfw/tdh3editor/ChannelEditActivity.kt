@@ -67,6 +67,13 @@ class ChannelEditActivity : AppCompatActivity() {
         val toneAdapterRx = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.TONE_LABELS)
         binding.spinnerRxTone.adapter = toneAdapterRx
 
+        // ── Group spinners (Group 1–4, each: None / A–O) ───────────────────────
+        val groupAdapter = { ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.GROUPS_LIST) }
+        binding.spinnerGroup1.adapter = groupAdapter()
+        binding.spinnerGroup2.adapter = groupAdapter()
+        binding.spinnerGroup3.adapter = groupAdapter()
+        binding.spinnerGroup4.adapter = groupAdapter()
+
         // ── Populate all fields ────────────────────────────────────────────────
         channel?.let { c ->
             if (c.empty) {
@@ -102,6 +109,12 @@ class ChannelEditActivity : AppCompatActivity() {
             binding.spinnerRxTone.setSelection(
                 EepromConstants.toneToIndex(c.rxToneMode, c.rxToneVal, c.rxTonePolarity)
             )
+
+            // Group spinners
+            binding.spinnerGroup1.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group1).coerceAtLeast(0))
+            binding.spinnerGroup2.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group2).coerceAtLeast(0))
+            binding.spinnerGroup3.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group3).coerceAtLeast(0))
+            binding.spinnerGroup4.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group4).coerceAtLeast(0))
 
             // ── Debug: show raw EEPROM tone words so we can verify DCS mapping ──
             val rawOff = EepromConstants.CHANNEL_BASE +
@@ -201,6 +214,12 @@ class ChannelEditActivity : AppCompatActivity() {
         c.rxToneMode     = rxMode
         c.rxToneVal      = rxVal
         c.rxTonePolarity = rxPol
+
+        // Groups — always saved
+        c.group1 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup1.selectedItemPosition) ?: "None"
+        c.group2 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup2.selectedItemPosition) ?: "None"
+        c.group3 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup3.selectedItemPosition) ?: "None"
+        c.group4 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup4.selectedItemPosition) ?: "None"
 
         EepromParser.writeChannel(eep, c)
         EepromHolder.eeprom = eep

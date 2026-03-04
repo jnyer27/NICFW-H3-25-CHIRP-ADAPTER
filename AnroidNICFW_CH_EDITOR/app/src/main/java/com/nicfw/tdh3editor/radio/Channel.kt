@@ -37,6 +37,11 @@ data class Channel(
     fun displayTxTone(): String = formatTone(txToneMode, txToneVal, txTonePolarity)
     fun displayRxTone(): String = formatTone(rxToneMode, rxToneVal, rxTonePolarity)
 
+    /** Returns active group letters space-separated, e.g. "A B" — empty string if all None. */
+    fun displayGroups(): String = listOf(group1, group2, group3, group4)
+        .filter { it != "None" }
+        .joinToString("  ")
+
     private fun formatTone(mode: String?, value: Double?, polarity: String?): String = when (mode) {
         "Tone" -> "%.1f Hz".format(value ?: 0.0)
         "DTCS" -> "%03d %s".format((value ?: 0.0).toInt(), polarity ?: "N")
