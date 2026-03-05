@@ -68,6 +68,42 @@ object EepromConstants {
     }
 
     /**
+     * Converts a stored [Channel.power] string to a human-readable wattage label
+     * for display in the channel list.  Storage is unchanged (raw byte 0–255 / "N/T").
+     *
+     * Calibration points provided by the radio hardware:
+     *   raw   0  →  N/T  (no transmit)
+     *   raw  29  →  0.5 W
+     *   raw  58  →  2.0 W
+     *   raw 130  →  5.0 W
+     *
+     * Values between calibration points are linearly interpolated within the
+     * appropriate segment.  Values above 130 are extrapolated from the top segment.
+     * Result is formatted to one decimal place (e.g. "2.3W").
+     */
+    fun powerToWatts(powerStr: String): String {
+        if (powerStr == "N/T") return "N/T"
+        val raw = powerStr.toIntOrNull() ?: return powerStr
+        if (raw <= 0) return "N/T"
+
+        // Calibration segments as (rawValue, watts) pairs
+        val pts = arrayOf(0 to 0.0, 29 to 0.5, 58 to 2.0, 130 to 5.0)
+
+        for (i in 0 until pts.size - 1) {
+            val (v1, w1) = pts[i]
+            val (v2, w2) = pts[i + 1]
+            if (raw <= v2) {
+                val t = (raw - v1).toDouble() / (v2 - v1)
+                return "%.1fW".format(w1 + t * (w2 - w1))
+            }
+        }
+
+        // Above 130: extrapolate from the 58→130 segment (2W→5W over 72 units)
+        val t = (raw - 58).toDouble() / (130 - 58)
+        return "%.1fW".format((2.0 + t * 3.0).coerceAtMost(99.9))
+    }
+
+    /**
      * Convert a decoded (mode, value, polarity) triple to a flat TONE_LABELS index.
      * Returns 0 (None) if the tone is unrecognised.
      */

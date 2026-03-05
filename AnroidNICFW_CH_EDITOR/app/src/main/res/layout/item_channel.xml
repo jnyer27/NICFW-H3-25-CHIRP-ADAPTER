@@ -84,12 +84,30 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/channelDuplex"
+        <!-- Duplex + power in a compact vertical column on the right -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="" />
+            android:orientation="vertical"
+            android:gravity="end"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/channelDuplex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/channelPower"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:text="" />
+
+        </LinearLayout>
 
         <!-- Drag handle — visible only on selected cards in selection mode -->
         <ImageView

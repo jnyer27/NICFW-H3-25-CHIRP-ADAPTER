@@ -126,6 +126,7 @@ class ChannelAdapter(
         private val channelTxTone:    TextView     = card.findViewById(R.id.channelTxTone)
         private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
         private val channelDuplex:    TextView     = card.findViewById(R.id.channelDuplex)
+        private val channelPower:     TextView     = card.findViewById(R.id.channelPower)
         private val channelDragHandle: ImageView   = card.findViewById(R.id.channelDragHandle)
 
         @Suppress("ClickableViewAccessibility")
@@ -137,12 +138,14 @@ class ChannelAdapter(
                 channelName.text   = ""
                 channelGroups.text = ""; channelGroups.visibility = View.GONE
                 channelDuplex.text = ""
+                channelPower.text  = ""
                 channelTxTone.text = ""; channelRxTone.text = ""
                 channelToneGroup.visibility = View.GONE
             } else {
                 channelFreq.text   = channel.displayFreq()
                 channelName.text   = channel.name.ifEmpty { "-" }
                 channelDuplex.text = channel.displayDuplex()
+                channelPower.text  = EepromConstants.powerToWatts(channel.power)
 
                 val groups = buildGroupsDisplay(channel)
                 channelGroups.text       = groups
