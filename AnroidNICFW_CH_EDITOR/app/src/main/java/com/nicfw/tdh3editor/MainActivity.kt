@@ -370,6 +370,7 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_edit_band_plan)?.isEnabled = hasEeprom
         // Import EEPROM dump is always available — no radio connection needed
         menu.findItem(R.id.action_import_dump)?.isEnabled = true
         return super.onPrepareOptionsMenu(menu)
@@ -396,6 +397,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_edit_group_labels -> {
                 startActivity(Intent(this, GroupLabelEditActivity::class.java))
+                true
+            }
+            R.id.action_edit_band_plan -> {
+                startActivity(BandPlanEditorActivity.intent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)

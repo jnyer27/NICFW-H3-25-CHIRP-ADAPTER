@@ -33,11 +33,51 @@ object EepromConstants {
     // 0x1A00 : u16 magic (must equal 0xA46D)
     // 0x1A02 : bandPlans[20], each entry is 10 bytes:
     //            u32 startFreq (10 Hz units) | u32 endFreq (10 Hz units)
-    //            u8  maxPower  | u8 flags  (bit 0 = txAllowed)
+    //            u8  maxPower  | u8 flags  (bit 0 = txAllowed, bit 1 = wrap,
+    //                                      bits 2-4 = modulation, bits 5-7 = bandwidth)
     const val BANDPLAN_BASE        = 0x1A00
     const val BANDPLAN_ENTRY_SIZE  = 10          // 4 + 4 + 1 + 1 bytes
     const val BANDPLAN_NUM_ENTRIES = 20
     const val MAGIC_BANDPLAN_V25   = 0xA46D
+
+    // Band Plan editor spinner labels — index == raw value stored in EEPROM.
+    // Verified against an actual TD-H3 nicFW 2.5 EEPROM dump + nicFW Programmer screenshot:
+    //   • raw 0 = "Ignore"  (entries 9, 20 confirmed)
+    //   • raw 1 = "FM"      (entries 1, 2, 4, 5, 6, 7, 8 confirmed)
+    //   • raw 2 = "AM"      (entry 3, Air Band, confirmed)
+    // Remaining values are logical extrapolations — not seen in sample data.
+    //
+    // Modulation: bits 2-4 of the flags byte  ((flags shr 2) and 0x07).
+    val BANDPLAN_MOD_LABELS = listOf(
+        "Ignore",       // raw 0 ✓ confirmed
+        "FM",           // raw 1 ✓ confirmed
+        "AM",           // raw 2 ✓ confirmed
+        "USB",          // raw 3 (unconfirmed — logical)
+        "Auto",         // raw 4 (unconfirmed — logical)
+        "Enforce FM",   // raw 5 (unconfirmed — logical)
+        "Enforce AM",   // raw 6 (unconfirmed — logical)
+        "Enforce USB"   // raw 7 (unconfirmed — logical)
+    )
+
+    // Bandwidth: bits 5-7 of the flags byte  ((flags shr 5) and 0x07).
+    // Verified values:
+    //   • raw 0 = "Ignore"   (entry 4 MURS, entry 9 FM broadcast, entry 20 catch-all)
+    //   • raw 1 = "Wide"     (entries 1, 2, 5, 6, 7, 8 confirmed)
+    //   • raw 2 = "Narrow"   (entry 3 Air Band confirmed)
+    //   • raw 5 = "FM Tuner" (entry 9 FM broadcast 88–108 MHz confirmed)
+    val BANDPLAN_BW_LABELS = listOf(
+        "Ignore",    // raw 0 ✓ confirmed
+        "Wide",      // raw 1 ✓ confirmed
+        "Narrow",    // raw 2 ✓ confirmed
+        "BW (3)",    // raw 3 (unconfirmed — not seen in sample data)
+        "BW (4)",    // raw 4 (unconfirmed — not seen in sample data)
+        "FM Tuner",  // raw 5 ✓ confirmed
+        "BW (6)",    // raw 6 (unconfirmed)
+        "BW (7)"     // raw 7 (unconfirmed)
+    )
+
+    // Max power: spinner position == raw power byte.  Position 0 → 0 = "Any / no limit".
+    val BANDPLAN_MAXPOWER_LIST: List<String> = listOf("Any (0)") + (1..255).map { it.toString() }
 
     // Tone mode selector
     val TONE_MODE_LIST = listOf("None", "Tone", "DTCS")

@@ -27,4 +27,9 @@
         android:title="Import EEPROM dump…"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_edit_band_plan"
+        android:title="Edit Band Plan…"
+        app:showAsAction="never" />
+
 </menu>
