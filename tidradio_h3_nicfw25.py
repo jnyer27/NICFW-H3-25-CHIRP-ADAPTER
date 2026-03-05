@@ -16,7 +16,6 @@
 # EEPROM layout and protocol: https://github.com/nicsure/nicfw2docs
 # V2.5X codeplugs use BIG-Endian for all multi-byte values.
 
-import json
 import logging
 import time
 
@@ -166,10 +165,13 @@ struct {
     u32 startFreq;
     u32 endFreq;
     u8 maxPower;
-    u8 txAllowed:1,
-       wrap:1,
+    // CHIRP bitwise assigns fields MSB-first (first declared = highest bit).
+    // Radio stores: bit0=txAllowed, bit1=wrap, bits2-4=modulation, bits5-7=bandwidth.
+    // Declaring in reverse order makes CHIRP read them correctly (last declared → bit 0).
+    u8 bandwidth:3,
        modulation:3,
-       bandwidth:3;
+       wrap:1,
+       txAllowed:1;
 } bandPlans[20];
 
 // 0x1B00 scanPresets[20]
@@ -243,14 +245,15 @@ RFGAIN_LIST = ["AGC"] + [str(x) for x in range(1, 43)]
 VOX_LIST = ["Off"] + [str(x) for x in range(1, 16)]
 PIN_ACTION_LIST = ["Off", "Lock", "Unlock"]  # typical; extend if doc specifies
 OP_MODE_LIST = ["VFO", "Channel/Group"]  # vfoState.mode 0 = VFO, 1 = Channel/Group
-# Band Plan (match nicFW Programmer Band Plan tab; mapping from screenshot)
-# Modulation: 3 bits. raw 0=Ignore, 1=AM, 2=Enforce FM, 3=USB, 4=FM, 5=Enforce AM, 6=Enforce USB, 7=Enforce None
-MODULATION_BP_LIST = ["Ignore", "FM", "AM", "USB", "Enforce FM", "Enforce AM", "Enforce USB", "Enforce None"]
-MODULATION_BP_RAW_TO_INDEX = {0: 0, 1: 2, 2: 4, 3: 3, 4: 1, 5: 5, 6: 6, 7: 7}  # raw 2=Enforce FM, raw 5=Enforce AM (506-507, 508-509)
-MODULATION_BP_INDEX_TO_RAW = {0: 0, 1: 4, 2: 1, 3: 3, 4: 2, 5: 5, 6: 6, 7: 7}  # Enforce FM→raw 2, Enforce AM→raw 5
-# Bandwidth: 3 bits. raw 0=Ignore, 1=Wide, 2=Narrow, 3=FM Tuner; 4→Ignore, 5→Narrow, 6/7→Wide (screenshot: plan 9=FM Tuner, 1-8=Wide/Narrow)
-BANDWIDTH_BP_LIST = ["Ignore", "Wide", "Narrow", "FM Tuner", "Enforce Wide", "Enforce Narrow"]
-BANDWIDTH_BP_RAW_TO_INDEX = {0: 0, 1: 1, 2: 2, 3: 3, 4: 0, 5: 2, 6: 1, 7: 1}
+# Band Plan (matches nicFW Programmer Band Plan tab; verified from live EEPROM dump, March 2026)
+# Modulation: 3 bits (raw 0-7). Raw value IS the list index — no remapping needed.
+#   Confirmed from EEPROM dump: raw 0=Ignore, raw 1=FM, raw 2=AM.
+#   raw 3-7 unconfirmed; labels are best-effort based on nicFW firmware source patterns.
+MODULATION_BP_LIST = ["Ignore", "FM", "AM", "USB", "Auto", "Enforce FM", "Enforce AM", "Enforce USB"]
+# Bandwidth: 3 bits (raw 0-7). Raw value IS the list index — no remapping needed.
+#   Confirmed from EEPROM dump: raw 0=Ignore, raw 1=Wide, raw 2=Narrow, raw 5=FM Tuner.
+#   raw 3/4/6/7 unconfirmed; labelled BW(n) as placeholders.
+BANDWIDTH_BP_LIST = ["Ignore", "Wide", "Narrow", "BW(3)", "BW(4)", "FM Tuner", "BW(6)", "BW(7)"]
 MAXPOWER_BP_LIST = ["Ignore"] + [str(x) for x in range(1, 256)]
 GROUP_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"]  # 15 groups in programmer
 
@@ -404,7 +407,7 @@ def _channel_to_memory(memobj, number, mem):
         mem.duplex = ""
         mem.offset = 0
     else:
-        mem.duplex = "-" if txf > rxf else "+"
+        mem.duplex = "+" if txf > rxf else "-"
         mem.offset = abs(rxf - txf) * 10
     _tx = int(_mem.txPower)
     mem.power = "N/T" if _tx == TXPower_NT else (str(_tx) if 1 <= _tx <= 255 else "1")
@@ -524,8 +527,9 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
         rf.valid_cross_modes = ["Tone->Tone", "Tone->DTCS", "DTCS->Tone", "->Tone", "->DTCS", "DTCS->", "DTCS->DTCS"]
         rf.valid_characters = chirp_common.CHARSET_ASCII
         rf.valid_bands = [
-            (136000000, 174000000),
-            (400000000, 480000000),
+            (76000000, 108000000),   # FM broadcast (RX only; TX blocked by band plan)
+            (136000000, 174000000),  # VHF TX/RX
+            (400000000, 480000000),  # UHF TX/RX
         ]
         rf.valid_modes = MODULATION_LIST
         rf.valid_duplexes = ["", "-", "+", "split", "off"]
@@ -681,41 +685,18 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
 
         # Band Plan (20 plans at 0x1A02; match nicFW Programmer: freq in 10 Hz, display MHz)
         bandplan_grp = RadioSettingGroup("bandplan", "Band Plan")
-        # #region agent log
-        _bandplan_log = []
-        # #endregion
         for i in range(20):
             bp = self._memobj.bandPlans[i]
             start_mhz = int(bp.startFreq) * 10 / 1e6
             end_mhz = int(bp.endFreq) * 10 / 1e6
-            # TX Allowed: radio 0 = allowed (checked), 1 = not allowed (unchecked). Wrap: 0 = enabled, 1 = disabled (inverted).
-            _tx_allow = not bool(bp.txAllowed)
-            _wrap = not bool(bp.wrap)
-            _bw_raw = int(bp.bandwidth) & 7
-            _bw_idx = BANDWIDTH_BP_RAW_TO_INDEX.get(_bw_raw, 0)
+            # txAllowed bit=1 means TX is allowed; wrap bit=1 means scan wrap is enabled.
+            _tx_allow = bool(bp.txAllowed)
+            _wrap = bool(bp.wrap)
+            # Raw value IS the list index for both modulation and bandwidth (no remapping).
             _mod_raw = int(bp.modulation) & 7
-            _mod_idx = MODULATION_BP_RAW_TO_INDEX.get(_mod_raw, _mod_raw)
-            # #region agent log
-            _bandplan_log.append({
-                "#": i + 1,
-                "startFreq_raw": int(bp.startFreq),
-                "endFreq_raw": int(bp.endFreq),
-                "Start_MHz": round(start_mhz, 5),
-                "End_MHz": round(end_mhz, 5),
-                "txAllowed_raw": int(bp.txAllowed),
-                "TX_Allowed_display": _tx_allow,
-                "wrap_raw": int(bp.wrap),
-                "Wrap_display": _wrap,
-                "modulation_raw": _mod_raw,
-                "modulation_display_index": _mod_idx,
-                "Modulation": MODULATION_BP_LIST[_mod_idx],
-                "bandwidth_raw": _bw_raw,
-                "bandwidth_display_index": _bw_idx,
-                "Bandwidth": BANDWIDTH_BP_LIST[_bw_idx],
-                "maxPower_raw": int(bp.maxPower),
-                "Max_Power": MAXPOWER_BP_LIST[min(int(bp.maxPower), len(MAXPOWER_BP_LIST) - 1)],
-            })
-            # #endregion
+            _mod_idx = min(_mod_raw, len(MODULATION_BP_LIST) - 1)
+            _bw_raw = int(bp.bandwidth) & 7
+            _bw_idx = min(_bw_raw, len(BANDWIDTH_BP_LIST) - 1)
             plan = RadioSettingGroup("bandPlan_%d" % i, "Plan %d" % (i + 1))
             plan.append(RadioSetting("bandPlan_%d_startFreq" % i, "Start (MHz)", RadioSettingValueFloat(0, 1500, start_mhz, 0.00001)))
             plan.append(RadioSetting("bandPlan_%d_endFreq" % i, "End (MHz)", RadioSettingValueFloat(0, 1500, end_mhz, 0.00001)))
@@ -725,52 +706,6 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
             plan.append(RadioSetting("bandPlan_%d_modulation" % i, "Modulation", RadioSettingValueList(MODULATION_BP_LIST, MODULATION_BP_LIST[_mod_idx])))
             plan.append(RadioSetting("bandPlan_%d_bandwidth" % i, "Bandwidth", RadioSettingValueList(BANDWIDTH_BP_LIST, BANDWIDTH_BP_LIST[_bw_idx])))
             bandplan_grp.append(plan)
-        # #region agent log
-        try:
-            import os
-            _logdir = "/Users/jasonrosenzweig/Documents/Cursor Projects/NICFW H3 25 Adapter/.cursor"
-            _logpath = os.path.join(_logdir, "debug-18c1cf.log")
-            os.makedirs(_logdir, exist_ok=True)
-            # Compact summary: one line per plan so all 20 are visible (no subset)
-            _summary = []
-            for p in _bandplan_log:
-                _summary.append(
-                    "%s: %s-%s tx=%s wrap=%s mod_raw=%s mod=%s bw_raw=%s bw=%s"
-                    % (
-                        p["#"],
-                        p["Start_MHz"],
-                        p["End_MHz"],
-                        p["TX_Allowed_display"],
-                        p["Wrap_display"],
-                        p["modulation_raw"],
-                        p["Modulation"],
-                        p["bandwidth_raw"],
-                        p["Bandwidth"],
-                    )
-                )
-            with open(_logpath, "a") as _f:
-                _f.write(json.dumps({
-                    "location": "get_settings",
-                    "message": "band_plan_full",
-                    "data": {
-                        "plan_count": len(_bandplan_log),
-                        "plan_indexes": list(range(1, 21)),
-                        "mapping": {
-                            "MODULATION_BP_LIST": MODULATION_BP_LIST,
-                            "MODULATION_BP_RAW_TO_INDEX": dict(MODULATION_BP_RAW_TO_INDEX),
-                            "MODULATION_BP_INDEX_TO_RAW": dict(MODULATION_BP_INDEX_TO_RAW),
-                            "BANDWIDTH_BP_LIST": BANDWIDTH_BP_LIST,
-                            "BANDWIDTH_BP_RAW_TO_INDEX": dict(BANDWIDTH_BP_RAW_TO_INDEX),
-                        },
-                        "summary": _summary,
-                        "bandPlans": _bandplan_log,
-                        "validate": {"TX_Allowed_checked_plans": [1, 2, 4, 5], "Wrap_checked_plans": list(range(1, 9))},
-                    },
-                    "hypothesisId": "bandplan_map",
-                }) + "\n")
-        except Exception as _e:
-            pass
-        # #endregion
         top.append(bandplan_grp)
 
         # Group Labels (0x1C90; Group A-O = 15 labels, 6 chars each; match nicFW Programmer Group Labels tab)
@@ -952,39 +887,15 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                             elif field == "maxPower":
                                 bp.maxPower = MAXPOWER_BP_LIST.index(val) if val in MAXPOWER_BP_LIST else 0
                             elif field == "txAllowed":
-                                bp.txAllowed = 0 if val else 1  # 0 = allowed, 1 = not allowed (inverted)
+                                bp.txAllowed = 1 if val else 0  # 1 = TX allowed
                             elif field == "wrap":
-                                bp.wrap = 0 if val else 1  # 0 = enabled, 1 = disabled (inverted)
+                                bp.wrap = 1 if val else 0  # 1 = wrap enabled
                             elif field == "modulation":
-                                _mod_idx = MODULATION_BP_LIST.index(val) if val in MODULATION_BP_LIST else 0
-                                _mod_raw_written = MODULATION_BP_INDEX_TO_RAW.get(_mod_idx, _mod_idx)
-                                bp.modulation = _mod_raw_written
-                                # #region agent log
-                                try:
-                                    import os
-                                    _logdir = "/Users/jasonrosenzweig/Documents/Cursor Projects/NICFW H3 25 Adapter/.cursor"
-                                    _logpath = os.path.join(_logdir, "debug-18c1cf.log")
-                                    os.makedirs(_logdir, exist_ok=True)
-                                    with open(_logpath, "a") as _f:
-                                        _f.write(json.dumps({"location": "set_settings", "message": "band_plan_write", "data": {"plan": idx + 1, "field": "modulation", "display_value": val, "display_index": _mod_idx, "raw_written": _mod_raw_written, "MODULATION_BP_LIST": MODULATION_BP_LIST}, "hypothesisId": "bandplan_map"}) + "\n")
-                                except Exception:
-                                    pass
-                                # #endregion
+                                # Raw value IS the list index — write directly.
+                                bp.modulation = MODULATION_BP_LIST.index(val) if val in MODULATION_BP_LIST else 0
                             elif field == "bandwidth":
-                                _bw_list_idx = BANDWIDTH_BP_LIST.index(val) if val in BANDWIDTH_BP_LIST else 0
-                                _raw_written = _bw_list_idx if _bw_list_idx <= 3 else (1 if _bw_list_idx == 4 else 2)  # 0-3 as-is; Enforce Wide→1, Enforce Narrow→2
-                                bp.bandwidth = _raw_written
-                                # #region agent log
-                                try:
-                                    import os
-                                    _logdir = "/Users/jasonrosenzweig/Documents/Cursor Projects/NICFW H3 25 Adapter/.cursor"
-                                    _logpath = os.path.join(_logdir, "debug-18c1cf.log")
-                                    os.makedirs(_logdir, exist_ok=True)
-                                    with open(_logpath, "a") as _f:
-                                        _f.write(json.dumps({"location": "set_settings", "message": "band_plan_write", "data": {"plan": idx + 1, "field": "bandwidth", "display_value": val, "BANDWIDTH_BP_LIST_index": _bw_list_idx, "raw_written": _raw_written, "BANDWIDTH_BP_LIST": BANDWIDTH_BP_LIST}, "hypothesisId": "bandplan_map"}) + "\n")
-                                except Exception:
-                                    pass
-                                # #endregion
+                                # Raw value IS the list index — write directly.
+                                bp.bandwidth = BANDWIDTH_BP_LIST.index(val) if val in BANDWIDTH_BP_LIST else 0
                     except (ValueError, IndexError, TypeError):
                         pass
             elif name and name.startswith("groupLabel_"):

@@ -51,23 +51,29 @@ flowchart LR
 app/src/main/java/com/nicfw/tdh3editor/
 ├── MainActivity.kt              # Channel list, BT connect, EEPROM load/save, dump export
 ├── ChannelEditActivity.kt       # Per-channel editor form
-├── ChannelAdapter.kt            # RecyclerView adapter for channel list
-├── EepromHolder.kt              # Singleton EEPROM byte array + group labels shared between activities
+├── ChannelAdapter.kt            # RecyclerView adapter for channel list (incl. (BP) display)
+├── BandPlanEditorActivity.kt    # List of all 20 band plan slots; Save writes to EEPROM
+├── BandPlanEntryEditActivity.kt # Per-entry band plan editor form
+├── EepromHolder.kt              # Singleton EEPROM byte array + parsed data shared between activities
 ├── GroupLabelEditActivity.kt    # 15-row editor for group labels A–O
 ├── bluetooth/
 │   ├── BleManager.kt            # BLE scan, GATT connect, BleRadioStream
 │   └── BtSerialManager.kt       # Classic SPP fallback
 └── radio/
+    ├── BandPlanEntry.kt         # Data class for a single band plan entry (all fields)
     ├── Channel.kt               # Data class + display helpers (incl. groups, tones)
-    ├── EepromConstants.kt       # Lists, offsets, flat tone picker helpers, group label constants
-    ├── EepromParser.kt          # Parse / write channel structs + group labels in 8 KB buffer
+    ├── EepromConstants.kt       # Lists, offsets, tone picker helpers, band plan label lists
+    ├── EepromParser.kt          # Parse / write channels, group labels, band plan in 8 KB buffer
     ├── Protocol.kt              # BLE/serial protocol (0x45/0x46/0x30/0x31/0x49)
     ├── RadioStream.kt           # Abstract stream interface (BLE and SPP share it)
     └── ToneCodec.kt             # Encode / decode CTCSS and DCS tone words
 
 app/src/main/res/layout/
-├── activity_group_label_edit.xml  # Toolbar + scrollable 15-row list + save/cancel buttons
-└── item_group_label_row.xml       # Reusable row: letter badge + TextInputEditText (max 6 chars)
+├── activity_band_plan_editor.xml      # Toolbar + info banner + RecyclerView + Save/Cancel
+├── activity_band_plan_entry_edit.xml  # Per-entry form: freq range, switches, spinners
+├── item_band_plan_entry.xml           # Card: slot number, freq range, detail line, chevron
+├── activity_group_label_edit.xml      # Toolbar + scrollable 15-row list + save/cancel buttons
+└── item_group_label_row.xml           # Reusable row: letter badge + TextInputEditText (max 6 chars)
 ```
 
 ---
@@ -80,6 +86,7 @@ app/src/main/res/layout/
 - **Channel base**: `0x0040`, 198 channels × 32 bytes
 - **Frequencies**: stored in 10 Hz units, big-endian u32
 - **Settings base**: `0x1900`, magic `0xD82F`
+- **Band plan base**: `0x1A00`, magic `0xA46D`; 20 entries × 10 bytes starting at `0x1A02`
 - **Empty channel**: first 4 bytes == `0xFFFFFFFF`
 - **Group label table**: `0x1C90`, 15 labels (A–O) × 6 bytes null-padded ASCII
 
@@ -154,6 +161,25 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
 
 ---
 
+## Band plan field encoding (verified from live EEPROM dump, March 2026)
+
+Each 10-byte band plan entry at `0x1A02 + i*10`:
+
+| Bytes | Field | Encoding |
+|---|---|---|
+| 0–3 | Start frequency | u32 big-endian, 10 Hz units |
+| 4–7 | End frequency | u32 big-endian, 10 Hz units |
+| 8 | Max power | 0 = Ignore; 1–255 = power level ceiling |
+| 9 bit 0 | TX Allowed | **1 = TX allowed**, 0 = TX blocked |
+| 9 bit 1 | Wrap | **1 = scan wrap enabled**, 0 = disabled |
+| 9 bits 2–4 | Modulation | Raw value = direct index into `BANDPLAN_MOD_LABELS` |
+| 9 bits 5–7 | Bandwidth | Raw value = direct index into `BANDPLAN_BW_LABELS` |
+
+Confirmed modulation labels: raw 0 = Ignore, raw 1 = FM, raw 2 = AM.
+Confirmed bandwidth labels: raw 0 = Ignore, raw 1 = Wide, raw 2 = Narrow, raw 5 = FM Tuner.
+
+---
+
 ## Features implemented
 
 ### Channel list (MainActivity)
@@ -165,7 +191,8 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
   - **Active group labels** (e.g. "All  MURS" — resolved from EEPROM labels, hidden when all None)
   - **TX / RX tone** (CTCSS Hz or DCS code+polarity — hidden when no tone is set)
   - Duplex offset (`+600kHz`, `-600kHz`, `Split`, or blank)
-- Tap a channel card to open the channel editor
+  - **Power with `(BP)` suffix** when the channel frequency falls in a band plan entry
+    where TX is not allowed (e.g. FM broadcast channels show `4.9W (BP)`)
 
 ### Channel editor (ChannelEditActivity)
 - RX frequency, duplex mode, offset / TX frequency
@@ -178,6 +205,23 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
 - **Group 1–4 spinners** — 2×2 grid; each shows "None" or "A – All", "B – MURS" etc.
   (label text sourced live from `EepromHolder.groupLabels`)
 - Raw EEPROM debug line (hex word, 9-bit field, octal) for tone verification
+- **Frequency validation uses the loaded band plan** — any frequency covered by at
+  least one band plan entry is accepted (including FM broadcast 88–108 MHz)
+
+### Band Plan Editor (BandPlanEditorActivity + BandPlanEntryEditActivity)
+- Opened via **⋮ overflow menu → Edit Band Plan…** (disabled until EEPROM is loaded)
+- Lists all 20 band plan slots; each shows slot number, frequency range, and a detail
+  line: `TX: ✓/✗  Mod: FM  BW: FM Tuner  Pwr: Ignore`
+- Tap a slot to open `BandPlanEntryEditActivity`:
+  - Start / End frequency fields (validated, rounded to 10 Hz)
+  - TX Allowed switch, Scan Wrap switch
+  - Max Power spinner (0 = Ignore, 1–255)
+  - Modulation spinner (Ignore / FM / AM / USB / Auto / Enforce FM / Enforce AM / Enforce USB)
+  - Bandwidth spinner (Ignore / Wide / Narrow / BW(3) / BW(4) / FM Tuner / BW(6) / BW(7))
+  - **Clear Entry** button zeros the slot
+- **Save** in the editor updates `EepromHolder` and writes all 20 slots + magic word to
+  the in-memory EEPROM buffer (magic `0xA46D` written first to make previously blank
+  EEPROMs valid)
 
 ### Channel groups
 - Each channel has up to 4 group slots (A–O or None), stored as letter codes in the EEPROM
@@ -220,6 +264,9 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
 | 6 | `ToneCodec.kt` | DCS decode returned raw decimal (19) not CHIRP label (023) | `raw9.toString(8).toInt()` conversion |
 | 7 | `ToneCodec.kt` | DCS encode did not convert octal label to stored decimal | `value.toInt().toString().toInt(8)` conversion |
 | 8 | `ChannelEditActivity.kt` | Spinner adapter-swap race reset CTCSS/DCS selection to index 0 | Replaced 3-spinner design with flat 247-item spinner |
+| 9 | `ChannelEditActivity.kt` | FM broadcast (88.1 MHz) rejected with "out of range" error | Frequency validation now uses loaded band plan entries instead of hardcoded VHF/UHF ranges |
+| 10 | `EepromConstants.kt` | Band plan modulation labels wrong (raw 2 mapped to USB, raw 1 to AM) | Corrected to direct raw=index mapping; confirmed from EEPROM dump: raw 0=Ignore, 1=FM, 2=AM |
+| 11 | `EepromConstants.kt` | Band plan bandwidth label "FM Tuner" at wrong position (raw 3 not raw 5) | Corrected to direct raw=index mapping; FM Tuner confirmed at raw 5 |
 
 ---
 
@@ -235,6 +282,11 @@ fun indexToTone(idx): Triple<…>               // Spinner index → Channel fie
 | `WRITE_EXTERNAL_STORAGE` (maxSdk 28) | EEPROM dump save (Android ≤ 9) |
 
 `FileProvider` authority: `${applicationId}.fileprovider`
+
+> **Google Play Protect false positive:** The combination of `BLUETOOTH_CONNECT` +
+> `ACCESS_FINE_LOCATION` may trigger a "mobile billing" heuristic warning from Play
+> Protect. The app contains no SMS, NFC, or billing permissions; both permissions
+> exist solely for BLE scanning on Android < 12.
 
 ---
 
@@ -252,11 +304,11 @@ Toolchain: AGP 8.7.3 · Kotlin 2.0.21 · Gradle 9.1 · minSdk 24 · targetSdk 35
 
 ## Future work
 
-- **Settings editor**: expose key radio settings from the 0x1900 block (squelch,
-  Bluetooth name, scan lists, band plans)
 - **Upload progress**: per-block progress bar during EEPROM write (currently a
   single indeterminate spinner)
 - **Import / export**: read/write `.img` files compatible with the CHIRP driver so
   channels can be transferred between the app and a desktop CHIRP session
 - **Release build + signing**: configure a keystore and produce a signed APK / AAB
   for Play Store or direct distribution
+- **Channel sort / filter**: sort channels by group, frequency, or name; filter by
+  active group (partially implemented in `feature/channel-sort-by-group` branch)

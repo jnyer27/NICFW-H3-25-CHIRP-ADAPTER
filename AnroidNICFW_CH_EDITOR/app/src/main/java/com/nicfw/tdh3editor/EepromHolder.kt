@@ -1,5 +1,7 @@
 package com.nicfw.tdh3editor
 
+import com.nicfw.tdh3editor.radio.BandPlanEntry
+
 /**
  * Application-level holder for the current EEPROM image so that ChannelEditActivity
  * and GroupLabelEditActivity can read and write the same buffer without passing it
@@ -14,4 +16,12 @@ object EepromHolder {
      * Populated by MainActivity after each EEPROM load.
      */
     var groupLabels: List<String> = List(15) { "" }
+
+    /**
+     * Decoded Band Plan entries parsed from 0x1A00 (nicFW 2.5).
+     * Each entry covers a frequency range and indicates whether TX is permitted.
+     * Empty when the EEPROM has not been loaded or the band plan magic is absent.
+     * Populated by MainActivity after each EEPROM load.
+     */
+    var bandPlan: List<BandPlanEntry> = emptyList()
 }

@@ -126,6 +126,95 @@ object EepromParser {
         (1..EepromConstants.NUM_CHANNELS).map { parseChannel(eeprom, it) }
 
     /**
+     * Reads the 20 Band Plan entries from 0x1A00 (magic) / 0x1A02 (entries).
+     *
+     * Returns an empty list when the magic word is absent or invalid — the caller
+     * should fall back to the hard-coded VHF/UHF TX-band constants in that case.
+     * Empty slots (startFreq=0, endFreq=0) are skipped; use [readAllBandPlanSlots]
+     * to get all 20 slots including empty ones.
+     */
+    fun parseBandPlan(eeprom: ByteArray): List<BandPlanEntry> =
+        readAllBandPlanSlots(eeprom)?.filterNot { it.isEmpty } ?: emptyList()
+
+    /**
+     * Returns all 20 Band Plan slots as an Array<BandPlanEntry> (index 0–19),
+     * or null when the magic word is absent/invalid.
+     *
+     * Empty slots are included as [BandPlanEntry.isEmpty] == true entries so that
+     * the Band Plan editor can show and modify all 20 positions.
+     *
+     * Entry layout (10 bytes each):
+     *   u32 startFreq (10 Hz units)  |  u32 endFreq (10 Hz units)
+     *   u8  maxPower                 |  u8  flags
+     *      flags: bit 0 = txAllowed, bit 1 = wrap,
+     *             bits 2–4 = modulation (raw 0–7), bits 5–7 = bandwidth (raw 0–7)
+     */
+    fun readAllBandPlanSlots(eeprom: ByteArray): Array<BandPlanEntry>? {
+        val magicOff = EepromConstants.BANDPLAN_BASE
+        if (magicOff + 2 > eeprom.size) return null
+        val magic = readU16Be(eeprom, magicOff)
+        if (magic != EepromConstants.MAGIC_BANDPLAN_V25) return null
+
+        val entryBase = magicOff + 2
+        val entrySize = EepromConstants.BANDPLAN_ENTRY_SIZE
+        return Array(EepromConstants.BANDPLAN_NUM_ENTRIES) { i ->
+            val off = entryBase + i * entrySize
+            if (off + entrySize > eeprom.size) {
+                BandPlanEntry(startHz = 0L, endHz = 0L, txAllowed = false)
+            } else {
+                val startFreq10 = readU32Be(eeprom, off)
+                val endFreq10   = readU32Be(eeprom, off + 4)
+                val maxPower    = eeprom[off + 8].toInt() and 0xFF
+                val flags       = eeprom[off + 9].toInt() and 0xFF
+                BandPlanEntry(
+                    startHz   = startFreq10 * 10L,
+                    endHz     = endFreq10   * 10L,
+                    txAllowed = (flags and 0x01) != 0,
+                    maxPower  = maxPower,
+                    wrap      = (flags and 0x02) != 0,
+                    modRaw    = (flags shr 2) and 0x07,
+                    bwRaw     = (flags shr 5) and 0x07
+                )
+            }
+        }
+    }
+
+    /**
+     * Writes all 20 Band Plan slots back into [eeprom].
+     *
+     * Always writes the magic word (0xA46D) at 0x1A00 first so that a previously
+     * unprogrammed EEPROM becomes valid after the first editor save.
+     * Slots beyond the end of [entries] are zeroed out.
+     */
+    fun writeBandPlan(eeprom: ByteArray, entries: Array<BandPlanEntry>) {
+        val magicOff  = EepromConstants.BANDPLAN_BASE
+        if (magicOff + 2 > eeprom.size) return
+        writeU16Be(eeprom, magicOff, EepromConstants.MAGIC_BANDPLAN_V25)
+
+        val entryBase = magicOff + 2
+        val entrySize = EepromConstants.BANDPLAN_ENTRY_SIZE
+
+        for (i in 0 until EepromConstants.BANDPLAN_NUM_ENTRIES) {
+            val off = entryBase + i * entrySize
+            if (off + entrySize > eeprom.size) break
+
+            val entry = entries.getOrNull(i)
+            if (entry == null || entry.isEmpty) {
+                for (j in 0 until entrySize) eeprom[off + j] = 0
+            } else {
+                writeU32Be(eeprom, off,     entry.startHz / 10L)
+                writeU32Be(eeprom, off + 4, entry.endHz   / 10L)
+                eeprom[off + 8] = (entry.maxPower and 0xFF).toByte()
+                val flags = ((if (entry.txAllowed) 1 else 0)) or
+                            ((if (entry.wrap)      1 else 0) shl 1) or
+                            ((entry.modRaw and 0x07) shl 2) or
+                            ((entry.bwRaw  and 0x07) shl 5)
+                eeprom[off + 9] = flags.toByte()
+            }
+        }
+    }
+
+    /**
      * Reads the 15 group labels (A–O) from 0x1C90.
      * Each label is 6 bytes of null-padded ASCII. Returns a 15-element list of trimmed
      * strings; blank labels become empty string "".

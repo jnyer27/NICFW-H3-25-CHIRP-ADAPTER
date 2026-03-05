@@ -181,8 +181,17 @@ class ChannelEditActivity : AppCompatActivity() {
         } else {
             val freqRxMhz = freqRxStr.toDoubleOrNull() ?: 0.0
             val freqRxHz  = (freqRxMhz * 1_000_000).toLong()
-            if (freqRxHz !in EepromConstants.VHF_LOW..EepromConstants.VHF_HIGH &&
-                freqRxHz !in EepromConstants.UHF_LOW..EepromConstants.UHF_HIGH) {
+            // Validate against the Band Plan when loaded; each entry defines a valid
+            // RX range regardless of whether TX is permitted in that range.
+            // Fall back to the hard-coded VHF/UHF TX bands if no band plan is present.
+            val bp = EepromHolder.bandPlan
+            val freqInRange = if (bp.isNotEmpty()) {
+                bp.any { freqRxHz in it.startHz..it.endHz }
+            } else {
+                freqRxHz in EepromConstants.VHF_LOW..EepromConstants.VHF_HIGH ||
+                freqRxHz in EepromConstants.UHF_LOW..EepromConstants.UHF_HIGH
+            }
+            if (!freqInRange) {
                 Toast.makeText(this, "Frequency out of range", Toast.LENGTH_SHORT).show()
                 return
             }

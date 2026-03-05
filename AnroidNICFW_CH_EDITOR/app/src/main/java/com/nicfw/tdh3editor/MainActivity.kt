@@ -23,10 +23,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nicfw.tdh3editor.bluetooth.BleManager
 import com.nicfw.tdh3editor.bluetooth.BtSerialManager
 import com.nicfw.tdh3editor.databinding.ActivityMainBinding
+import com.nicfw.tdh3editor.radio.Channel
+import com.nicfw.tdh3editor.radio.ChirpCsvImporter
 import com.nicfw.tdh3editor.radio.EepromConstants
 import com.nicfw.tdh3editor.radio.EepromParser
 import com.nicfw.tdh3editor.radio.Protocol
@@ -37,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Collections
 import java.util.Date
 import java.util.Locale
 
@@ -55,13 +60,29 @@ class MainActivity : AppCompatActivity() {
     private var activeDeviceName: String? = null
 
     private var eeprom: ByteArray? = null
-    private var channelList: List<com.nicfw.tdh3editor.radio.Channel> = emptyList()
+    private var channelList: List<Channel> = emptyList()
 
-    private val adapter = ChannelAdapter { channel ->
-        if (eeprom != null) {
-            startActivity(ChannelEditActivity.intent(this, channel.number, eeprom!!))
-        }
-    }
+    /**
+     * Working copy of the channel list used by [ItemTouchHelper] during drag-to-reorder.
+     * Kept in sync with [channelList] outside of drag operations.
+     */
+    private var dragWorkList: MutableList<Channel> = mutableListOf()
+
+    /** ItemTouchHelper that powers drag-to-reorder of channel cards. */
+    private lateinit var touchHelper: ItemTouchHelper
+
+    // ─── Adapter ──────────────────────────────────────────────────────────────
+
+    private val adapter = ChannelAdapter(
+        onChannelClick = { channel ->
+            if (eeprom != null) {
+                startActivity(ChannelEditActivity.intent(this, channel.number, eeprom!!))
+            }
+        },
+        onLongClick = { channel -> enterSelectionMode(channel) },
+        onSelectionChanged = { count -> updateSelectionBar(count) },
+        onDragStart  = { vh -> touchHelper.startDrag(vh) }
+    )
 
     // ─── BLE scan state ───────────────────────────────────────────────────────
     private var scanDialog: AlertDialog? = null
@@ -78,6 +99,152 @@ class MainActivity : AppCompatActivity() {
         if (results.values.any { !it }) {
             Toast.makeText(this, "Bluetooth permission required", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    // ─── EEPROM binary dump importer ─────────────────────────────────────────
+
+    /**
+     * Opens the system file picker for a raw EEPROM `.bin` file, validates that
+     * it is exactly [Protocol.EEPROM_SIZE] bytes, then loads it into the app
+     * exactly as if it had just been downloaded from the radio.
+     * No radio connection is required — useful for offline editing or testing.
+     */
+    private val eepromPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@registerForActivityResult
+        lifecycleScope.launch {
+            try {
+                val bytes = withContext(Dispatchers.IO) {
+                    contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                }
+                if (bytes == null) {
+                    Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+                if (bytes.size != Protocol.EEPROM_SIZE) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Invalid EEPROM dump: expected ${Protocol.EEPROM_SIZE} bytes, got ${bytes.size}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@launch
+                }
+                // Load into the app — same path as a successful radio download
+                eeprom = bytes
+                EepromHolder.eeprom = bytes
+                EepromHolder.groupLabels = EepromParser.parseGroupLabels(bytes)
+                EepromHolder.bandPlan    = EepromParser.parseBandPlan(bytes)
+                refreshChannelList(bytes)
+                runOnUiThread {
+                    updateConnectionUi()
+                    invalidateOptionsMenu()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Loaded EEPROM dump (${bytes.size} bytes)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Failed to import dump: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    // ─── CHIRP CSV file picker ────────────────────────────────────────────────
+    /**
+     * Launches the system file picker for a CSV file, reads the content on the IO
+     * dispatcher, parses it with [ChirpCsvImporter] to validate it, then starts
+     * [ChirpImportActivity] with the raw CSV text so the import screen can present
+     * the full preview and group-assignment UI.
+     */
+    private val csvPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@registerForActivityResult
+        if (eeprom == null) {
+            Toast.makeText(this, "Load EEPROM from radio before importing", Toast.LENGTH_SHORT).show()
+            return@registerForActivityResult
+        }
+        lifecycleScope.launch {
+            try {
+                // Read the file on the IO thread
+                val (csvText, commentsList) = withContext(Dispatchers.IO) {
+                    contentResolver.openInputStream(uri)?.use { stream ->
+                        val text = stream.bufferedReader().readText()
+                        // Extract comments in parallel with parse for the preview
+                        val comments = extractComments(text)
+                        Pair(text, comments)
+                    } ?: Pair("", emptyList<String>())
+                }
+
+                if (csvText.isBlank()) {
+                    Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val entries = ChirpCsvImporter.parse(csvText)
+                if (entries.isEmpty()) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "No valid CHIRP channels found in selected file",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@launch
+                }
+
+                // Launch the import preview / group-assignment screen
+                val intent = Intent(this@MainActivity, ChirpImportActivity::class.java).apply {
+                    putExtra(ChirpImportActivity.EXTRA_CSV_TEXT, csvText)
+                    putExtra(ChirpImportActivity.EXTRA_COMMENTS, ArrayList(commentsList))
+                }
+                startActivity(intent)
+
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Failed to read CSV: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
+    /**
+     * Extracts the optional "Comment" column from each data row in the CSV so the
+     * import preview can display location descriptions (e.g. "Baltimore, Pigtown").
+     * Returns a list parallel to the parsed [ChirpCsvImporter.ChirpEntry] list.
+     */
+    private fun extractComments(csvText: String): List<String> {
+        val lines = csvText.lines()
+        val headerIdx = lines.indexOfFirst { it.trimStart().startsWith("Location", ignoreCase = true) }
+        if (headerIdx < 0) return emptyList()
+
+        val headers = lines[headerIdx].split(",").map { it.trim().lowercase().trim('"') }
+        val commentIdx = headers.indexOf("comment")
+        if (commentIdx < 0) return emptyList()
+
+        val result = mutableListOf<String>()
+        for (i in (headerIdx + 1) until lines.size) {
+            val row = lines[i].trim()
+            if (row.isEmpty()) continue
+            // Quick split — comments may be quoted
+            val cols = buildList {
+                var inQ = false; val cur = StringBuilder()
+                for (c in row) when {
+                    c == '"' -> inQ = !inQ
+                    c == ',' && !inQ -> { add(cur.toString()); cur.clear() }
+                    else -> cur.append(c)
+                }
+                add(cur.toString())
+            }
+            result += if (commentIdx in cols.indices) cols[commentIdx].trim().trim('"') else ""
+        }
+        return result
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -103,6 +270,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerChannels.layoutManager = LinearLayoutManager(this)
         binding.recyclerChannels.adapter = adapter
 
+        setupTouchHelper()
+        setupSelectionBar()
+
         requestBluetoothPermissions()
 
         binding.btnConnect.setOnClickListener {
@@ -119,6 +289,73 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
+    // Drag-to-reorder setup
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private fun setupTouchHelper() {
+        val callback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+            // Drag is started only from the explicit drag handle touch
+            override fun isLongPressDragEnabled() = false
+
+            override fun onMove(
+                rv: RecyclerView,
+                from: RecyclerView.ViewHolder,
+                to: RecyclerView.ViewHolder
+            ): Boolean {
+                val f = from.bindingAdapterPosition
+                val t = to.bindingAdapterPosition
+                if (f < 0 || t < 0 ||
+                    f >= dragWorkList.size || t >= dragWorkList.size) return false
+                Collections.swap(dragWorkList, f, t)
+                adapter.notifyItemMoved(f, t)
+                return true
+            }
+
+            override fun onSwiped(vh: RecyclerView.ViewHolder, direction: Int) {
+                // No swipe actions
+            }
+
+            override fun clearView(rv: RecyclerView, vh: RecyclerView.ViewHolder) {
+                super.clearView(rv, vh)
+                // Finger lifted — commit the drag order to EEPROM
+                applyDragReorder()
+            }
+        }
+
+        touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(binding.recyclerChannels)
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // In-app selection bar (replaces ActionMode/CAB)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private fun setupSelectionBar() {
+        binding.btnMoveUp.setOnClickListener      { moveSelectedUp() }
+        binding.btnMoveDown.setOnClickListener    { moveSelectedDown() }
+        binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
+        binding.btnSelectionDone.setOnClickListener {
+            adapter.exitSelectionMode()
+            // onSelectionChanged(0) will be called → hides the bar
+        }
+    }
+
+    /**
+     * Shows/hides the selection bar and keeps the count label up to date.
+     * Called from [ChannelAdapter.onSelectionChanged] on every selection change.
+     */
+    private fun updateSelectionBar(count: Int) {
+        if (count == 0) {
+            binding.selectionBar.visibility = View.GONE
+        } else {
+            binding.selectionBar.visibility = View.VISIBLE
+            binding.selectionCount.text = "$count selected"
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
     // Options menu
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -129,16 +366,41 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val hasEeprom = (eeprom != null)
+        menu.findItem(R.id.action_import_chirp)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_edit_band_plan)?.isEnabled = hasEeprom
+        // Import EEPROM dump is always available — no radio connection needed
+        menu.findItem(R.id.action_import_dump)?.isEnabled = true
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_import_chirp -> {
+                // Open system file picker — accept CSV and plain-text MIME types
+                csvPickerLauncher.launch(arrayOf("text/csv", "text/comma-separated-values", "text/plain", "*/*"))
+                true
+            }
+            R.id.action_sort_by_group -> {
+                startActivity(Intent(this, ChannelSortActivity::class.java))
+                true
+            }
             R.id.action_save_dump -> { saveEepromDump(); true }
+            R.id.action_import_dump -> {
+                // Accept .bin and generic binary MIME types; */* as catch-all
+                eepromPickerLauncher.launch(
+                    arrayOf("application/octet-stream", "application/x-binary", "*/*")
+                )
+                true
+            }
             R.id.action_edit_group_labels -> {
                 startActivity(Intent(this, GroupLabelEditActivity::class.java))
+                true
+            }
+            R.id.action_edit_band_plan -> {
+                startActivity(BandPlanEditorActivity.intent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -202,9 +464,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * Builds a human-readable text report of every channel's raw tone sub-tone words
      * and how [ToneCodec] currently decodes them — essential for diagnosing DCS mapping issues.
-     *
-     * Example line:
-     *   Ch  2  off=0x0060  RX=0x81EC → DTCS 492 (raw9) → decoded 754  TX=0x0000 → None
      */
     private fun buildToneAnalysis(eep: ByteArray, ts: String): String {
         val sb = StringBuilder()
@@ -217,7 +476,6 @@ class MainActivity : AppCompatActivity() {
             val off = EepromConstants.CHANNEL_BASE + idx * EepromConstants.CHANNEL_STRUCT_SIZE
             if (off + 12 > eep.size) break
 
-            // Check empty marker (all 0xFF for first 4 bytes)
             val isEmpty = (eep[off].toInt() and 0xFF) == 0xFF &&
                           (eep[off+1].toInt() and 0xFF) == 0xFF &&
                           (eep[off+2].toInt() and 0xFF) == 0xFF &&
@@ -225,7 +483,6 @@ class MainActivity : AppCompatActivity() {
             val rxToneWord = ((eep[off+8].toInt() and 0xFF) shl 8) or (eep[off+9].toInt() and 0xFF)
             val txToneWord = ((eep[off+10].toInt() and 0xFF) shl 8) or (eep[off+11].toInt() and 0xFF)
 
-            // Skip empty channels with no tones
             if (isEmpty && rxToneWord == 0 && txToneWord == 0) continue
 
             val (rxMode, rxVal, rxPol) = ToneCodec.decode(rxToneWord)
@@ -263,6 +520,7 @@ class MainActivity : AppCompatActivity() {
         EepromHolder.eeprom?.let { data ->
             eeprom = data
             EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
+            EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
             refreshChannelList(data)
         }
     }
@@ -485,7 +743,188 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Radio operations (protocol unchanged — works over BLE and classic SPP)
+    // Channel selection — in-app bar replaces the system ActionMode/CAB
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Enters multi-select mode for [channel] as the first selection and reveals
+     * the in-app selection bar at the bottom of the screen.
+     */
+    private fun enterSelectionMode(channel: Channel) {
+        adapter.enterSelectionMode(channel.number)
+        // updateSelectionBar() is called automatically via onSelectionChanged callback
+    }
+
+    /**
+     * Moves every selected channel up by one slot, keeping contiguous groups
+     * together as a unit.
+     *
+     * Algorithm: build a [BooleanArray] of which positions are selected, then
+     * scan top-to-bottom for contiguous selected blocks.  For each block that
+     * has a free (non-selected) slot immediately above it, rotate that slot to
+     * just below the block — equivalent to the whole block sliding up by one.
+     * Uses [Collections.rotate] on a sub-list view for an O(n) in-place move.
+     */
+    private fun moveSelectedUp() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep).toMutableList()
+
+        // Parallel boolean array — true if channels[i] is currently selected.
+        val sel = BooleanArray(channels.size) { i -> (i + 1) in selected }
+
+        var i = 0
+        while (i < channels.size) {
+            if (sel[i]) {
+                // Find end of this contiguous selected block
+                var j = i
+                while (j + 1 < channels.size && sel[j + 1]) j++
+
+                // Block = [i..j].  Can we move it up?
+                if (i > 0 && !sel[i - 1]) {
+                    // Rotate [i-1 .. j] left by 1:
+                    //   [above, blk0, blk1, …, blkN] → [blk0, blk1, …, blkN, above]
+                    Collections.rotate(channels.subList(i - 1, j + 1), -1)
+                    sel[j]     = false   // "above" channel now sits at j
+                    sel[i - 1] = true    // block now occupies [i-1 .. j-1]
+                }
+                i = j + 1
+            } else {
+                i++
+            }
+        }
+
+        // Renumber and build new selected set
+        channels.forEachIndexed { idx, ch -> channels[idx] = ch.copy(number = idx + 1) }
+        val newSelected = channels.indices.filter { sel[it] }.map { it + 1 }.toSet()
+
+        applyChannelReorder(eep, channels, newSelected)
+    }
+
+    /**
+     * Moves every selected channel down by one slot, keeping contiguous groups
+     * together as a unit.
+     *
+     * Mirror of [moveSelectedUp]: scans bottom-to-top for contiguous blocks and
+     * rotates the slot immediately below each block to just above it.
+     */
+    private fun moveSelectedDown() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep).toMutableList()
+
+        val sel = BooleanArray(channels.size) { i -> (i + 1) in selected }
+
+        var j = channels.size - 1
+        while (j >= 0) {
+            if (sel[j]) {
+                // Find start of this contiguous selected block
+                var i = j
+                while (i - 1 >= 0 && sel[i - 1]) i--
+
+                // Block = [i..j].  Can we move it down?
+                if (j < channels.size - 1 && !sel[j + 1]) {
+                    // Rotate [i .. j+1] right by 1:
+                    //   [blk0, blk1, …, blkN, below] → [below, blk0, blk1, …, blkN]
+                    Collections.rotate(channels.subList(i, j + 2), 1)
+                    sel[i]     = false   // "below" channel now sits at i
+                    sel[j + 1] = true    // block now occupies [i+1 .. j+1]
+                }
+                j = i - 1
+            } else {
+                j--
+            }
+        }
+
+        channels.forEachIndexed { idx, ch -> channels[idx] = ch.copy(number = idx + 1) }
+        val newSelected = channels.indices.filter { sel[it] }.map { it + 1 }.toSet()
+
+        applyChannelReorder(eep, channels, newSelected)
+    }
+
+    /** Writes reordered channels back to the EEPROM, updates state, and refreshes the list. */
+    private fun applyChannelReorder(
+        eep: ByteArray,
+        channels: MutableList<Channel>,
+        newSelected: Set<Int>
+    ) {
+        for (ch in channels) EepromParser.writeChannel(eep, ch)
+        eeprom = eep
+        EepromHolder.eeprom = eep
+        channelList = channels.toList()
+        dragWorkList = channels.toMutableList()
+        adapter.submitList(channelList)
+        adapter.updateSelection(newSelected)
+        // updateSelectionBar called via onSelectionChanged
+    }
+
+    /**
+     * Called by [ItemTouchHelper] after the user drops a dragged card.
+     * Commits the drag order in [dragWorkList] to the EEPROM, renumbering
+     * channels to match their new positions. The dragged channel stays selected.
+     */
+    private fun applyDragReorder() {
+        val eep = eeprom ?: return
+        if (dragWorkList.isEmpty()) return
+
+        // Capture which original numbers were selected before renumbering
+        val oldSelected = adapter.selectedChannelNumbers
+        val newSelected = mutableSetOf<Int>()
+
+        // Renumber channels in their new drag order (1-based) and track selection
+        dragWorkList.forEachIndexed { idx, ch ->
+            if (ch.number in oldSelected) newSelected.add(idx + 1)
+            dragWorkList[idx] = ch.copy(number = idx + 1)
+        }
+
+        // Write the renumbered channels to EEPROM
+        for (ch in dragWorkList) EepromParser.writeChannel(eep, ch)
+        eeprom = eep
+        EepromHolder.eeprom = eep
+        channelList = dragWorkList.toList()
+
+        // Update the ListAdapter — DiffUtil detects position changes
+        adapter.submitList(channelList)
+        adapter.updateSelection(newSelected)
+        // updateSelectionBar called via onSelectionChanged
+    }
+
+    /**
+     * Prompts the user to confirm, then erases the data from each selected channel slot
+     * (sets it to empty/unused). The slot numbers themselves are unchanged.
+     */
+    private fun clearSelectedChannels() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        AlertDialog.Builder(this)
+            .setTitle("Clear Channels")
+            .setMessage(
+                "Clear ${selected.size} selected channel(s)?\n\n" +
+                "This erases the stored data and marks the slot(s) as empty. " +
+                "Slot numbers are not affected."
+            )
+            .setPositiveButton("Clear") { _, _ ->
+                for (num in selected) {
+                    EepromParser.writeChannel(eep, Channel(number = num, empty = true))
+                }
+                eeprom = eep
+                EepromHolder.eeprom = eep
+                channelList = EepromParser.parseAllChannels(eep)
+                dragWorkList = channelList.toMutableList()
+                adapter.submitList(channelList)
+                adapter.exitSelectionMode()
+                // updateSelectionBar(0) called via onSelectionChanged → hides bar
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun loadFromRadio() {
@@ -508,6 +947,7 @@ class MainActivity : AppCompatActivity() {
                 eeprom = data
                 EepromHolder.eeprom = data
                 EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
+                EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
                 refreshChannelList(data)
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE
@@ -528,7 +968,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshChannelList(data: ByteArray) {
         if (data.size < Protocol.EEPROM_SIZE) return
-        channelList = EepromParser.parseAllChannels(data)
+        channelList  = EepromParser.parseAllChannels(data)
+        dragWorkList = channelList.toMutableList()
         adapter.submitList(channelList)
     }
 

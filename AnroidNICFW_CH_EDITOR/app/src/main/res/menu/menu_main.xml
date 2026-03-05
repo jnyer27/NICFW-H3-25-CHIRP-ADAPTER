@@ -3,6 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/action_import_chirp"
+        android:title="Import CHIRP CSV…"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_by_group"
+        android:title="Sort Channels by Group…"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_edit_group_labels"
         android:title="Edit Group Labels…"
         app:showAsAction="never" />
@@ -10,6 +20,16 @@
     <item
         android:id="@+id/action_save_dump"
         android:title="Save EEPROM dump…"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_import_dump"
+        android:title="Import EEPROM dump…"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_edit_band_plan"
+        android:title="Edit Band Plan…"
         app:showAsAction="never" />
 
 </menu>
