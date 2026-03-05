@@ -126,6 +126,48 @@ object EepromParser {
         (1..EepromConstants.NUM_CHANNELS).map { parseChannel(eeprom, it) }
 
     /**
+     * Reads the 20 Band Plan entries from 0x1A00 (magic) / 0x1A02 (entries).
+     *
+     * Returns an empty list when the magic word is absent or invalid — the caller
+     * should fall back to the hard-coded VHF/UHF TX-band constants in that case.
+     *
+     * Entry layout (10 bytes each):
+     *   u32 startFreq (10 Hz units)
+     *   u32 endFreq   (10 Hz units)
+     *   u8  maxPower
+     *   u8  flags     — bit 0 = txAllowed (1 = TX permitted in this range)
+     */
+    fun parseBandPlan(eeprom: ByteArray): List<BandPlanEntry> {
+        val magicOff = EepromConstants.BANDPLAN_BASE
+        if (magicOff + 2 > eeprom.size) return emptyList()
+        val magic = readU16Be(eeprom, magicOff)
+        if (magic != EepromConstants.MAGIC_BANDPLAN_V25) return emptyList()
+
+        val entryBase = magicOff + 2          // entries start immediately after magic
+        val entrySize = EepromConstants.BANDPLAN_ENTRY_SIZE
+        val result    = mutableListOf<BandPlanEntry>()
+
+        for (i in 0 until EepromConstants.BANDPLAN_NUM_ENTRIES) {
+            val off = entryBase + i * entrySize
+            if (off + entrySize > eeprom.size) break
+
+            val startFreq10 = readU32Be(eeprom, off)
+            val endFreq10   = readU32Be(eeprom, off + 4)
+            if (startFreq10 == 0L && endFreq10 == 0L) continue   // unused entry
+
+            val flags     = eeprom[off + 9].toInt() and 0xFF
+            val txAllowed = (flags and 0x01) != 0
+
+            result += BandPlanEntry(
+                startHz   = startFreq10 * 10L,
+                endHz     = endFreq10   * 10L,
+                txAllowed = txAllowed
+            )
+        }
+        return result
+    }
+
+    /**
      * Reads the 15 group labels (A–O) from 0x1C90.
      * Each label is 6 bytes of null-padded ASCII. Returns a 15-element list of trimmed
      * strings; blank labels become empty string "".

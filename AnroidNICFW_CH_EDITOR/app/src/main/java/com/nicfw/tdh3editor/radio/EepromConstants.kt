@@ -23,11 +23,21 @@ object EepromConstants {
     const val GROUP_LABELS_BASE = 0x1C90
     const val GROUP_LABEL_SIZE  = 6
 
-    // VHF/UHF bands (Hz)
-    const val VHF_LOW = 136_000_000
+    // VHF/UHF TX-capable bands (Hz) — fallback when no band plan is loaded
+    const val VHF_LOW  = 136_000_000
     const val VHF_HIGH = 174_000_000
-    const val UHF_LOW = 400_000_000
+    const val UHF_LOW  = 400_000_000
     const val UHF_HIGH = 480_000_000
+
+    // Band Plan memory layout (nicFW 2.5)
+    // 0x1A00 : u16 magic (must equal 0xA46D)
+    // 0x1A02 : bandPlans[20], each entry is 10 bytes:
+    //            u32 startFreq (10 Hz units) | u32 endFreq (10 Hz units)
+    //            u8  maxPower  | u8 flags  (bit 0 = txAllowed)
+    const val BANDPLAN_BASE        = 0x1A00
+    const val BANDPLAN_ENTRY_SIZE  = 10          // 4 + 4 + 1 + 1 bytes
+    const val BANDPLAN_NUM_ENTRIES = 20
+    const val MAGIC_BANDPLAN_V25   = 0xA46D
 
     // Tone mode selector
     val TONE_MODE_LIST = listOf("None", "Tone", "DTCS")
@@ -102,6 +112,17 @@ object EepromConstants {
         val t = (raw - 58).toDouble() / (130 - 58)
         return "%.1fW".format((2.0 + t * 3.0).coerceAtMost(99.9))
     }
+
+    /**
+     * Returns true when [freqHz] falls outside the TD-H3 / nicFW 2.5 transmit-capable bands.
+     *
+     * The radio supports TX only on VHF 136–174 MHz and UHF 400–480 MHz.
+     * Frequencies outside those ranges — FM broadcast (88–108 MHz), aviation (108–136 MHz),
+     * etc. — are RX-only regardless of a channel's stored power setting; the radio's
+     * Band Plan overrides the power value to N/T on those frequencies.
+     */
+    fun isTxRestricted(freqHz: Long): Boolean =
+        !(freqHz in VHF_LOW..VHF_HIGH || freqHz in UHF_LOW..UHF_HIGH)
 
     /**
      * Convert a decoded (mode, value, polarity) triple to a flat TONE_LABELS index.

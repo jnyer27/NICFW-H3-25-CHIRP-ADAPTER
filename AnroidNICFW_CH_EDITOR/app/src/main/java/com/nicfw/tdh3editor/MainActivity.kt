@@ -134,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                 eeprom = bytes
                 EepromHolder.eeprom = bytes
                 EepromHolder.groupLabels = EepromParser.parseGroupLabels(bytes)
+                EepromHolder.bandPlan    = EepromParser.parseBandPlan(bytes)
                 refreshChannelList(bytes)
                 runOnUiThread {
                     updateConnectionUi()
@@ -514,6 +515,7 @@ class MainActivity : AppCompatActivity() {
         EepromHolder.eeprom?.let { data ->
             eeprom = data
             EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
+            EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
             refreshChannelList(data)
         }
     }
@@ -940,6 +942,7 @@ class MainActivity : AppCompatActivity() {
                 eeprom = data
                 EepromHolder.eeprom = data
                 EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
+                EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
                 refreshChannelList(data)
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE

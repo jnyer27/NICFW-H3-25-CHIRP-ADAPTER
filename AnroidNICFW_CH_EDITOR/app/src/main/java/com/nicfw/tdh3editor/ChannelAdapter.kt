@@ -145,7 +145,22 @@ class ChannelAdapter(
                 channelFreq.text   = channel.displayFreq()
                 channelName.text   = channel.name.ifEmpty { "-" }
                 channelDuplex.text = channel.displayDuplex()
-                channelPower.text  = EepromConstants.powerToWatts(channel.power)
+                val wattsText = EepromConstants.powerToWatts(channel.power)
+                // TX restricted when the frequency's Band Plan entry has txAllowed=false,
+                // or when the frequency doesn't fall in any Band Plan entry at all.
+                // Falls back to the hard-coded VHF/UHF check when no band plan is loaded.
+                val bp = EepromHolder.bandPlan
+                val txRestricted = if (bp.isNotEmpty()) {
+                    val entry = bp.firstOrNull { channel.freqRxHz in it.startHz..it.endHz }
+                    entry == null || !entry.txAllowed
+                } else {
+                    EepromConstants.isTxRestricted(channel.freqRxHz)
+                }
+                channelPower.text  =
+                    if (wattsText != "N/T" && txRestricted)
+                        "$wattsText (BP)"   // Band Plan forces N/T on this frequency
+                    else
+                        wattsText
 
                 val groups = buildGroupsDisplay(channel)
                 channelGroups.text       = groups
