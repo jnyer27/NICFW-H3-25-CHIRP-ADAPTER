@@ -8,6 +8,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_sort_by_group"
+        android:title="Sort Channels by Group…"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_edit_group_labels"
         android:title="Edit Group Labels…"
         app:showAsAction="never" />

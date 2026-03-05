@@ -12,20 +12,107 @@ import com.google.android.material.card.MaterialCardView
 import com.nicfw.tdh3editor.radio.Channel
 import com.nicfw.tdh3editor.radio.EepromConstants
 
+/**
+ * RecyclerView adapter for the 198-channel list on [MainActivity].
+ *
+ * Normal mode — tap a card to open the channel editor.
+ * Selection mode — long-press a card to enter selection mode; subsequent taps
+ *   toggle selection; a contextual action bar (CAB) in MainActivity handles
+ *   Move Up, Move Down, and Clear operations.
+ *
+ * Selection state is intentionally kept inside the adapter (not in MainActivity)
+ * so it survives [submitList] updates triggered by move/clear operations.
+ */
 class ChannelAdapter(
-    private val onChannelClick: (Channel) -> Unit
+    private val onChannelClick: (Channel) -> Unit,
+    private val onLongClick:    (Channel) -> Unit,
+    private val onSelectionChanged: (count: Int) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.ViewHolder>(DiffCallback) {
+
+    // ── Selection state ───────────────────────────────────────────────────────
+
+    /** True while one or more channels are selected via long-press. */
+    var isSelectionMode: Boolean = false
+        private set
+
+    /** Channel slot numbers currently selected (1-based). */
+    private val selectedNumbers = mutableSetOf<Int>()
+
+    /** Snapshot of [selectedNumbers] for callers (MainActivity move/clear). */
+    val selectedChannelNumbers: Set<Int> get() = selectedNumbers.toSet()
+
+    /** Number of currently selected channels. */
+    val selectedCount: Int get() = selectedNumbers.size
+
+    // ── Selection API (called from MainActivity) ───────────────────────────────
+
+    /**
+     * Enters selection mode with [number] as the first selected channel.
+     * Notifies all items so cards can show/hide the check state.
+     */
+    fun enterSelectionMode(number: Int) {
+        isSelectionMode = true
+        selectedNumbers.clear()
+        selectedNumbers.add(number)
+        notifyDataSetChanged()
+        onSelectionChanged(selectedNumbers.size)
+    }
+
+    /**
+     * Exits selection mode and clears all selections.
+     * Called when the CAB is dismissed.
+     */
+    fun exitSelectionMode() {
+        isSelectionMode = false
+        selectedNumbers.clear()
+        notifyDataSetChanged()
+        onSelectionChanged(0)
+    }
+
+    /**
+     * Toggles selection for [number]. Notifies the affected item.
+     * Returns the new selection count.
+     */
+    fun toggleSelection(number: Int): Int {
+        if (number in selectedNumbers) selectedNumbers.remove(number)
+        else selectedNumbers.add(number)
+
+        val pos = currentList.indexOfFirst { it.number == number }
+        if (pos >= 0) notifyItemChanged(pos)
+
+        onSelectionChanged(selectedNumbers.size)
+        return selectedNumbers.size
+    }
+
+    /**
+     * Replaces the selection set (called after move operations so the same
+     * logical channels remain highlighted at their new slot positions).
+     */
+    fun updateSelection(numbers: Set<Int>) {
+        selectedNumbers.clear()
+        selectedNumbers.addAll(numbers)
+        notifyDataSetChanged()
+        onSelectionChanged(selectedNumbers.size)
+    }
+
+    // ── Adapter overrides ──────────────────────────────────────────────────────
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_channel, parent, false)
-        return ViewHolder(v as MaterialCardView)
+        val card = v as MaterialCardView
+        // Enable the Material checked-state overlay (shows a checkmark when isChecked = true)
+        card.isCheckable = true
+        return ViewHolder(card)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position), onChannelClick)
+        holder.bind(getItem(position))
     }
 
-    class ViewHolder(private val card: MaterialCardView) : RecyclerView.ViewHolder(card) {
+    // ── ViewHolder ────────────────────────────────────────────────────────────
+
+    inner class ViewHolder(private val card: MaterialCardView) : RecyclerView.ViewHolder(card) {
+
         private val channelNumber:    TextView     = card.findViewById(R.id.channelNumber)
         private val channelFreq:      TextView     = card.findViewById(R.id.channelFreq)
         private val channelName:      TextView     = card.findViewById(R.id.channelName)
@@ -35,42 +122,54 @@ class ChannelAdapter(
         private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
         private val channelDuplex:    TextView     = card.findViewById(R.id.channelDuplex)
 
-        fun bind(channel: Channel, onChannelClick: (Channel) -> Unit) {
+        fun bind(channel: Channel) {
             channelNumber.text = card.context.getString(R.string.channel_number, channel.number)
+
             if (channel.empty) {
                 channelFreq.text   = card.context.getString(R.string.empty_channel)
                 channelName.text   = ""
-                channelGroups.text = ""
-                channelGroups.visibility = View.GONE
+                channelGroups.text = ""; channelGroups.visibility = View.GONE
                 channelDuplex.text = ""
-                channelTxTone.text = ""
-                channelRxTone.text = ""
+                channelTxTone.text = ""; channelRxTone.text = ""
                 channelToneGroup.visibility = View.GONE
             } else {
                 channelFreq.text   = channel.displayFreq()
                 channelName.text   = channel.name.ifEmpty { "-" }
                 channelDuplex.text = channel.displayDuplex()
 
-                // Groups — show label text (e.g. "All", "MURS") when available;
-                // fall back to the letter code when the label is blank.
                 val groups = buildGroupsDisplay(channel)
-                channelGroups.text = groups
+                channelGroups.text       = groups
                 channelGroups.visibility = if (groups.isEmpty()) View.GONE else View.VISIBLE
 
-                // Tones
                 val tx = channel.displayTxTone()
                 val rx = channel.displayRxTone()
-                channelTxTone.text = if (tx.isNotEmpty()) "T: $tx" else ""
-                channelRxTone.text = if (rx.isNotEmpty()) "R: $rx" else ""
+                channelTxTone.text    = if (tx.isNotEmpty()) "T: $tx" else ""
+                channelRxTone.text    = if (rx.isNotEmpty()) "R: $rx" else ""
                 channelToneGroup.visibility = if (tx.isEmpty() && rx.isEmpty()) View.GONE else View.VISIBLE
             }
-            card.setOnClickListener { onChannelClick(channel) }
+
+            // Selection check state (drives the MaterialCardView checked-icon overlay)
+            card.isChecked = isSelectionMode && channel.number in selectedNumbers
+
+            // Touch behaviour differs by mode
+            card.setOnClickListener {
+                if (isSelectionMode) {
+                    toggleSelection(channel.number)
+                } else {
+                    onChannelClick(channel)
+                }
+            }
+            card.setOnLongClickListener {
+                if (!isSelectionMode) {
+                    onLongClick(channel)
+                }
+                true
+            }
         }
 
         /**
-         * Builds the groups display string for the card, preferring the user-defined
-         * label (e.g. "All", "MURS") over the raw letter code.
-         * Falls back to the letter when the label is blank or EEPROM hasn't been loaded.
+         * Builds the groups display string, resolving letter codes to user-defined
+         * labels (e.g. "All", "MURS"). Falls back to letter when label is blank.
          */
         private fun buildGroupsDisplay(channel: Channel): String {
             val labels = EepromHolder.groupLabels

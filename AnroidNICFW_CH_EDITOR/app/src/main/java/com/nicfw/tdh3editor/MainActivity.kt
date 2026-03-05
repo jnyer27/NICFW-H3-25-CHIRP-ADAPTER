@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -58,11 +59,22 @@ class MainActivity : AppCompatActivity() {
     private var eeprom: ByteArray? = null
     private var channelList: List<com.nicfw.tdh3editor.radio.Channel> = emptyList()
 
-    private val adapter = ChannelAdapter { channel ->
-        if (eeprom != null) {
-            startActivity(ChannelEditActivity.intent(this, channel.number, eeprom!!))
+    /** Contextual action bar shown while channels are selected. */
+    private var actionMode: ActionMode? = null
+
+    private val adapter = ChannelAdapter(
+        onChannelClick = { channel ->
+            if (eeprom != null) {
+                startActivity(ChannelEditActivity.intent(this, channel.number, eeprom!!))
+            }
+        },
+        onLongClick = { channel -> enterSelectionMode(channel) },
+        onSelectionChanged = { count ->
+            actionMode?.title = "$count selected"
+            // Auto-exit when the last selected item is deselected
+            if (count == 0 && actionMode != null) actionMode?.finish()
         }
-    }
+    )
 
     // ─── BLE scan state ───────────────────────────────────────────────────────
     private var scanDialog: AlertDialog? = null
@@ -223,6 +235,7 @@ class MainActivity : AppCompatActivity() {
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val hasEeprom = (eeprom != null)
         menu.findItem(R.id.action_import_chirp)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
         return super.onPrepareOptionsMenu(menu)
@@ -233,6 +246,10 @@ class MainActivity : AppCompatActivity() {
             R.id.action_import_chirp -> {
                 // Open system file picker — accept CSV and plain-text MIME types
                 csvPickerLauncher.launch(arrayOf("text/csv", "text/comma-separated-values", "text/plain", "*/*"))
+                true
+            }
+            R.id.action_sort_by_group -> {
+                startActivity(Intent(this, ChannelSortActivity::class.java))
                 true
             }
             R.id.action_save_dump -> { saveEepromDump(); true }
@@ -585,6 +602,145 @@ class MainActivity : AppCompatActivity() {
 
     // ─────────────────────────────────────────────────────────────────────────
     // Radio operations (protocol unchanged — works over BLE and classic SPP)
+    // ─────────────────────────────────────────────────────────────────────────
+    // Channel selection (long-press → contextual action bar)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Enters multi-select mode for [channel] as the first selection and starts
+     * a contextual [ActionMode] bar with Move Up, Move Down, and Clear actions.
+     */
+    private fun enterSelectionMode(channel: com.nicfw.tdh3editor.radio.Channel) {
+        adapter.enterSelectionMode(channel.number)
+        actionMode = startActionMode(object : ActionMode.Callback {
+            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
+                menuInflater.inflate(R.menu.menu_selection_action, menu)
+                mode.title = "1 selected"
+                return true
+            }
+            override fun onPrepareActionMode(mode: ActionMode, menu: Menu) = false
+            override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.action_move_up      -> { moveSelectedUp();       true }
+                    R.id.action_move_down    -> { moveSelectedDown();     true }
+                    R.id.action_clear_channels -> { clearSelectedChannels(); true }
+                    else -> false
+                }
+            }
+            override fun onDestroyActionMode(mode: ActionMode) {
+                adapter.exitSelectionMode()
+                actionMode = null
+            }
+        })
+    }
+
+    /**
+     * Moves each selected channel up by one slot. Channels above the selection
+     * shift down to make room. Channels that cannot move (already at slot 1, or
+     * adjacent to another selected channel) stay in place.
+     * The selection follows the channels to their new positions.
+     */
+    private fun moveSelectedUp() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep).toMutableList()
+        val selIndices = selected.map { n -> n - 1 }.toSortedSet()
+        val newSelected = mutableSetOf<Int>()
+
+        for (idx in selIndices) {
+            val above = idx - 1
+            if (above >= 0 && above !in selIndices) {
+                // Swap channel at idx with the one above
+                val a = channels[above]
+                val b = channels[idx]
+                channels[above] = b.copy(number = above + 1)
+                channels[idx]   = a.copy(number = idx + 1)
+                newSelected.add(above + 1)
+            } else {
+                newSelected.add(idx + 1)
+            }
+        }
+
+        applyChannelReorder(eep, channels, newSelected)
+    }
+
+    /**
+     * Moves each selected channel down by one slot. Channels below the selection
+     * shift up. Channels that cannot move (already at slot 198, or adjacent to
+     * another selected channel) stay in place.
+     */
+    private fun moveSelectedDown() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep).toMutableList()
+        val selIndices = selected.map { n -> n - 1 }.toSortedSet()
+        val newSelected = mutableSetOf<Int>()
+
+        for (idx in selIndices.toList().reversed()) {
+            val below = idx + 1
+            if (below < channels.size && below !in selIndices) {
+                val a = channels[below]
+                val b = channels[idx]
+                channels[below] = b.copy(number = below + 1)
+                channels[idx]   = a.copy(number = idx + 1)
+                newSelected.add(below + 1)
+            } else {
+                newSelected.add(idx + 1)
+            }
+        }
+
+        applyChannelReorder(eep, channels, newSelected)
+    }
+
+    /** Writes reordered channels back to the EEPROM, updates state, and refreshes the list. */
+    private fun applyChannelReorder(
+        eep: ByteArray,
+        channels: MutableList<com.nicfw.tdh3editor.radio.Channel>,
+        newSelected: Set<Int>
+    ) {
+        for (ch in channels) EepromParser.writeChannel(eep, ch)
+        eeprom = eep
+        EepromHolder.eeprom = eep
+        channelList = channels.toList()
+        adapter.submitList(channelList)
+        adapter.updateSelection(newSelected)
+        actionMode?.title = "${newSelected.size} selected"
+    }
+
+    /**
+     * Prompts the user to confirm, then erases the data from each selected channel slot
+     * (sets it to empty/unused). The slot numbers themselves are unchanged.
+     */
+    private fun clearSelectedChannels() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Clear Channels")
+            .setMessage(
+                "Clear ${selected.size} selected channel(s)?\n\n" +
+                "This erases the stored data and marks the slot(s) as empty. " +
+                "Slot numbers are not affected."
+            )
+            .setPositiveButton("Clear") { _, _ ->
+                for (num in selected) {
+                    EepromParser.writeChannel(eep, com.nicfw.tdh3editor.radio.Channel(number = num, empty = true))
+                }
+                eeprom = eep
+                EepromHolder.eeprom = eep
+                channelList = EepromParser.parseAllChannels(eep)
+                adapter.submitList(channelList)
+                actionMode?.finish()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun loadFromRadio() {
