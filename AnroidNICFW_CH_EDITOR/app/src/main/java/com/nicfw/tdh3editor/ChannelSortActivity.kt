@@ -114,10 +114,6 @@ class ChannelSortActivity : AppCompatActivity() {
         }
     }
 
-    /** Returns the first non-None group for [ch], or null if all are None. */
-    private fun primaryGroup(ch: Channel): String? =
-        listOf(ch.group1, ch.group2, ch.group3, ch.group4).firstOrNull { it != "None" }
-
     // ─────────────────────────────────────────────────────────────────────────
     // RecyclerView setup with drag-to-reorder
     // ─────────────────────────────────────────────────────────────────────────
@@ -209,12 +205,20 @@ class ChannelSortActivity : AppCompatActivity() {
         val ungroupedPriority = sortableGroups.size
         val emptyPriority     = sortableGroups.size + 1
 
-        // Stable sort — channels at the same priority keep their relative order
+        // Stable sort — channels at the same priority keep their relative order.
+        // Each channel is sorted under its HIGHEST-PRIORITY group (the one the
+        // user placed earliest in the drag order), checking all four group slots.
+        // A channel with no group assignments (all None) goes to ungroupedPriority.
         val sorted = channels.sortedWith(compareBy { ch ->
             when {
-                ch.empty            -> emptyPriority
-                primaryGroup(ch) == null -> ungroupedPriority
-                else -> priorityOf[primaryGroup(ch)] ?: ungroupedPriority
+                ch.empty -> emptyPriority
+                else -> {
+                    val best = listOf(ch.group1, ch.group2, ch.group3, ch.group4)
+                        .filter { it != "None" }
+                        .mapNotNull { priorityOf[it] }
+                        .minOrNull()        // lowest index = highest user priority
+                    best ?: ungroupedPriority
+                }
             }
         })
 
