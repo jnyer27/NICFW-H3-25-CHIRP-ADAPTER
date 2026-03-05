@@ -95,9 +95,12 @@ class ChannelSortActivity : AppCompatActivity() {
             when {
                 ch.empty -> emptyCount++
                 else -> {
-                    val primary = primaryGroup(ch)
-                    if (primary == null) ungroupedCount++
-                    else counts[primary] = (counts[primary] ?: 0) + 1
+                    // A channel can belong to up to 4 groups simultaneously —
+                    // count it under every group it is assigned to.
+                    val assigned = listOf(ch.group1, ch.group2, ch.group3, ch.group4)
+                        .filter { it != "None" }
+                    if (assigned.isEmpty()) ungroupedCount++
+                    else assigned.forEach { g -> counts[g] = (counts[g] ?: 0) + 1 }
                 }
             }
         }
