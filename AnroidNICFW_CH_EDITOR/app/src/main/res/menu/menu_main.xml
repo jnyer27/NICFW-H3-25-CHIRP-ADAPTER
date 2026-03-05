@@ -22,4 +22,9 @@
         android:title="Save EEPROM dump…"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_import_dump"
+        android:title="Import EEPROM dump…"
+        app:showAsAction="never" />
+
 </menu>

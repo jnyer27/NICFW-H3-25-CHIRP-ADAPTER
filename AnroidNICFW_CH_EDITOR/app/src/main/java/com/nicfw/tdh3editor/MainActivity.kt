@@ -101,6 +101,59 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // ─── EEPROM binary dump importer ─────────────────────────────────────────
+
+    /**
+     * Opens the system file picker for a raw EEPROM `.bin` file, validates that
+     * it is exactly [Protocol.EEPROM_SIZE] bytes, then loads it into the app
+     * exactly as if it had just been downloaded from the radio.
+     * No radio connection is required — useful for offline editing or testing.
+     */
+    private val eepromPickerLauncher = registerForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri == null) return@registerForActivityResult
+        lifecycleScope.launch {
+            try {
+                val bytes = withContext(Dispatchers.IO) {
+                    contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                }
+                if (bytes == null) {
+                    Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+                if (bytes.size != Protocol.EEPROM_SIZE) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Invalid EEPROM dump: expected ${Protocol.EEPROM_SIZE} bytes, got ${bytes.size}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return@launch
+                }
+                // Load into the app — same path as a successful radio download
+                eeprom = bytes
+                EepromHolder.eeprom = bytes
+                EepromHolder.groupLabels = EepromParser.parseGroupLabels(bytes)
+                refreshChannelList(bytes)
+                runOnUiThread {
+                    updateConnectionUi()
+                    invalidateOptionsMenu()
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Loaded EEPROM dump (${bytes.size} bytes)",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(
+                    this@MainActivity,
+                    "Failed to import dump: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
+
     // ─── CHIRP CSV file picker ────────────────────────────────────────────────
     /**
      * Launches the system file picker for a CSV file, reads the content on the IO
@@ -316,6 +369,8 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
+        // Import EEPROM dump is always available — no radio connection needed
+        menu.findItem(R.id.action_import_dump)?.isEnabled = true
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -331,6 +386,13 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_save_dump -> { saveEepromDump(); true }
+            R.id.action_import_dump -> {
+                // Accept .bin and generic binary MIME types; */* as catch-all
+                eepromPickerLauncher.launch(
+                    arrayOf("application/octet-stream", "application/x-binary", "*/*")
+                )
+                true
+            }
             R.id.action_edit_group_labels -> {
                 startActivity(Intent(this, GroupLabelEditActivity::class.java))
                 true
