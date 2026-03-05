@@ -60,6 +60,14 @@
             android:name=".BandPlanEntryEditActivity"
             android:exported="false"
             android:theme="@style/Theme.NicFwChannelEditor" />
+        <activity
+            android:name=".ScanPresetEditorActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NicFwChannelEditor" />
+        <activity
+            android:name=".ScanPresetEntryEditActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NicFwChannelEditor" />
 
         <!-- FileProvider for sharing EEPROM dump files -->
         <provider

@@ -32,4 +32,9 @@
         android:title="Edit Band Plan…"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_edit_scan_presets"
+        android:title="Edit Scan Presets…"
+        app:showAsAction="never" />
+
 </menu>
