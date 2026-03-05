@@ -165,10 +165,13 @@ struct {
     u32 startFreq;
     u32 endFreq;
     u8 maxPower;
-    u8 txAllowed:1,
-       wrap:1,
+    // CHIRP bitwise assigns fields MSB-first (first declared = highest bit).
+    // Radio stores: bit0=txAllowed, bit1=wrap, bits2-4=modulation, bits5-7=bandwidth.
+    // Declaring in reverse order makes CHIRP read them correctly (last declared → bit 0).
+    u8 bandwidth:3,
        modulation:3,
-       bandwidth:3;
+       wrap:1,
+       txAllowed:1;
 } bandPlans[20];
 
 // 0x1B00 scanPresets[20]
