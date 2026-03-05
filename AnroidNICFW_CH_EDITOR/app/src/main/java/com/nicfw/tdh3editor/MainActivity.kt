@@ -687,10 +687,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Moves each selected channel up by one slot. Channels above the selection
-     * shift down to make room. Channels that cannot move (already at slot 1, or
-     * adjacent to another selected channel) stay in place.
-     * The selection follows the channels to their new positions.
+     * Moves every selected channel up by one slot, keeping contiguous groups
+     * together as a unit.
+     *
+     * Algorithm: build a [BooleanArray] of which positions are selected, then
+     * scan top-to-bottom for contiguous selected blocks.  For each block that
+     * has a free (non-selected) slot immediately above it, rotate that slot to
+     * just below the block — equivalent to the whole block sliding up by one.
+     * Uses [Collections.rotate] on a sub-list view for an O(n) in-place move.
      */
     private fun moveSelectedUp() {
         val eep = eeprom ?: return
@@ -698,30 +702,44 @@ class MainActivity : AppCompatActivity() {
         if (selected.isEmpty()) return
 
         val channels = EepromParser.parseAllChannels(eep).toMutableList()
-        val selIndices = selected.map { n -> n - 1 }.toSortedSet()
-        val newSelected = mutableSetOf<Int>()
 
-        for (idx in selIndices) {
-            val above = idx - 1
-            if (above >= 0 && above !in selIndices) {
-                // Swap channel at idx with the one above
-                val a = channels[above]
-                val b = channels[idx]
-                channels[above] = b.copy(number = above + 1)
-                channels[idx]   = a.copy(number = idx + 1)
-                newSelected.add(above + 1)
+        // Parallel boolean array — true if channels[i] is currently selected.
+        val sel = BooleanArray(channels.size) { i -> (i + 1) in selected }
+
+        var i = 0
+        while (i < channels.size) {
+            if (sel[i]) {
+                // Find end of this contiguous selected block
+                var j = i
+                while (j + 1 < channels.size && sel[j + 1]) j++
+
+                // Block = [i..j].  Can we move it up?
+                if (i > 0 && !sel[i - 1]) {
+                    // Rotate [i-1 .. j] left by 1:
+                    //   [above, blk0, blk1, …, blkN] → [blk0, blk1, …, blkN, above]
+                    Collections.rotate(channels.subList(i - 1, j + 1), -1)
+                    sel[j]     = false   // "above" channel now sits at j
+                    sel[i - 1] = true    // block now occupies [i-1 .. j-1]
+                }
+                i = j + 1
             } else {
-                newSelected.add(idx + 1)
+                i++
             }
         }
+
+        // Renumber and build new selected set
+        channels.forEachIndexed { idx, ch -> channels[idx] = ch.copy(number = idx + 1) }
+        val newSelected = channels.indices.filter { sel[it] }.map { it + 1 }.toSet()
 
         applyChannelReorder(eep, channels, newSelected)
     }
 
     /**
-     * Moves each selected channel down by one slot. Channels below the selection
-     * shift up. Channels that cannot move (already at slot 198, or adjacent to
-     * another selected channel) stay in place.
+     * Moves every selected channel down by one slot, keeping contiguous groups
+     * together as a unit.
+     *
+     * Mirror of [moveSelectedUp]: scans bottom-to-top for contiguous blocks and
+     * rotates the slot immediately below each block to just above it.
      */
     private fun moveSelectedDown() {
         val eep = eeprom ?: return
@@ -729,21 +747,32 @@ class MainActivity : AppCompatActivity() {
         if (selected.isEmpty()) return
 
         val channels = EepromParser.parseAllChannels(eep).toMutableList()
-        val selIndices = selected.map { n -> n - 1 }.toSortedSet()
-        val newSelected = mutableSetOf<Int>()
 
-        for (idx in selIndices.toList().reversed()) {
-            val below = idx + 1
-            if (below < channels.size && below !in selIndices) {
-                val a = channels[below]
-                val b = channels[idx]
-                channels[below] = b.copy(number = below + 1)
-                channels[idx]   = a.copy(number = idx + 1)
-                newSelected.add(below + 1)
+        val sel = BooleanArray(channels.size) { i -> (i + 1) in selected }
+
+        var j = channels.size - 1
+        while (j >= 0) {
+            if (sel[j]) {
+                // Find start of this contiguous selected block
+                var i = j
+                while (i - 1 >= 0 && sel[i - 1]) i--
+
+                // Block = [i..j].  Can we move it down?
+                if (j < channels.size - 1 && !sel[j + 1]) {
+                    // Rotate [i .. j+1] right by 1:
+                    //   [blk0, blk1, …, blkN, below] → [below, blk0, blk1, …, blkN]
+                    Collections.rotate(channels.subList(i, j + 2), 1)
+                    sel[i]     = false   // "below" channel now sits at i
+                    sel[j + 1] = true    // block now occupies [i+1 .. j+1]
+                }
+                j = i - 1
             } else {
-                newSelected.add(idx + 1)
+                j--
             }
         }
+
+        channels.forEachIndexed { idx, ch -> channels[idx] = ch.copy(number = idx + 1) }
+        val newSelected = channels.indices.filter { sel[it] }.map { it + 1 }.toSet()
 
         applyChannelReorder(eep, channels, newSelected)
     }
