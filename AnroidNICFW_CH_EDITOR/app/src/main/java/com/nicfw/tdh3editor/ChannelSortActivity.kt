@@ -42,7 +42,7 @@ class ChannelSortActivity : AppCompatActivity() {
     private lateinit var touchHelper: ItemTouchHelper
     private lateinit var sortAdapter: SortGroupAdapter
 
-    /** Groups that have ≥1 channel, in user-defined drag order. */
+    /** All 15 groups (A–O) in user-defined drag order; count may be 0. */
     private val sortableGroups = mutableListOf<SortGroup>()
 
     private var ungroupedCount = 0
@@ -75,17 +75,6 @@ class ChannelSortActivity : AppCompatActivity() {
         }
 
         buildGroupData(eep)
-
-        if (sortableGroups.isEmpty()) {
-            Toast.makeText(
-                this,
-                "No channels have group assignments. Assign groups in the channel editor first.",
-                Toast.LENGTH_LONG
-            ).show()
-            finish()
-            return
-        }
-
         setupRecyclerView()
         updateTexts()
 
@@ -113,13 +102,12 @@ class ChannelSortActivity : AppCompatActivity() {
             }
         }
 
-        // Initial order: alphabetical (A→O), only groups that have channels
+        // Initial order: alphabetical (A→O); all 15 groups shown so user
+        // can set a complete priority order. Count is 0 for unused groups.
         EepromConstants.GROUP_LETTERS.forEachIndexed { i, letter ->
             val count = counts[letter] ?: 0
-            if (count > 0) {
-                val label = labels.getOrNull(i)?.trim() ?: ""
-                sortableGroups.add(SortGroup(letter, label, count))
-            }
+            val label = labels.getOrNull(i)?.trim() ?: ""
+            sortableGroups.add(SortGroup(letter, label, count))
         }
     }
 
@@ -171,10 +159,11 @@ class ChannelSortActivity : AppCompatActivity() {
 
     private fun updateTexts() {
         val grouped = sortableGroups.sumOf { it.count }
+        val activeGroups = sortableGroups.count { it.count > 0 }
         binding.textSortSummary.text = buildString {
             append("Drag groups into your preferred order. ")
             append("Channels will be reorganized so each group's channels appear together.\n\n")
-            append("${grouped} grouped")
+            append("${grouped} grouped across ${activeGroups} group(s)")
             if (ungroupedCount > 0) append(" · ${ungroupedCount} ungrouped")
             if (emptyCount > 0)     append(" · ${emptyCount} empty slots")
         }
@@ -276,8 +265,8 @@ class ChannelSortActivity : AppCompatActivity() {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = items[position]
             holder.letter.text = item.letter
-            holder.label.text  = if (item.label.isNotEmpty()) item.label else item.letter
-            holder.count.text  = "${item.count} ch"
+            holder.label.text  = if (item.label.isNotEmpty()) item.label else "(no label)"
+            holder.count.text  = if (item.count > 0) "${item.count} ch" else "—"
 
             holder.dragHandle.setOnTouchListener { _, event ->
                 if (event.actionMasked == MotionEvent.ACTION_DOWN) {

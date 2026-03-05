@@ -90,5 +90,17 @@
             android:layout_height="wrap_content"
             android:textSize="12sp"
             android:text="" />
+
+        <!-- Drag handle — visible only on selected cards in selection mode -->
+        <ImageView
+            android:id="@+id/channelDragHandle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_drag_handle"
+            android:contentDescription="Drag to reorder"
+            android:visibility="gone" />
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

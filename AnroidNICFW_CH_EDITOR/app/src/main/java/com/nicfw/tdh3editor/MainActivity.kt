@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.ActionMode
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -24,10 +23,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.nicfw.tdh3editor.bluetooth.BleManager
 import com.nicfw.tdh3editor.bluetooth.BtSerialManager
 import com.nicfw.tdh3editor.databinding.ActivityMainBinding
+import com.nicfw.tdh3editor.radio.Channel
 import com.nicfw.tdh3editor.radio.ChirpCsvImporter
 import com.nicfw.tdh3editor.radio.EepromConstants
 import com.nicfw.tdh3editor.radio.EepromParser
@@ -39,6 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.SimpleDateFormat
+import java.util.Collections
 import java.util.Date
 import java.util.Locale
 
@@ -57,10 +60,18 @@ class MainActivity : AppCompatActivity() {
     private var activeDeviceName: String? = null
 
     private var eeprom: ByteArray? = null
-    private var channelList: List<com.nicfw.tdh3editor.radio.Channel> = emptyList()
+    private var channelList: List<Channel> = emptyList()
 
-    /** Contextual action bar shown while channels are selected. */
-    private var actionMode: ActionMode? = null
+    /**
+     * Working copy of the channel list used by [ItemTouchHelper] during drag-to-reorder.
+     * Kept in sync with [channelList] outside of drag operations.
+     */
+    private var dragWorkList: MutableList<Channel> = mutableListOf()
+
+    /** ItemTouchHelper that powers drag-to-reorder of channel cards. */
+    private lateinit var touchHelper: ItemTouchHelper
+
+    // ─── Adapter ──────────────────────────────────────────────────────────────
 
     private val adapter = ChannelAdapter(
         onChannelClick = { channel ->
@@ -69,11 +80,8 @@ class MainActivity : AppCompatActivity() {
             }
         },
         onLongClick = { channel -> enterSelectionMode(channel) },
-        onSelectionChanged = { count ->
-            actionMode?.title = "$count selected"
-            // Auto-exit when the last selected item is deselected
-            if (count == 0 && actionMode != null) actionMode?.finish()
-        }
+        onSelectionChanged = { count -> updateSelectionBar(count) },
+        onDragStart  = { vh -> touchHelper.startDrag(vh) }
     )
 
     // ─── BLE scan state ───────────────────────────────────────────────────────
@@ -208,6 +216,9 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerChannels.layoutManager = LinearLayoutManager(this)
         binding.recyclerChannels.adapter = adapter
 
+        setupTouchHelper()
+        setupSelectionBar()
+
         requestBluetoothPermissions()
 
         binding.btnConnect.setOnClickListener {
@@ -221,6 +232,73 @@ class MainActivity : AppCompatActivity() {
 
         binding.btnLoad.setOnClickListener { loadFromRadio() }
         binding.btnSave.setOnClickListener { showSaveConfirm() }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Drag-to-reorder setup
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private fun setupTouchHelper() {
+        val callback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0
+        ) {
+            // Drag is started only from the explicit drag handle touch
+            override fun isLongPressDragEnabled() = false
+
+            override fun onMove(
+                rv: RecyclerView,
+                from: RecyclerView.ViewHolder,
+                to: RecyclerView.ViewHolder
+            ): Boolean {
+                val f = from.bindingAdapterPosition
+                val t = to.bindingAdapterPosition
+                if (f < 0 || t < 0 ||
+                    f >= dragWorkList.size || t >= dragWorkList.size) return false
+                Collections.swap(dragWorkList, f, t)
+                adapter.notifyItemMoved(f, t)
+                return true
+            }
+
+            override fun onSwiped(vh: RecyclerView.ViewHolder, direction: Int) {
+                // No swipe actions
+            }
+
+            override fun clearView(rv: RecyclerView, vh: RecyclerView.ViewHolder) {
+                super.clearView(rv, vh)
+                // Finger lifted — commit the drag order to EEPROM
+                applyDragReorder()
+            }
+        }
+
+        touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(binding.recyclerChannels)
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // In-app selection bar (replaces ActionMode/CAB)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private fun setupSelectionBar() {
+        binding.btnMoveUp.setOnClickListener      { moveSelectedUp() }
+        binding.btnMoveDown.setOnClickListener    { moveSelectedDown() }
+        binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
+        binding.btnSelectionDone.setOnClickListener {
+            adapter.exitSelectionMode()
+            // onSelectionChanged(0) will be called → hides the bar
+        }
+    }
+
+    /**
+     * Shows/hides the selection bar and keeps the count label up to date.
+     * Called from [ChannelAdapter.onSelectionChanged] on every selection change.
+     */
+    private fun updateSelectionBar(count: Int) {
+        if (count == 0) {
+            binding.selectionBar.visibility = View.GONE
+        } else {
+            binding.selectionBar.visibility = View.VISIBLE
+            binding.selectionCount.text = "$count selected"
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -318,9 +396,6 @@ class MainActivity : AppCompatActivity() {
     /**
      * Builds a human-readable text report of every channel's raw tone sub-tone words
      * and how [ToneCodec] currently decodes them — essential for diagnosing DCS mapping issues.
-     *
-     * Example line:
-     *   Ch  2  off=0x0060  RX=0x81EC → DTCS 492 (raw9) → decoded 754  TX=0x0000 → None
      */
     private fun buildToneAnalysis(eep: ByteArray, ts: String): String {
         val sb = StringBuilder()
@@ -333,7 +408,6 @@ class MainActivity : AppCompatActivity() {
             val off = EepromConstants.CHANNEL_BASE + idx * EepromConstants.CHANNEL_STRUCT_SIZE
             if (off + 12 > eep.size) break
 
-            // Check empty marker (all 0xFF for first 4 bytes)
             val isEmpty = (eep[off].toInt() and 0xFF) == 0xFF &&
                           (eep[off+1].toInt() and 0xFF) == 0xFF &&
                           (eep[off+2].toInt() and 0xFF) == 0xFF &&
@@ -341,7 +415,6 @@ class MainActivity : AppCompatActivity() {
             val rxToneWord = ((eep[off+8].toInt() and 0xFF) shl 8) or (eep[off+9].toInt() and 0xFF)
             val txToneWord = ((eep[off+10].toInt() and 0xFF) shl 8) or (eep[off+11].toInt() and 0xFF)
 
-            // Skip empty channels with no tones
             if (isEmpty && rxToneWord == 0 && txToneWord == 0) continue
 
             val (rxMode, rxVal, rxPol) = ToneCodec.decode(rxToneWord)
@@ -601,37 +674,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     // ─────────────────────────────────────────────────────────────────────────
-    // Radio operations (protocol unchanged — works over BLE and classic SPP)
-    // ─────────────────────────────────────────────────────────────────────────
-    // Channel selection (long-press → contextual action bar)
+    // Channel selection — in-app bar replaces the system ActionMode/CAB
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Enters multi-select mode for [channel] as the first selection and starts
-     * a contextual [ActionMode] bar with Move Up, Move Down, and Clear actions.
+     * Enters multi-select mode for [channel] as the first selection and reveals
+     * the in-app selection bar at the bottom of the screen.
      */
-    private fun enterSelectionMode(channel: com.nicfw.tdh3editor.radio.Channel) {
+    private fun enterSelectionMode(channel: Channel) {
         adapter.enterSelectionMode(channel.number)
-        actionMode = startActionMode(object : ActionMode.Callback {
-            override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
-                menuInflater.inflate(R.menu.menu_selection_action, menu)
-                mode.title = "1 selected"
-                return true
-            }
-            override fun onPrepareActionMode(mode: ActionMode, menu: Menu) = false
-            override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-                return when (item.itemId) {
-                    R.id.action_move_up      -> { moveSelectedUp();       true }
-                    R.id.action_move_down    -> { moveSelectedDown();     true }
-                    R.id.action_clear_channels -> { clearSelectedChannels(); true }
-                    else -> false
-                }
-            }
-            override fun onDestroyActionMode(mode: ActionMode) {
-                adapter.exitSelectionMode()
-                actionMode = null
-            }
-        })
+        // updateSelectionBar() is called automatically via onSelectionChanged callback
     }
 
     /**
@@ -699,16 +751,48 @@ class MainActivity : AppCompatActivity() {
     /** Writes reordered channels back to the EEPROM, updates state, and refreshes the list. */
     private fun applyChannelReorder(
         eep: ByteArray,
-        channels: MutableList<com.nicfw.tdh3editor.radio.Channel>,
+        channels: MutableList<Channel>,
         newSelected: Set<Int>
     ) {
         for (ch in channels) EepromParser.writeChannel(eep, ch)
         eeprom = eep
         EepromHolder.eeprom = eep
         channelList = channels.toList()
+        dragWorkList = channels.toMutableList()
         adapter.submitList(channelList)
         adapter.updateSelection(newSelected)
-        actionMode?.title = "${newSelected.size} selected"
+        // updateSelectionBar called via onSelectionChanged
+    }
+
+    /**
+     * Called by [ItemTouchHelper] after the user drops a dragged card.
+     * Commits the drag order in [dragWorkList] to the EEPROM, renumbering
+     * channels to match their new positions. The dragged channel stays selected.
+     */
+    private fun applyDragReorder() {
+        val eep = eeprom ?: return
+        if (dragWorkList.isEmpty()) return
+
+        // Capture which original numbers were selected before renumbering
+        val oldSelected = adapter.selectedChannelNumbers
+        val newSelected = mutableSetOf<Int>()
+
+        // Renumber channels in their new drag order (1-based) and track selection
+        dragWorkList.forEachIndexed { idx, ch ->
+            if (ch.number in oldSelected) newSelected.add(idx + 1)
+            dragWorkList[idx] = ch.copy(number = idx + 1)
+        }
+
+        // Write the renumbered channels to EEPROM
+        for (ch in dragWorkList) EepromParser.writeChannel(eep, ch)
+        eeprom = eep
+        EepromHolder.eeprom = eep
+        channelList = dragWorkList.toList()
+
+        // Update the ListAdapter — DiffUtil detects position changes
+        adapter.submitList(channelList)
+        adapter.updateSelection(newSelected)
+        // updateSelectionBar called via onSelectionChanged
     }
 
     /**
@@ -720,7 +804,7 @@ class MainActivity : AppCompatActivity() {
         val selected = adapter.selectedChannelNumbers
         if (selected.isEmpty()) return
 
-        androidx.appcompat.app.AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setTitle("Clear Channels")
             .setMessage(
                 "Clear ${selected.size} selected channel(s)?\n\n" +
@@ -729,13 +813,15 @@ class MainActivity : AppCompatActivity() {
             )
             .setPositiveButton("Clear") { _, _ ->
                 for (num in selected) {
-                    EepromParser.writeChannel(eep, com.nicfw.tdh3editor.radio.Channel(number = num, empty = true))
+                    EepromParser.writeChannel(eep, Channel(number = num, empty = true))
                 }
                 eeprom = eep
                 EepromHolder.eeprom = eep
                 channelList = EepromParser.parseAllChannels(eep)
+                dragWorkList = channelList.toMutableList()
                 adapter.submitList(channelList)
-                actionMode?.finish()
+                adapter.exitSelectionMode()
+                // updateSelectionBar(0) called via onSelectionChanged → hides bar
             }
             .setNegativeButton("Cancel", null)
             .show()
@@ -783,7 +869,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun refreshChannelList(data: ByteArray) {
         if (data.size < Protocol.EEPROM_SIZE) return
-        channelList = EepromParser.parseAllChannels(data)
+        channelList  = EepromParser.parseAllChannels(data)
+        dragWorkList = channelList.toMutableList()
         adapter.submitList(channelList)
     }
 

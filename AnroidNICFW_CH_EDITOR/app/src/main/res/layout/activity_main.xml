@@ -94,5 +94,66 @@
             android:clipToPadding="false"
             android:paddingTop="8dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <!--
+            In-app selection bar — replaces the system ActionMode (CAB).
+            Shown only while channels are selected via long-press.
+            Uses colorPrimary background so the white icons / text are legible.
+        -->
+        <LinearLayout
+            android:id="@+id/selectionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="?attr/colorPrimary"
+            android:paddingStart="8dp"
+            android:paddingEnd="4dp"
+            android:paddingVertical="2dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/selectionCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:text="0 selected" />
+
+            <ImageButton
+                android:id="@+id/btnMoveUp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_upward"
+                android:contentDescription="Move up" />
+
+            <ImageButton
+                android:id="@+id/btnMoveDown"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_arrow_downward"
+                android:contentDescription="Move down" />
+
+            <ImageButton
+                android:id="@+id/btnClearSelected"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_delete"
+                android:contentDescription="Clear selected channels" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelectionDone"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="Done" />
+
+        </LinearLayout>
+
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

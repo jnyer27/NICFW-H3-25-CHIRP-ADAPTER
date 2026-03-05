@@ -1,8 +1,10 @@
 package com.nicfw.tdh3editor
 
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
@@ -17,16 +19,19 @@ import com.nicfw.tdh3editor.radio.EepromConstants
  *
  * Normal mode — tap a card to open the channel editor.
  * Selection mode — long-press a card to enter selection mode; subsequent taps
- *   toggle selection; a contextual action bar (CAB) in MainActivity handles
- *   Move Up, Move Down, and Clear operations.
+ *   toggle selection; the in-app selection bar in MainActivity handles
+ *   Move Up, Move Down, Clear, and Done operations.
+ *   A drag handle appears on each selected card — touching it starts an
+ *   [ItemTouchHelper] drag so the user can physically reposition that channel.
  *
  * Selection state is intentionally kept inside the adapter (not in MainActivity)
  * so it survives [submitList] updates triggered by move/clear operations.
  */
 class ChannelAdapter(
-    private val onChannelClick: (Channel) -> Unit,
-    private val onLongClick:    (Channel) -> Unit,
-    private val onSelectionChanged: (count: Int) -> Unit
+    private val onChannelClick:      (Channel) -> Unit,
+    private val onLongClick:         (Channel) -> Unit,
+    private val onSelectionChanged:  (count: Int) -> Unit,
+    private val onDragStart:         (RecyclerView.ViewHolder) -> Unit
 ) : ListAdapter<Channel, ChannelAdapter.ViewHolder>(DiffCallback) {
 
     // ── Selection state ───────────────────────────────────────────────────────
@@ -48,7 +53,7 @@ class ChannelAdapter(
 
     /**
      * Enters selection mode with [number] as the first selected channel.
-     * Notifies all items so cards can show/hide the check state.
+     * Notifies all items so cards can show/hide the check state and drag handle.
      */
     fun enterSelectionMode(number: Int) {
         isSelectionMode = true
@@ -60,7 +65,7 @@ class ChannelAdapter(
 
     /**
      * Exits selection mode and clears all selections.
-     * Called when the CAB is dismissed.
+     * Called when the Done button or back navigation dismisses the selection bar.
      */
     fun exitSelectionMode() {
         isSelectionMode = false
@@ -121,7 +126,9 @@ class ChannelAdapter(
         private val channelTxTone:    TextView     = card.findViewById(R.id.channelTxTone)
         private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
         private val channelDuplex:    TextView     = card.findViewById(R.id.channelDuplex)
+        private val channelDragHandle: ImageView   = card.findViewById(R.id.channelDragHandle)
 
+        @Suppress("ClickableViewAccessibility")
         fun bind(channel: Channel) {
             channelNumber.text = card.context.getString(R.string.channel_number, channel.number)
 
@@ -149,7 +156,21 @@ class ChannelAdapter(
             }
 
             // Selection check state (drives the MaterialCardView checked-icon overlay)
-            card.isChecked = isSelectionMode && channel.number in selectedNumbers
+            val isSelected = isSelectionMode && channel.number in selectedNumbers
+            card.isChecked = isSelected
+
+            // Drag handle: visible only on selected cards while in selection mode
+            channelDragHandle.visibility = if (isSelected) View.VISIBLE else View.GONE
+            if (isSelected) {
+                channelDragHandle.setOnTouchListener { _, e ->
+                    if (e.actionMasked == MotionEvent.ACTION_DOWN) {
+                        onDragStart(this@ViewHolder)
+                    }
+                    false
+                }
+            } else {
+                channelDragHandle.setOnTouchListener(null)
+            }
 
             // Touch behaviour differs by mode
             card.setOnClickListener {
