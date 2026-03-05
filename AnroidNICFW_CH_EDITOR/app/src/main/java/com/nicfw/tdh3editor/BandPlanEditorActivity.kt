@@ -148,7 +148,7 @@ class BandPlanEditorActivity : AppCompatActivity() {
                 val txLabel  = if (entry.txAllowed) "TX: ✓" else "TX: ✗"
                 val modLabel = EepromConstants.BANDPLAN_MOD_LABELS.getOrElse(entry.modRaw) { "Mod ${entry.modRaw}" }
                 val bwLabel  = EepromConstants.BANDPLAN_BW_LABELS.getOrElse(entry.bwRaw)  { "BW ${entry.bwRaw}" }
-                val pwrLabel = if (entry.maxPower == 0) "Pwr: Any"
+                val pwrLabel = if (entry.maxPower == 0) "Pwr: Ignore"
                                else "Pwr: ${EepromConstants.powerToWatts(entry.maxPower.toString())}"
                 holder.tvDetails.text = "$txLabel  Mod: $modLabel  BW: $bwLabel  $pwrLabel"
             }

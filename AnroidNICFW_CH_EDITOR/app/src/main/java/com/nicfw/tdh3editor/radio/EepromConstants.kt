@@ -76,8 +76,8 @@ object EepromConstants {
         "BW (7)"     // raw 7 (unconfirmed)
     )
 
-    // Max power: spinner position == raw power byte.  Position 0 → 0 = "Any / no limit".
-    val BANDPLAN_MAXPOWER_LIST: List<String> = listOf("Any (0)") + (1..255).map { it.toString() }
+    // Max power: spinner position == raw power byte.  Position 0 → 0 = "Ignore".
+    val BANDPLAN_MAXPOWER_LIST: List<String> = listOf("Ignore") + (1..255).map { it.toString() }
 
     // Tone mode selector
     val TONE_MODE_LIST = listOf("None", "Tone", "DTCS")
