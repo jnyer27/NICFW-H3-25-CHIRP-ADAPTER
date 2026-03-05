@@ -6,7 +6,7 @@ package com.nicfw.tdh3editor.radio
  *
  * CHIRP CSV columns used:
  *   Location, Name, Frequency, Duplex, Offset, Tone, rToneFreq, cToneFreq,
- *   DtcsCode, DtcsPolarity, Mode
+ *   DtcsCode, DtcsPolarity, Mode, Power
  *
  * Tone mode mapping:
  *   ""     → no TX or RX tone
@@ -65,7 +65,20 @@ object ChirpCsvImporter {
                 "+"      -> { duplex = "+";     offsetHz = (offsetMhz * 1_000_000).toLong(); freqTxHz = freqHz + offsetHz }
                 "-"      -> { duplex = "-";     offsetHz = (offsetMhz * 1_000_000).toLong(); freqTxHz = freqHz - offsetHz }
                 "split"  -> { duplex = "split"; offsetHz = 0L; freqTxHz = (offsetMhz * 1_000_000).toLong() }
-                else     -> { duplex = "";      offsetHz = 0L; freqTxHz = freqHz }
+                else     -> {
+                    // Issue #3: if the duplex field is empty/missing but a non-zero
+                    // offset is present, assume positive (+) — common in RepeaterBook
+                    // exports where the duplex column is left blank for repeaters.
+                    if (offsetMhz != 0.0) {
+                        duplex   = "+"
+                        offsetHz = (offsetMhz * 1_000_000).toLong()
+                        freqTxHz = freqHz + offsetHz
+                    } else {
+                        duplex   = ""
+                        offsetHz = 0L
+                        freqTxHz = freqHz
+                    }
+                }
             }
 
             // ── Tone ──────────────────────────────────────────────────────────
@@ -103,6 +116,14 @@ object ChirpCsvImporter {
                 // "Cross", "" and anything else → no tone
             }
 
+            // ── Power (Issue #4) ──────────────────────────────────────────────
+            // The TD-H3 stores txPower as a raw byte 1–255 (0 = N/T).
+            // CHIRP exports from this radio use the numeric string directly.
+            // Exports from other radios use named levels; map them to reasonable
+            // raw values. Default to "1" (minimum transmit) when absent.
+            val powerRaw = colOf(cols, "power")
+            val power = parsePower(powerRaw)
+
             // ── Mode ──────────────────────────────────────────────────────────
             val modeStr = when (colOf(cols, "mode").uppercase()) {
                 "AM"  -> "AM"
@@ -120,7 +141,7 @@ object ChirpCsvImporter {
                         freqTxHz       = freqTxHz,
                         duplex         = duplex,
                         offsetHz       = offsetHz,
-                        power          = "1",         // safe default for imported channels
+                        power          = power,
                         name           = name,
                         mode           = modeStr,
                         bandwidth      = "Wide",
@@ -139,6 +160,32 @@ object ChirpCsvImporter {
         }
 
         return results
+    }
+
+    /**
+     * Converts a CHIRP power string to the TD-H3's raw byte power value (1–255).
+     *
+     * TD-H3 / nicFW stores txPower as a byte: 0 = N/T, 1..255 = transmit level.
+     * Exports from this radio contain the numeric string directly (e.g. "130").
+     * Exports from other radios or RepeaterBook may use named levels; map them
+     * to useful starting points (user can fine-tune in the channel editor):
+     *   High / Hi   → 130  (typical TD-H3 max)
+     *   Medium / Mid→ 65   (mid-range)
+     *   Low / Lo    → 1    (minimum transmit)
+     * Anything unrecognised or blank defaults to "1".
+     */
+    private fun parsePower(raw: String): String {
+        val s = raw.trim()
+        if (s.isBlank()) return "1"
+        // Numeric value from the same radio type
+        s.toIntOrNull()?.let { if (it in 1..255) return it.toString() }
+        // Named levels from other CHIRP-supported radios
+        return when (s.lowercase()) {
+            "high", "hi"              -> "130"
+            "medium", "mid", "med"    -> "65"
+            "low", "lo"               -> "1"
+            else                      -> "1"   // unrecognised → safe minimum
+        }
     }
 
     /** Parses one CSV line respecting double-quoted fields that may contain commas. */
