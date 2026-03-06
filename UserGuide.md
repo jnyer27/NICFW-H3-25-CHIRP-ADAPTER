@@ -25,6 +25,7 @@
    - [Save / Import EEPROM Dump](#74-save--import-eeprom-dump)
    - [Edit Band Plan](#75-edit-band-plan)
    - [Edit Scan Presets](#76-edit-scan-presets)
+   - [XTAL 671 Calculator](#77-xtal-671-calculator)
 8. [CHIRP Adapter (Python Driver)](#8-chirp-adapter-python-driver)
 9. [Tips & Troubleshooting](#9-tips--troubleshooting)
 
@@ -386,6 +387,7 @@ Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced fea
 │  Import EEPROM dump…     │
 │  Edit Band Plan…         │
 │  Edit Scan Presets…      │
+│  XTAL 671 Calculator…    │
 └──────────────────────────┘
 ```
 
@@ -662,6 +664,127 @@ Tap any row to edit that scan preset slot:
 > **Empty slot detection:** A slot is empty when `startFreq == 0`. Tapping
 > **Clear Slot** zeros the entry. The EEPROM block has no magic header — each slot
 > stands alone.
+
+---
+
+### 7.7 XTAL 671 Calculator
+
+A standalone frequency calibration tool — no EEPROM or radio connection required.
+It computes the **nicFW XTAL 671 correction value** needed to compensate for crystal
+oscillator error in the TD-H3.
+
+> **Available any time** from the overflow menu, even before loading from the radio.
+
+#### ⚠ Prerequisite — Reset XTAL to 0 First
+
+> **Before measuring the actual RX frequency you must set the radio's XTAL 671
+> value to 0.** A non-zero XTAL setting shifts the radio's receive frequency,
+> which will corrupt the measurement and produce a wrong correction value.
+
+Steps:
+1. On the radio, open Settings → XTAL 671 and set it to **0**.
+2. Tune the radio to the target frequency.
+3. Measure the actual received frequency with a calibrated reference (SDR, spectrum
+   analyzer, or frequency counter).
+4. Enter that measured frequency in the calculator.
+
+#### Calculator Screen
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ ← XTAL 671 Calculator                                  │
+├─────────────────────────────────────────────────────────┤
+│ ╔═════════════════════════════════════════════════════╗ │
+│ ║ ⚠  Before calibrating                              ║ │
+│ ║ Set the radio's XTAL 671 value to 0 before         ║ │
+│ ║ measuring the actual RX frequency. A non-zero      ║ │
+│ ║ XTAL setting will skew the measurement and         ║ │
+│ ║ produce an incorrect correction value.             ║ │
+│ ╚═════════════════════════════════════════════════════╝ │
+│                                                         │
+│  Target Frequency (MHz)                                 │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  462.7250                                         │  │
+│  └───────────────────────────────────────────────────┘  │
+│  Expected / license frequency — e.g. 462.7250 GMRS22   │
+│                                                         │
+│  Actual RX Frequency (MHz)                              │
+│  ┌───────────────────────────────────────────────────┐  │
+│  │  462.7252                                         │  │
+│  └───────────────────────────────────────────────────┘  │
+│  Frequency measured by a calibrated reference receiver  │
+│                                                         │
+│  Common targets:                                        │
+│  [GMRS22 462.725] [GMRS1 462.5625] [MURS1 151.820]     │
+│  [WX1 162.400]                                          │
+│                                                         │
+│ ┌───────────────────────────────────────────────────┐   │
+│ │        XTAL 671 Correction Value                  │   │
+│ │                                                   │   │
+│ │                    29                             │   │
+│ │                                                   │   │
+│ │  Δ = +0.200 kHz  (462.7252 − 462.725 MHz)        │   │
+│ └───────────────────────────────────────────────────┘   │
+│                                                         │
+│  ▲ Radio receives HIGH                                  │
+│  Set XTAL 671 to +29                                    │
+│  ℹ Measurement must be taken with XTAL 671 set to 0    │
+│                                                         │
+│  [ Copy Value to Clipboard ]                            │
+│                                                         │
+│  Formula:                                               │
+│  ROUND(((Actual − Target) × 100000) ÷ Target            │
+│        × 671.08864, 0)                                  │
+└─────────────────────────────────────────────────────────┘
+```
+
+#### How to Use
+
+1. Tap **⋮ → XTAL 671 Calculator…** from the main screen (available at any time).
+2. Tap a **preset chip** to fill the target frequency, or type it manually.
+3. Enter the **Actual RX Frequency** you measured with your reference device.
+4. The **correction value** updates live as you type.
+5. Tap **Copy Value to Clipboard** then enter it in the radio's XTAL 671 setting.
+
+#### Formula
+
+```
+XTAL671 = ROUND( ((Actual − Target) × 100000) ÷ Target × 671.08864, 0 )
+```
+
+This matches the Google Sheets reference formula:
+`=ROUND(((D2-C2)*100000)/C2 * 671.08864, 0)`
+where C2 = Target Freq (MHz), D2 = Actual RX Freq (MHz).
+
+#### Interpreting the Result
+
+| Result | Meaning | Action |
+|---|---|---|
+| **Positive** (e.g. +29) | Radio receives HIGH — oscillator running fast | Set XTAL 671 to +29 |
+| **Negative** (e.g. −35) | Radio receives LOW — oscillator running slow | Set XTAL 671 to −35 |
+| **Zero** | Within calibration tolerance | No change needed |
+
+#### Verification Example (from reference spreadsheet)
+
+| Radio | Target (MHz) | Actual RX (MHz) | XTAL 671 |
+|---|---|---|---|
+| xxx579 | 462.725 | 462.7252 | **29** |
+| xxx591 | 462.725 | 462.72524 | **35** |
+| xxx866 | 462.725 | 462.7252 | **29** |
+| xxx869 | 462.725 | 462.72528 | **41** |
+| xxx589 | 462.725 | 462.72532 | **46** |
+
+> Each radio has a unique crystal tolerance; calculate and set individually for
+> each unit.
+
+#### Preset Frequencies
+
+| Chip | Frequency | Band |
+|---|---|---|
+| GMRS22 462.725 | 462.7250 MHz | GMRS channel 22 (most common reference) |
+| GMRS1 462.5625 | 462.5625 MHz | GMRS channel 1 |
+| MURS1 151.820 | 151.8200 MHz | MURS channel 1 |
+| WX1 162.400 | 162.4000 MHz | NOAA Weather channel 1 |
 
 ---
 

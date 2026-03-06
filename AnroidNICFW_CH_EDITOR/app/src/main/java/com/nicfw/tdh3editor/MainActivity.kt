@@ -377,6 +377,8 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_edit_scan_presets)?.isEnabled = hasEeprom
         // Import EEPROM dump is always available — no radio connection needed
         menu.findItem(R.id.action_import_dump)?.isEnabled = true
+        // XTAL 671 calculator is a standalone tool — always available
+        menu.findItem(R.id.action_xtal671_calculator)?.isEnabled = true
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -409,6 +411,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_edit_scan_presets -> {
                 startActivity(ScanPresetEditorActivity.intent(this))
+                true
+            }
+            R.id.action_xtal671_calculator -> {
+                startActivity(Xtal671CalculatorActivity.intent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)
