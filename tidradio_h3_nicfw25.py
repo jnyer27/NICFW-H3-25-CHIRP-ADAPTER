@@ -182,8 +182,12 @@ struct {
     u16 step;
     u8 resume;
     u8 persist;
-    u8 modulation:2,
-       ultrascan:6;
+    // CHIRP bitwise assigns fields MSB-first (first declared = highest bit).
+    // Radio stores: bits[1:0]=modulation (0=FM,1=AM,2=USB,3=Auto), bits[4:2]=ultrascan(0-7), bits[7:5]=unused.
+    // ultrascan declared as 6 bits to cover bits[7:2] (includes the 3 unused upper bits).
+    // Declaring in reverse order makes CHIRP map modulation correctly to bits[1:0].
+    u8 ultrascan:6,
+       modulation:2;
     char label[9];
 } scanPresets[20];
 
@@ -255,6 +259,11 @@ MODULATION_BP_LIST = ["Ignore", "FM", "AM", "USB", "Auto", "Enforce FM", "Enforc
 #   raw 3/4/6/7 unconfirmed; labelled BW(n) as placeholders.
 BANDWIDTH_BP_LIST = ["Ignore", "Wide", "Narrow", "BW(3)", "BW(4)", "FM Tuner", "BW(6)", "BW(7)"]
 MAXPOWER_BP_LIST = ["Ignore"] + [str(x) for x in range(1, 256)]
+# Scan Preset (0x1B00) modulation: 2 bits at bits[1:0]. 0=FM, 1=AM, 2=USB, 3=Auto.
+# Verified from live EEPROM dump (March 2026). Different ordering from channel modulation (Auto/FM/AM/USB).
+MODULATION_SP_LIST = ["FM", "AM", "USB", "Auto"]
+# Scan Preset ultrascan level: 3 bits at bits[4:2] of flags byte. Displayed as "0"-"7".
+ULTRASCAN_SP_LIST = [str(x) for x in range(8)]
 GROUP_LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O"]  # 15 groups in programmer
 
 
@@ -708,6 +717,69 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
             bandplan_grp.append(plan)
         top.append(bandplan_grp)
 
+        # Scan Presets (20 entries at 0x1B00; no magic header; entry is empty when startFreq == 0)
+        # Modulation: 0=FM, 1=AM, 2=USB, 3=Auto (verified from live EEPROM dump, March 2026).
+        # Ultrascan: 3 bits at bits[4:2] of flags byte; range 0-7.
+        # Range stored as 10 kHz units; displayed as End Freq = Start Freq + Range.
+        # Step stored as 10 Hz units; displayed in kHz.
+        # Label: 8 ASCII chars (+ null terminator byte) at struct offset 11.
+        scanpreset_grp = RadioSettingGroup("scanPresets", "Scan Presets")
+        for i in range(20):
+            sp = self._memobj.scanPresets[i]
+            start_raw = int(sp.startFreq)
+            start_hz = start_raw * 10                          # Hz
+            start_mhz = start_hz / 1e6
+            # Empty slots have startFreq == 0; nicFW Programmer shows nothing for end/step on empty
+            # entries even though the EEPROM bytes may contain non-zero default values.
+            if start_raw == 0:
+                end_mhz = 0.0
+                step_khz = 0.0
+            else:
+                range_raw = int(sp.range)
+                end_hz = start_hz + range_raw * 10000          # Hz
+                end_mhz = end_hz / 1e6
+                step_raw = int(sp.step)
+                step_khz = step_raw * 10 / 1000.0             # 10 Hz units -> kHz
+            _resume = int(sp.resume)
+            _persist = int(sp.persist)
+            # ultrascan is a 6-bit struct field covering bits[7:2]; only lower 3 bits (0-7) are used
+            _ultrascan = int(sp.ultrascan) & 0x07
+            _mod_raw = int(sp.modulation) & 0x03
+            try:
+                raw = sp.get_raw()
+                # label starts at struct offset 11; 8 content bytes (offset 19 is null terminator)
+                label_bytes = bytes(raw[11:19]) if raw and len(raw) >= 19 else b""
+                label_str = label_bytes.decode("ascii", "replace").rstrip("\x00 \xff").strip()
+            except Exception:
+                label_str = ""
+            preset = RadioSettingGroup("scanPreset_%d" % i, "Preset %d" % (i + 1))
+            preset.append(RadioSetting(
+                "scanPreset_%d_startFreq" % i, "Start (MHz)",
+                RadioSettingValueFloat(0, 1500, start_mhz, 0.00001)))
+            preset.append(RadioSetting(
+                "scanPreset_%d_endFreq" % i, "End (MHz)",
+                RadioSettingValueFloat(0, 1500, end_mhz, 0.00001)))
+            preset.append(RadioSetting(
+                "scanPreset_%d_step" % i, "Step (kHz)",
+                RadioSettingValueFloat(0, 1000, step_khz, 0.01)))
+            preset.append(RadioSetting(
+                "scanPreset_%d_resume" % i, "Scan Resume",
+                RadioSettingValueInteger(0, 255, _resume)))
+            preset.append(RadioSetting(
+                "scanPreset_%d_persist" % i, "Scan Persist",
+                RadioSettingValueInteger(0, 255, _persist)))
+            preset.append(RadioSetting(
+                "scanPreset_%d_modulation" % i, "Modulation",
+                RadioSettingValueList(MODULATION_SP_LIST, MODULATION_SP_LIST[_mod_raw])))
+            preset.append(RadioSetting(
+                "scanPreset_%d_ultrascan" % i, "Ultrascan (0-7)",
+                RadioSettingValueList(ULTRASCAN_SP_LIST, ULTRASCAN_SP_LIST[_ultrascan])))
+            preset.append(RadioSetting(
+                "scanPreset_%d_label" % i, "Label (8 chars)",
+                RadioSettingValueString(0, 8, label_str)))
+            scanpreset_grp.append(preset)
+        top.append(scanpreset_grp)
+
         # Group Labels (0x1C90; Group A-O = 15 labels, 6 chars each; match nicFW Programmer Group Labels tab)
         gl_grp = RadioSettingGroup("groupLabels", "Group Labels")
         for i in range(15):
@@ -896,6 +968,43 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                             elif field == "bandwidth":
                                 # Raw value IS the list index — write directly.
                                 bp.bandwidth = BANDWIDTH_BP_LIST.index(val) if val in BANDWIDTH_BP_LIST else 0
+                    except (ValueError, IndexError, TypeError):
+                        pass
+            elif name and name.startswith("scanPreset_") and "_" in name[11:]:
+                parts = name.split("_")
+                if len(parts) >= 3:
+                    try:
+                        idx = int(parts[1])
+                        field = "_".join(parts[2:])
+                        if 0 <= idx < 20:
+                            sp = self._memobj.scanPresets[idx]
+                            if field == "startFreq":
+                                # val is MHz (float); store in 10 Hz units
+                                sp.startFreq = int(round(float(val) * 100000))
+                            elif field == "endFreq":
+                                # Compute range from current (already-updated) startFreq and this endFreq.
+                                # startFreq is processed first in the UI group, so sp.startFreq is current.
+                                start_hz = int(sp.startFreq) * 10
+                                end_hz = int(round(float(val) * 1e6))
+                                range_raw = max(0, (end_hz - start_hz) // 10000)
+                                sp.range = min(range_raw, 65535)
+                            elif field == "step":
+                                # val is kHz (float); store in 10 Hz units
+                                sp.step = int(round(float(val) * 100)) & 0xFFFF
+                            elif field == "resume":
+                                sp.resume = int(val) & 0xFF
+                            elif field == "persist":
+                                sp.persist = int(val) & 0xFF
+                            elif field == "modulation":
+                                sp.modulation = MODULATION_SP_LIST.index(val) if val in MODULATION_SP_LIST else 0
+                            elif field == "ultrascan":
+                                # Write only the lower 3 bits; upper 3 bits of the 6-bit field stay 0 (unused)
+                                sp.ultrascan = int(val) & 0x07
+                            elif field == "label":
+                                label_str = (str(val) or "")[:8].ljust(8)
+                                for j, c in enumerate(label_str):
+                                    sp.label[j] = ord(c) if ord(c) < 256 else 0x20
+                                sp.label[8] = 0  # null terminator
                     except (ValueError, IndexError, TypeError):
                         pass
             elif name and name.startswith("groupLabel_"):
