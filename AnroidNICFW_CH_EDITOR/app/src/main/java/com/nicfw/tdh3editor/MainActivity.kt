@@ -337,6 +337,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnMoveUp.setOnClickListener        { moveSelectedUp() }
         binding.btnMoveDown.setOnClickListener      { moveSelectedDown() }
         binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
+        binding.btnSetGroups.setOnClickListener     { setGroupsSelected() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
         binding.btnSelectionDone.setOnClickListener {
             adapter.exitSelectionMode()
@@ -999,6 +1000,126 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(
                     this@MainActivity,
                     "TX power → $powerStr on $count channel(s)",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    /**
+     * Shows a group-slot picker and applies the chosen assignments to every
+     * non-empty selected channel in one operation.
+     *
+     * Each of the four group slots has its own spinner.  The first item in each
+     * spinner is "— Keep —": leaving it there leaves that slot unchanged on all
+     * selected channels so the user can update only specific slots.
+     *
+     * Custom group label names (from [EepromHolder.groupLabels]) are appended to
+     * each option so the user can see e.g. "A — GMRS" instead of just "A".
+     */
+    private fun setGroupsSelected() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep)
+
+        // Build display labels: "A — Custom Name" when a custom label is set, else "A".
+        val customLabels = EepromHolder.groupLabels   // List<String>, may be empty
+        val groupDisplayOptions: List<String> = listOf("— Keep —", "None") +
+            EepromConstants.GROUP_LETTERS.mapIndexed { i, letter ->
+                val custom = customLabels.getOrNull(i)?.takeIf { it.isNotBlank() }
+                if (custom != null) "$letter — $custom" else letter
+            }
+        val displayArray = groupDisplayOptions.toTypedArray()
+
+        // Pre-seed each spinner to "— Keep —" (index 0).
+        // Mapping: spinner position p → GROUPS_LIST[p-1] for p≥1; p=0 = no change.
+        val slotNames = listOf("Group Slot 1", "Group Slot 2", "Group Slot 3", "Group Slot 4")
+        val spinners = List(4) { _ ->
+            android.widget.Spinner(this).apply {
+                adapter = ArrayAdapter(
+                    this@MainActivity,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    displayArray
+                )
+                setSelection(0) // "— Keep —"
+            }
+        }
+
+        // Dialog view: vertical list of label+spinner rows with consistent padding
+        val hPx = (20 * resources.displayMetrics.density).toInt()
+        val vPx = (6  * resources.displayMetrics.density).toInt()
+        val minLabelW = (80 * resources.displayMetrics.density).toInt()
+
+        val container = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(hPx, vPx, hPx, vPx)
+        }
+        slotNames.forEachIndexed { i, name ->
+            val row = android.widget.LinearLayout(this).apply {
+                orientation = android.widget.LinearLayout.HORIZONTAL
+                gravity = android.view.Gravity.CENTER_VERTICAL
+                setPadding(0, vPx, 0, vPx)
+            }
+            val label = android.widget.TextView(this).apply {
+                text = name
+                minWidth = minLabelW
+            }
+            row.addView(label)
+            row.addView(
+                spinners[i],
+                android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+            )
+            container.addView(row)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Set Channel Groups — ${selected.size} selected")
+            .setView(container)
+            .setPositiveButton("Apply") { _, _ ->
+                // Map each spinner position back to a GROUPS_LIST value (or null = keep).
+                val newGroups: List<String?> = spinners.map { sp ->
+                    val pos = sp.selectedItemPosition
+                    if (pos == 0) null else EepromConstants.GROUPS_LIST[pos - 1]
+                }
+
+                if (newGroups.all { it == null }) {
+                    Toast.makeText(this, "No group slots changed", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                var count = 0
+                for (ch in channels) {
+                    if (ch.number in selected && !ch.empty) {
+                        EepromParser.writeChannel(
+                            eep, ch.copy(
+                                group1 = newGroups[0] ?: ch.group1,
+                                group2 = newGroups[1] ?: ch.group2,
+                                group3 = newGroups[2] ?: ch.group3,
+                                group4 = newGroups[3] ?: ch.group4
+                            )
+                        )
+                        count++
+                    }
+                }
+                eeprom = eep
+                EepromHolder.eeprom = eep
+                channelList = EepromParser.parseAllChannels(eep)
+                dragWorkList = channelList.toMutableList()
+                adapter.submitList(channelList)
+                // Keep selection active — user may want to chain other bulk actions
+
+                val changed = newGroups.mapIndexedNotNull { i, v ->
+                    if (v != null) "Slot ${i + 1}=$v" else null
+                }.joinToString(", ")
+                Toast.makeText(
+                    this@MainActivity,
+                    "Groups ($changed) set on $count channel(s)",
                     Toast.LENGTH_SHORT
                 ).show()
             }
