@@ -214,6 +214,106 @@ object EepromParser {
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Scan Presets  (0x1B00, 20 entries × 20 bytes, no magic header)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Returns non-empty Scan Preset entries parsed from 0x1B00.
+     * Empty slots (startFreq == 0) are excluded. Use [readAllScanPresetSlots]
+     * to get all 20 positions including empty ones.
+     */
+    fun parseScanPresets(eeprom: ByteArray): List<ScanPresetEntry> =
+        readAllScanPresetSlots(eeprom).filterNot { it.isEmpty }
+
+    /**
+     * Returns all 20 Scan Preset slots as an Array<ScanPresetEntry> (index 0–19).
+     * Empty slots are included as [ScanPresetEntry.isEmpty] == true entries so the
+     * Scan Preset editor can show and modify all 20 positions.
+     *
+     * Entry layout (20 bytes each):
+     *   u32 startFreq (10 Hz units; 0 = empty slot)
+     *   u16 span      (10 kHz units; endFreq = startFreq + span×10kHz)
+     *   u16 step      (10 Hz units)
+     *   u8  scanResume
+     *   u8  scanPersist
+     *   u8  flags     — bits[4:2]=ultrascan(0–7), bits[1:0]=modulation(0=FM,1=AM,2=USB,3=Auto)
+     *   u8[8] label   — ASCII, space-padded (8 bytes)
+     *   u8  null      — always 0x00
+     */
+    fun readAllScanPresetSlots(eeprom: ByteArray): Array<ScanPresetEntry> {
+        val base      = EepromConstants.SCANPRESET_BASE
+        val entrySize = EepromConstants.SCANPRESET_ENTRY_SIZE
+        return Array(EepromConstants.SCANPRESET_NUM_ENTRIES) { i ->
+            val off = base + i * entrySize
+            if (off + entrySize > eeprom.size) {
+                ScanPresetEntry()   // empty sentinel
+            } else {
+                val startFreq10 = readU32Be(eeprom, off)         // 10 Hz units
+                val span        = readU16Be(eeprom, off + 4)     // 10 kHz units
+                val step10      = readU16Be(eeprom, off + 6)     // 10 Hz units
+                val resume      = eeprom[off + 8].toInt() and 0xFF
+                val persist     = eeprom[off + 9].toInt() and 0xFF
+                val flags       = eeprom[off + 10].toInt() and 0xFF
+                val ultrascan   = (flags shr 2) and 0x07
+                val modRaw      = flags and 0x03
+                val labelBytes  = eeprom.copyOfRange(off + 11, off + 19)
+                val label       = labelBytes.toString(Charsets.US_ASCII)
+                    .replace("\u0000", " ")
+                    .replace("\u00FF", " ")
+                    .trim()
+                ScanPresetEntry(
+                    startHz     = startFreq10 * 10L,
+                    endHz       = (startFreq10 + span.toLong() * 1000L) * 10L,
+                    stepHz      = step10 * 10,
+                    scanResume  = resume,
+                    scanPersist = persist,
+                    modRaw      = modRaw,
+                    ultrascan   = ultrascan,
+                    label       = label
+                )
+            }
+        }
+    }
+
+    /**
+     * Writes all 20 Scan Preset slots back into [eeprom] at 0x1B00.
+     * There is no magic header — slots start directly at 0x1B00.
+     * Null or empty entries in [entries] are written as 20 zero bytes.
+     */
+    fun writeScanPresets(eeprom: ByteArray, entries: Array<ScanPresetEntry>) {
+        val base      = EepromConstants.SCANPRESET_BASE
+        val entrySize = EepromConstants.SCANPRESET_ENTRY_SIZE
+
+        for (i in 0 until EepromConstants.SCANPRESET_NUM_ENTRIES) {
+            val off = base + i * entrySize
+            if (off + entrySize > eeprom.size) break
+
+            val entry = entries.getOrNull(i) ?: ScanPresetEntry()
+            if (entry.isEmpty) {
+                for (j in 0 until entrySize) eeprom[off + j] = 0
+            } else {
+                val startFreq10 = entry.startHz / 10L
+                val endFreq10   = entry.endHz   / 10L
+                val span        = ((endFreq10 - startFreq10) / 1000L)
+                    .coerceIn(0L, 65535L).toInt()               // 10 kHz units, u16
+                val step10      = (entry.stepHz / 10)
+                    .coerceIn(0, 65535)                          // 10 Hz units, u16
+                val flags       = ((entry.ultrascan and 0x07) shl 2) or (entry.modRaw and 0x03)
+                val labelPadded = entry.label.take(8).padEnd(8, ' ')
+
+                writeU32Be(eeprom, off,     startFreq10)
+                writeU16Be(eeprom, off + 4, span)
+                writeU16Be(eeprom, off + 6, step10)
+                eeprom[off + 8]  = (entry.scanResume  and 0xFF).toByte()
+                eeprom[off + 9]  = (entry.scanPersist and 0xFF).toByte()
+                eeprom[off + 10] = flags.toByte()
+                for (j in 0 until 8) eeprom[off + 11 + j] = labelPadded[j].code.toByte()
+                eeprom[off + 19] = 0   // null terminator
+            }
+        }
+    }
+
     /**
      * Reads the 15 group labels (A–O) from 0x1C90.
      * Each label is 6 bytes of null-padded ASCII. Returns a 15-element list of trimmed

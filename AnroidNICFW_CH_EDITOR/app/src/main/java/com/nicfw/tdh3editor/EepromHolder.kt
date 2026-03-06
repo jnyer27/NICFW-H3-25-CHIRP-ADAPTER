@@ -1,6 +1,7 @@
 package com.nicfw.tdh3editor
 
 import com.nicfw.tdh3editor.radio.BandPlanEntry
+import com.nicfw.tdh3editor.radio.ScanPresetEntry
 
 /**
  * Application-level holder for the current EEPROM image so that ChannelEditActivity
@@ -24,4 +25,11 @@ object EepromHolder {
      * Populated by MainActivity after each EEPROM load.
      */
     var bandPlan: List<BandPlanEntry> = emptyList()
+
+    /**
+     * Decoded Scan Preset entries parsed from 0x1B00 (nicFW 2.5).
+     * Only non-empty entries (startHz != 0) are included.
+     * Populated by MainActivity after each EEPROM load.
+     */
+    var scanPresets: List<ScanPresetEntry> = emptyList()
 }

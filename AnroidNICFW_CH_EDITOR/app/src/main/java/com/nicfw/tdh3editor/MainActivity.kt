@@ -132,9 +132,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 // Load into the app — same path as a successful radio download
                 eeprom = bytes
-                EepromHolder.eeprom = bytes
-                EepromHolder.groupLabels = EepromParser.parseGroupLabels(bytes)
-                EepromHolder.bandPlan    = EepromParser.parseBandPlan(bytes)
+                EepromHolder.eeprom       = bytes
+                EepromHolder.groupLabels  = EepromParser.parseGroupLabels(bytes)
+                EepromHolder.bandPlan     = EepromParser.parseBandPlan(bytes)
+                EepromHolder.scanPresets  = EepromParser.parseScanPresets(bytes)
                 refreshChannelList(bytes)
                 runOnUiThread {
                     updateConnectionUi()
@@ -370,7 +371,8 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
-        menu.findItem(R.id.action_edit_band_plan)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_edit_band_plan)?.isEnabled    = hasEeprom
+        menu.findItem(R.id.action_edit_scan_presets)?.isEnabled = hasEeprom
         // Import EEPROM dump is always available — no radio connection needed
         menu.findItem(R.id.action_import_dump)?.isEnabled = true
         return super.onPrepareOptionsMenu(menu)
@@ -401,6 +403,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_edit_band_plan -> {
                 startActivity(BandPlanEditorActivity.intent(this))
+                true
+            }
+            R.id.action_edit_scan_presets -> {
+                startActivity(ScanPresetEditorActivity.intent(this))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -519,8 +525,9 @@ class MainActivity : AppCompatActivity() {
         updateConnectionUi()
         EepromHolder.eeprom?.let { data ->
             eeprom = data
-            EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
-            EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
+            EepromHolder.groupLabels  = EepromParser.parseGroupLabels(data)
+            EepromHolder.bandPlan     = EepromParser.parseBandPlan(data)
+            EepromHolder.scanPresets  = EepromParser.parseScanPresets(data)
             refreshChannelList(data)
         }
     }
@@ -945,9 +952,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 eeprom = data
-                EepromHolder.eeprom = data
+                EepromHolder.eeprom      = data
                 EepromHolder.groupLabels = EepromParser.parseGroupLabels(data)
                 EepromHolder.bandPlan    = EepromParser.parseBandPlan(data)
+                EepromHolder.scanPresets = EepromParser.parseScanPresets(data)
                 refreshChannelList(data)
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE

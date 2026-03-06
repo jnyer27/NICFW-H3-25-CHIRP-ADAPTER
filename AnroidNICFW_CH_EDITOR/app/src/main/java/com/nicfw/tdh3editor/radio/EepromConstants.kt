@@ -29,6 +29,29 @@ object EepromConstants {
     const val UHF_LOW  = 400_000_000
     const val UHF_HIGH = 480_000_000
 
+    // ── Scan Preset memory layout (nicFW 2.5) ──────────────────────────────
+    // 0x1B00 : scanPresets[20], each entry is 20 bytes (NO magic header):
+    //            u32 startFreq (10 Hz units; 0 = empty slot)
+    //            u16 span      (10 kHz units; endFreq = startFreq + span×10kHz)
+    //            u16 step      (10 Hz units)
+    //            u8  scanResume
+    //            u8  scanPersist
+    //            u8  flags     (bits[4:2]=ultrascan 0–7, bits[1:0]=modulation)
+    //                          modulation: 0=FM, 1=AM, 2=USB, 3=Auto
+    //            u8[8] label   (ASCII, space-padded, 8 chars)
+    //            u8  null      (always 0x00)
+    const val SCANPRESET_BASE        = 0x1B00
+    const val SCANPRESET_ENTRY_SIZE  = 20
+    const val SCANPRESET_NUM_ENTRIES = 20
+
+    // Modulation encoding for scan presets (different from channel list).
+    // Index == raw EEPROM value: 0=FM, 1=AM, 2=USB, 3=Auto.
+    // Verified against live EEPROM dump: FM entries raw=0, AM entries raw=1.
+    val SCANPRESET_MOD_LABELS = listOf("FM", "AM", "USB", "Auto")
+
+    // Ultrascan speed labels (0–7); spinner index == raw EEPROM value.
+    val SCANPRESET_ULTRASCAN_LABELS = (0..7).map { it.toString() }
+
     // Band Plan memory layout (nicFW 2.5)
     // 0x1A00 : u16 magic (must equal 0xA46D)
     // 0x1A02 : bandPlans[20], each entry is 10 bytes:
