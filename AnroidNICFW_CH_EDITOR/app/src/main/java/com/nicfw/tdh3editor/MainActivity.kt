@@ -968,6 +968,22 @@ class MainActivity : AppCompatActivity() {
             .indexOf(firstNonEmpty?.power ?: "1")
             .coerceAtLeast(1)           // fallback to "1" watt if not found
 
+        // Determine applicable VHF/UHF cap(s) for the selected channels so we can
+        // advise the user when the chosen value would exceed the radio's cap.
+        val selectedNonEmpty = channels.filter { it.number in selected && !it.empty }
+        val hasVhf = selectedNonEmpty.any { it.freqRxHz in 1 until EepromConstants.VHF_UHF_BOUNDARY_HZ }
+        val hasUhf = selectedNonEmpty.any { it.freqRxHz >= EepromConstants.VHF_UHF_BOUNDARY_HZ }
+        val ts     = EepromHolder.tuneSettings
+        val vhfCap = ts.maxPowerSettingVHF
+        val uhfCap = ts.maxPowerSettingUHF
+        // Effective cap: the most restrictive cap across the bands present in the selection
+        val effectiveCap = when {
+            hasVhf && hasUhf -> minOf(vhfCap, uhfCap)
+            hasVhf           -> vhfCap
+            hasUhf           -> uhfCap
+            else             -> 255
+        }
+
         // NumberPicker shows the full value string (incl. 3-digit levels) in a
         // scrollable wheel — avoids the truncation that occurs with a Spinner dropdown.
         val picker = android.widget.NumberPicker(this).apply {
@@ -978,8 +994,41 @@ class MainActivity : AppCompatActivity() {
             wrapSelectorWheel = false
         }
 
+        // Advisory TextView — hidden until the picker exceeds the effective cap
+        val capPx = (12 * resources.displayMetrics.density).toInt()
+        val advisoryView = android.widget.TextView(this).apply {
+            textSize = 12f
+            setTextColor(android.graphics.Color.parseColor("#E65100"))
+            setPadding(capPx, capPx / 2, capPx, 0)
+            visibility = android.view.View.GONE
+        }
+
+        // Helper to refresh the advisory whenever the picker value changes
+        fun refreshAdvisory(pickerPosition: Int) {
+            val powerStr = EepromConstants.POWERLEVEL_LIST.getOrNull(pickerPosition) ?: "N/T"
+            val raw = powerStr.toIntOrNull() ?: 0
+            if (raw > 0 && raw > effectiveCap) {
+                val capWatts = EepromConstants.powerToWatts(effectiveCap.toString())
+                val bandDesc = when {
+                    hasVhf && hasUhf ->
+                        if (vhfCap <= uhfCap) "VHF cap ($vhfCap ≈ $capWatts)"
+                        else                  "UHF cap ($uhfCap ≈ $capWatts)"
+                    hasVhf -> "VHF cap ($vhfCap ≈ $capWatts)"
+                    else   -> "UHF cap ($uhfCap ≈ $capWatts)"
+                }
+                advisoryView.text = "⚠ Exceeds $bandDesc — radio will clamp at TX time"
+                advisoryView.visibility = android.view.View.VISIBLE
+            } else {
+                advisoryView.visibility = android.view.View.GONE
+            }
+        }
+
+        picker.setOnValueChangedListener { _, _, newVal -> refreshAdvisory(newVal) }
+        refreshAdvisory(defaultIdx)   // evaluate immediately for the pre-seeded value
+
         // Centre the wheel horizontally inside the dialog with comfortable padding
         val wrapper = android.widget.LinearLayout(this).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
             val px = (16 * resources.displayMetrics.density).toInt()
             setPadding(px, px / 2, px, px / 2)
         }
@@ -989,6 +1038,13 @@ class MainActivity : AppCompatActivity() {
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
                 android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
             ).also { it.gravity = android.view.Gravity.CENTER_HORIZONTAL }
+        )
+        wrapper.addView(
+            advisoryView,
+            android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            )
         )
 
         AlertDialog.Builder(this)

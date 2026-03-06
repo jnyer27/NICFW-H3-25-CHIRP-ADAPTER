@@ -3,6 +3,8 @@ package com.nicfw.tdh3editor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -148,8 +150,67 @@ class ChannelEditActivity : AppCompatActivity() {
             }
         }
 
+        // ── Power cap advisory ─────────────────────────────────────────────
+        // Show a non-blocking warning when the selected power exceeds the radio's
+        // VHF/UHF cap (Tune Settings at 0x1DFB). The spinner is not restricted —
+        // the radio silently clamps at TX time but the stored byte is unchanged.
+        binding.spinnerPower.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
+            ) = updatePowerCapWarning(position)
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+        // Evaluate once now for the initially-selected power value
+        channel?.let { c ->
+            if (!c.empty) {
+                val powerIdx = EepromConstants.POWERLEVEL_LIST.indexOf(c.power).coerceAtLeast(0)
+                updatePowerCapWarning(powerIdx)
+            }
+        }
+
         binding.btnCancel.setOnClickListener { finish() }
         binding.btnDone.setOnClickListener { saveAndFinish() }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Power cap advisory
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Shows or hides the power cap advisory below the power spinner.
+     *
+     * The warning is shown (non-blocking) when the picker position corresponds to
+     * a raw power byte that exceeds the applicable VHF or UHF cap from
+     * [EepromHolder.tuneSettings]. The spinner selection is never restricted —
+     * the radio enforces the cap at TX time; the stored byte is unchanged.
+     */
+    private fun updatePowerCapWarning(pickerPosition: Int) {
+        val ch = channel ?: run {
+            binding.textPowerCapWarning.visibility = View.GONE
+            return
+        }
+        // Only meaningful for non-empty channels with a known frequency
+        if (ch.freqRxHz <= 0) {
+            binding.textPowerCapWarning.visibility = View.GONE
+            return
+        }
+
+        val powerStr = EepromConstants.POWERLEVEL_LIST.getOrNull(pickerPosition) ?: "N/T"
+        val rawPower = powerStr.toIntOrNull() ?: 0   // "N/T" → 0, treated as no-TX
+
+        val ts       = EepromHolder.tuneSettings
+        val isVhf    = ch.freqRxHz < EepromConstants.VHF_UHF_BOUNDARY_HZ
+        val cap      = if (isVhf) ts.maxPowerSettingVHF else ts.maxPowerSettingUHF
+        val bandLabel = if (isVhf) "VHF" else "UHF"
+
+        if (rawPower > 0 && rawPower > cap) {
+            val capWatts = EepromConstants.powerToWatts(cap.toString())
+            binding.textPowerCapWarning.text =
+                "⚠ Exceeds $bandLabel cap ($cap ≈ $capWatts) — radio will clamp to cap at TX time"
+            binding.textPowerCapWarning.visibility = View.VISIBLE
+        } else {
+            binding.textPowerCapWarning.visibility = View.GONE
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
