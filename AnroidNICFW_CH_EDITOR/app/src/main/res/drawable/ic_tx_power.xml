@@ -29,28 +29,29 @@
         android:strokeLineCap="round"
         android:pathData="M12,21 L12,14" />
 
-    <!-- Small inner arc  — radius 3, centred on mast tip (12, 14) -->
+    <!-- Small inner arc  — radius 3, centred on mast tip (12, 14).
+         sweep-flag=1 (clockwise in SVG/Y-down coords) curves UPWARD through (12,11). -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="@android:color/white"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
-        android:pathData="M9,14 A3,3 0 0,0 15,14" />
+        android:pathData="M9,14 A3,3 0 0,1 15,14" />
 
-    <!-- Medium arc — radius 5 -->
+    <!-- Medium arc — radius 5, curves upward through (12,9) -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="@android:color/white"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
-        android:pathData="M7,14 A5,5 0 0,0 17,14" />
+        android:pathData="M7,14 A5,5 0 0,1 17,14" />
 
-    <!-- Large outer arc — radius 7, tip at (12, 7) -->
+    <!-- Large outer arc — radius 7, curves upward through (12,7) -->
     <path
         android:fillColor="#00000000"
         android:strokeColor="@android:color/white"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
-        android:pathData="M5,14 A7,7 0 0,0 19,14" />
+        android:pathData="M5,14 A7,7 0 0,1 19,14" />
 
 </vector>

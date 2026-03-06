@@ -954,27 +954,35 @@ class MainActivity : AppCompatActivity() {
             .indexOf(firstNonEmpty?.power ?: "1")
             .coerceAtLeast(1)           // fallback to "1" watt if not found
 
-        val spinner = android.widget.Spinner(this)
-        spinner.adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            EepromConstants.POWERLEVEL_LIST
-        )
-        spinner.setSelection(defaultIdx)
+        // NumberPicker shows the full value string (incl. 3-digit levels) in a
+        // scrollable wheel — avoids the truncation that occurs with a Spinner dropdown.
+        val picker = android.widget.NumberPicker(this).apply {
+            minValue = 0
+            maxValue = EepromConstants.POWERLEVEL_LIST.size - 1
+            displayedValues = EepromConstants.POWERLEVEL_LIST.toTypedArray()
+            value = defaultIdx
+            wrapSelectorWheel = false
+        }
 
-        // Wrap in a container with horizontal padding to match Material dialog margins
+        // Centre the wheel horizontally inside the dialog with comfortable padding
         val wrapper = android.widget.LinearLayout(this).apply {
-            val px = (20 * resources.displayMetrics.density).toInt()
+            val px = (16 * resources.displayMetrics.density).toInt()
             setPadding(px, px / 2, px, px / 2)
         }
-        wrapper.addView(spinner)
+        wrapper.addView(
+            picker,
+            android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also { it.gravity = android.view.Gravity.CENTER_HORIZONTAL }
+        )
 
         AlertDialog.Builder(this)
             .setTitle("Set TX Power — ${selected.size} selected")
             .setView(wrapper)
             .setPositiveButton("Apply") { _, _ ->
                 val powerStr = EepromConstants.POWERLEVEL_LIST
-                    .getOrNull(spinner.selectedItemPosition) ?: "1"
+                    .getOrNull(picker.value) ?: "1"
                 var count = 0
                 for (ch in channels) {
                     if (ch.number in selected && !ch.empty) {
