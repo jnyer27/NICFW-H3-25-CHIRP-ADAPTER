@@ -37,4 +37,9 @@
         android:title="Edit Scan Presets…"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_xtal671_calculator"
+        android:title="XTAL 671 Calculator…"
+        app:showAsAction="never" />
+
 </menu>
