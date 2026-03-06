@@ -1,4 +1,4 @@
-# Contributing to AnroidNICFW_CH_EDITOR
+# Contributing to AndroidNICFW_CH_EDITOR
 
 ## Build environment
 

@@ -33,7 +33,7 @@ the parent repo ([tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)).
 
 **Command line:**
 ```bash
-cd AnroidNICFW_CH_EDITOR
+cd AndroidNICFW_CH_EDITOR
 ./gradlew assembleDebug          # Linux / macOS / Git Bash
 gradlew.bat assembleDebug        # Windows CMD / PowerShell
 ```

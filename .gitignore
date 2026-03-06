@@ -3,10 +3,10 @@
 *.aab
 *.ap_
 *.dex
-/AnroidNICFW_CH_EDITOR/.gradle/
-/AnroidNICFW_CH_EDITOR/build/
-/AnroidNICFW_CH_EDITOR/app/build/
-/AnroidNICFW_CH_EDITOR/local.properties
+/AndroidNICFW_CH_EDITOR/.gradle/
+/AndroidNICFW_CH_EDITOR/build/
+/AndroidNICFW_CH_EDITOR/app/build/
+/AndroidNICFW_CH_EDITOR/local.properties
 
 # IDE
 .idea/

@@ -293,7 +293,7 @@ Confirmed bandwidth labels: raw 0 = Ignore, raw 1 = Wide, raw 2 = Narrow, raw 5 
 ## Build
 
 ```bash
-cd AnroidNICFW_CH_EDITOR
+cd AndroidNICFW_CH_EDITOR
 JAVA_HOME="/c/Program Files/Android/Android Studio/jbr" ./gradlew assembleDebug
 # APK → app/build/outputs/apk/debug/app-debug.apk
 ```
