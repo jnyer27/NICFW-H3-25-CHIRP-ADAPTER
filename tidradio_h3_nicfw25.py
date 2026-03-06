@@ -729,11 +729,17 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
             start_raw = int(sp.startFreq)
             start_hz = start_raw * 10                          # Hz
             start_mhz = start_hz / 1e6
-            range_raw = int(sp.range)
-            end_hz = start_hz + range_raw * 10000              # Hz
-            end_mhz = end_hz / 1e6
-            step_raw = int(sp.step)
-            step_khz = step_raw * 10 / 1000.0                 # 10 Hz units -> kHz
+            # Empty slots have startFreq == 0; nicFW Programmer shows nothing for end/step on empty
+            # entries even though the EEPROM bytes may contain non-zero default values.
+            if start_raw == 0:
+                end_mhz = 0.0
+                step_khz = 0.0
+            else:
+                range_raw = int(sp.range)
+                end_hz = start_hz + range_raw * 10000          # Hz
+                end_mhz = end_hz / 1e6
+                step_raw = int(sp.step)
+                step_khz = step_raw * 10 / 1000.0             # 10 Hz units -> kHz
             _resume = int(sp.resume)
             _persist = int(sp.persist)
             # ultrascan is a 6-bit struct field covering bits[7:2]; only lower 3 bits (0-7) are used
