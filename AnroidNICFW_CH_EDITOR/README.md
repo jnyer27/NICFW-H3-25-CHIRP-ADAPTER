@@ -170,6 +170,7 @@ Bit 15 = DCS flag, bit 14 = polarity R, bits 8–0 = 9-bit code.
 - Protocol and EEPROM layout: [nicsure/nicfw2docs](https://github.com/nicsure/nicfw2docs)
 - Bluetooth remote app (BLE UUID source): [nicsure/nicFWRemoteBT](https://github.com/nicsure/nicfwremotebt)
 - Full implementation notes: [PLAN.md](PLAN.md)
+- User Guide (https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/UserGuide.md)
 
 ---
 
