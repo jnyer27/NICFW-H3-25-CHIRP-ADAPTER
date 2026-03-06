@@ -25,6 +25,7 @@
    - [Save / Import EEPROM Dump](#74-save--import-eeprom-dump)
    - [Edit Band Plan](#75-edit-band-plan)
    - [Edit Scan Presets](#76-edit-scan-presets)
+   - [Tune Settings](#78-tune-settings)
    - [XTAL 671 Calculator](#77-xtal-671-calculator)
 8. [CHIRP Adapter (Python Driver)](#8-chirp-adapter-python-driver)
 9. [Tips & Troubleshooting](#9-tips--troubleshooting)
@@ -159,7 +160,7 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 | `#` | Channel slot number (1–198, fixed) |
 | Name | Up to 12-character label |
 | Freq | RX frequency in MHz (TX offset shown on edit screen) |
-| Power | Estimated output power (N/T = no transmit, 0.5W–5W+) |
+| Power | Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: `(BP)` = Band Plan restricts TX on this frequency; `⚠` = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see [Tune Settings §7.8](#78-tune-settings)) |
 | Groups | Active group assignments (up to 4 letters) |
 | BW | Bandwidth: `Wid` = Wide, `Nar` = Narrow |
 
@@ -228,6 +229,22 @@ The power spinner stores a raw byte (0–255). Approximate watt equivalents:
 
 > Values between calibration points are linearly interpolated. The watt label shown
 > in the channel list is an estimate; actual output depends on battery and frequency.
+
+### Power Cap Advisory
+
+If **Tune Settings** has a VHF or UHF power cap configured (see [§7.8](#78-tune-settings)),
+a non-blocking warning appears immediately below the Power spinner when the selected value
+exceeds the applicable cap:
+
+```
+⚠ Exceeds VHF cap (130 ≈ 5.0W) — radio will clamp to cap at TX time
+```
+
+The spinner is **not restricted** — you may store any value. The radio enforces the cap
+silently at transmit time; the EEPROM byte is unchanged. This lets you retain a high stored
+power value and simply raise the cap later without re-editing every channel.
+
+---
 
 ### Tone Picker Format
 
@@ -327,6 +344,19 @@ N/T ─── 29 ─────── 58 ──────────── 1
  0W    0.5W        2W              5W            ~8.7W
 ```
 
+#### Power Cap Advisory
+
+If the selected channels include VHF or UHF frequencies and a power cap is set in
+**Tune Settings** (see [§7.8](#78-tune-settings)), an advisory appears **below the scroll
+wheel** when the chosen value exceeds the applicable cap:
+
+```
+⚠ Exceeds VHF cap (130 ≈ 5.0W) — radio will clamp to cap at TX time
+```
+
+When the selection spans both bands, the **more restrictive** of the two caps is
+used in the advisory. Apply is never blocked — the stored value is saved as-is.
+
 ---
 
 ### 6.3 Set Channel Groups (Bulk)
@@ -387,11 +417,14 @@ Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced fea
 │  Import EEPROM dump…     │
 │  Edit Band Plan…         │
 │  Edit Scan Presets…      │
+│  Tune Settings…          │
 │  XTAL 671 Calculator…    │
 └──────────────────────────┘
 ```
 
-> All items except **Import EEPROM dump** require an EEPROM to be loaded first.
+> **XTAL 671 Calculator** is always accessible — no EEPROM required.
+> **Import EEPROM dump** is always accessible regardless of connection state.
+> All other items require an EEPROM to be loaded first.
 
 ---
 
@@ -667,6 +700,111 @@ Tap any row to edit that scan preset slot:
 
 ---
 
+### 7.8 Tune Settings
+
+View and edit three per-radio calibration values stored at EEPROM offset `0x1DFB`.
+Access via **⋮ → Tune Settings…** (requires EEPROM to be loaded).
+
+> ⚠ **These values are calibrated for your specific radio unit.**
+> If you cloned another radio's EEPROM, recalibrate XTAL 671 and verify the power
+> caps for the target unit before saving to that radio.
+
+#### Screen Layout
+
+```
+┌────────────────────────────────────────────────────────┐
+│ ← Tune Settings                                        │
+├────────────────────────────────────────────────────────┤
+│ ╔══════════════════════════════════════════════════════╗ │
+│ ║ ⚠  These settings are per-radio calibration values. ║ │
+│ ║ If you cloned another radio's EEPROM, recalibrate   ║ │
+│ ║ XTAL 671 and verify power caps for this unit.       ║ │
+│ ╚══════════════════════════════════════════════════════╝ │
+│                                                        │
+│  VHF Power Setting Cap                                 │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │         128                                      │  │
+│  │  ─────────────────────────────────────────────   │  │
+│  │  ▶    130 (≈ 5.0W)    ◀         ← scroll wheel  │  │
+│  │  ─────────────────────────────────────────────   │  │
+│  │         132                                      │  │
+│  └──────────────────────────────────────────────────┘  │
+│  Max TX power on VHF (<300 MHz). Radio silently clamps. │
+│                                                        │
+│  UHF Power Setting Cap                                 │
+│  (same scroll wheel format)                            │
+│  Max TX power on UHF (≥300 MHz). Radio silently clamps. │
+│                                                        │
+│  XTAL 671 Correction                                   │
+│  ┌──────────────────────────────────────────────────┐  │
+│  │         +28                                      │  │
+│  │  ─────────────────────────────────────────────   │  │
+│  │  ▶       +29          ◀         ← scroll wheel  │  │
+│  │  ─────────────────────────────────────────────   │  │
+│  │         +30                                      │  │
+│  └──────────────────────────────────────────────────┘  │
+│  Crystal oscillator frequency correction (−128…+127).  │
+│                                                        │
+│  [ Cancel ]             [ Save Tune Settings ]         │
+└────────────────────────────────────────────────────────┘
+```
+
+#### Field Reference
+
+| Field | EEPROM Offset | Range | Description |
+|---|---|---|---|
+| **VHF Power Setting Cap** | `0x1DFF` | 0–255 (raw byte) | Maximum TX power for VHF frequencies (<300 MHz). Channels whose stored power exceeds this value are clamped by the radio at transmit time. |
+| **UHF Power Setting Cap** | `0x1DFD` | 0–255 (raw byte) | Same cap for UHF frequencies (≥300 MHz). |
+| **XTAL 671 Correction** | `0x1DFB` | −128…+127 (signed) | Crystal oscillator correction applied by nicFW. Use the [XTAL 671 Calculator](#77-xtal-671-calculator) to compute the correct value for your unit. |
+
+> The live watt estimate displayed next to each cap picker (e.g., "≈ 5.0W") uses the
+> same interpolation table as the channel list power column.
+
+#### How Power Caps Work
+
+```
+Per-channel power byte (stored in EEPROM)
+        │
+        ▼
+  if value > cap  ──►  radio transmits at cap value
+  if value ≤ cap  ──►  radio transmits at stored value
+```
+
+- **The stored EEPROM byte is never modified** — only the transmitted power is clamped.
+- When a channel's stored power exceeds the cap, the app shows:
+  - A `⚠` suffix in the channel list power column (e.g., `5.0W ⚠`)
+  - A non-blocking advisory below the Power spinner in the channel editor
+  - A non-blocking advisory below the wheel in the bulk TX power picker
+- **Raising the cap later** automatically un-clamps all affected channels without
+  requiring any per-channel edits.
+
+#### Channel List Indicators
+
+| Power display | Meaning |
+|---|---|
+| `5.0W` | Normal — within cap and TX allowed |
+| `5.0W ⚠` | Stored power exceeds VHF/UHF cap; radio will clamp at TX time |
+| `5.0W (BP)` | Band Plan marks this frequency as TX-restricted |
+| `5.0W (BP) ⚠` | Both Band Plan TX-restricted AND power exceeds cap |
+| `N/T` | No-transmit (power = 0 or Band Plan TX off) |
+
+#### Workflow
+
+1. Tap **⋮ → Tune Settings…**
+2. Scroll the **VHF Power Setting Cap** picker to your desired ceiling raw value.
+   - Example: `130` ≈ 5.0 W (matches the field default seen in the NICFW Programmer).
+   - Set `255` to disable the cap (allow full power on all channels).
+3. Repeat for **UHF Power Setting Cap**.
+4. Adjust **XTAL 671** if needed — use the
+   [XTAL 671 Calculator](#77-xtal-671-calculator) to derive the correct value first.
+5. Tap **Save Tune Settings** → values are written to the in-memory EEPROM.
+6. Tap **Save to Radio** on the main screen to upload.
+
+> After saving Tune Settings and returning to the channel list, scroll the list to
+> verify that `⚠` indicators appear or disappear as expected.
+
+---
+
 ### 7.7 XTAL 671 Calculator
 
 A standalone frequency calibration tool — no EEPROM or radio connection required.
@@ -871,6 +1009,7 @@ Always back up your EEPROM dump before making major changes.
 | **"No empty slots" on CHIRP import** | All 198 channels are used; clear some channels first |
 | **Channel list shows nothing after load** | EEPROM read may have failed; try disconnecting and reconnecting, then load again |
 | **Scan Preset entry shows 1.0 MHz** | Slot is empty (`startFreq == 0`); this is a display artifact in some tools — empty slots are handled correctly by nicFW |
+| **Channel list shows `⚠` next to power** | Stored channel power exceeds the VHF or UHF cap in Tune Settings. Lower the channel power OR raise the cap in **⋮ → Tune Settings…** |
 | **BLE scan finds no devices** | Ensure the radio is powered on and not already connected to another device; on Android 12+ grant Nearby Devices permission |
 | **Classic BT connection fails** | Pair the radio in Android Bluetooth settings first, then retry |
 
