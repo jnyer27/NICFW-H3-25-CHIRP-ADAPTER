@@ -334,8 +334,9 @@ class MainActivity : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun setupSelectionBar() {
-        binding.btnMoveUp.setOnClickListener      { moveSelectedUp() }
-        binding.btnMoveDown.setOnClickListener    { moveSelectedDown() }
+        binding.btnMoveUp.setOnClickListener        { moveSelectedUp() }
+        binding.btnMoveDown.setOnClickListener      { moveSelectedDown() }
+        binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
         binding.btnSelectionDone.setOnClickListener {
             adapter.exitSelectionMode()
@@ -927,6 +928,79 @@ class MainActivity : AppCompatActivity() {
                 adapter.submitList(channelList)
                 adapter.exitSelectionMode()
                 // updateSelectionBar(0) called via onSelectionChanged → hides bar
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    /**
+     * Shows a TX-power picker and applies the chosen level to every non-empty
+     * selected channel in one operation.
+     *
+     * The spinner is pre-selected to the power of the first non-empty selection
+     * so the user can see the current level at a glance.  After applying, the
+     * selection remains active so the user can chain other bulk actions.
+     */
+    private fun setTxPowerSelected() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep)
+
+        // Pre-select the current power of the first non-empty selected channel
+        val firstNonEmpty = channels.firstOrNull { it.number in selected && !it.empty }
+        val defaultIdx = EepromConstants.POWERLEVEL_LIST
+            .indexOf(firstNonEmpty?.power ?: "1")
+            .coerceAtLeast(1)           // fallback to "1" watt if not found
+
+        // NumberPicker shows the full value string (incl. 3-digit levels) in a
+        // scrollable wheel — avoids the truncation that occurs with a Spinner dropdown.
+        val picker = android.widget.NumberPicker(this).apply {
+            minValue = 0
+            maxValue = EepromConstants.POWERLEVEL_LIST.size - 1
+            displayedValues = EepromConstants.POWERLEVEL_LIST.toTypedArray()
+            value = defaultIdx
+            wrapSelectorWheel = false
+        }
+
+        // Centre the wheel horizontally inside the dialog with comfortable padding
+        val wrapper = android.widget.LinearLayout(this).apply {
+            val px = (16 * resources.displayMetrics.density).toInt()
+            setPadding(px, px / 2, px, px / 2)
+        }
+        wrapper.addView(
+            picker,
+            android.widget.LinearLayout.LayoutParams(
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+            ).also { it.gravity = android.view.Gravity.CENTER_HORIZONTAL }
+        )
+
+        AlertDialog.Builder(this)
+            .setTitle("Set TX Power — ${selected.size} selected")
+            .setView(wrapper)
+            .setPositiveButton("Apply") { _, _ ->
+                val powerStr = EepromConstants.POWERLEVEL_LIST
+                    .getOrNull(picker.value) ?: "1"
+                var count = 0
+                for (ch in channels) {
+                    if (ch.number in selected && !ch.empty) {
+                        EepromParser.writeChannel(eep, ch.copy(power = powerStr))
+                        count++
+                    }
+                }
+                eeprom = eep
+                EepromHolder.eeprom = eep
+                channelList = EepromParser.parseAllChannels(eep)
+                dragWorkList = channelList.toMutableList()
+                adapter.submitList(channelList)
+                // Keep selection active — user may want to move or clear next
+                Toast.makeText(
+                    this@MainActivity,
+                    "TX power → $powerStr on $count channel(s)",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             .setNegativeButton("Cancel", null)
             .show()

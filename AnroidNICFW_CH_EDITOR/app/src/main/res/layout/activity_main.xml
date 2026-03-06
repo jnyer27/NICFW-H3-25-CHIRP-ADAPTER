@@ -138,6 +138,14 @@
                 android:contentDescription="Move down" />
 
             <ImageButton
+                android:id="@+id/btnSetTxPower"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_tx_power"
+                android:contentDescription="Set TX power for selected channels" />
+
+            <ImageButton
                 android:id="@+id/btnClearSelected"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
