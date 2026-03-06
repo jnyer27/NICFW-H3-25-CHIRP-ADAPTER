@@ -23,6 +23,22 @@ object EepromConstants {
     const val GROUP_LABELS_BASE = 0x1C90
     const val GROUP_LABEL_SIZE  = 6
 
+    // ── Tune Settings (per-radio calibration) at 0x1DFB ──────────────────────
+    // Struct layout (5 bytes total; matches nicFW Programmer "Tuning2" tab):
+    //   0x1DFB  i8  xtal671             Crystal calibration (-128 to 127)
+    //   0x1DFC  u8  maxPowerWattsUHF    Max UHF power in 0.1W units (display only)
+    //   0x1DFD  u8  maxPowerSettingUHF  Max UHF raw power setting (enforced by radio)
+    //   0x1DFE  u8  maxPowerWattsVHF    Max VHF power in 0.1W units (display only)
+    //   0x1DFF  u8  maxPowerSettingVHF  Max VHF raw power setting (enforced by radio)
+    //
+    // These are per-radio calibration values; cloning an EEPROM from another
+    // radio copies them. The radio silently clamps channel TX power to the cap
+    // at transmit time — this does NOT change the stored channel power byte.
+    const val TUNE_SETTINGS_BASE = 0x1DFB
+
+    /** Frequency boundary (Hz) separating VHF from UHF for power cap checks. */
+    const val VHF_UHF_BOUNDARY_HZ = 300_000_000L
+
     // VHF/UHF TX-capable bands (Hz) — fallback when no band plan is loaded
     const val VHF_LOW  = 136_000_000
     const val VHF_HIGH = 174_000_000

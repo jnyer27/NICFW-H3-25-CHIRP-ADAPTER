@@ -4,6 +4,23 @@ import com.nicfw.tdh3editor.radio.BandPlanEntry
 import com.nicfw.tdh3editor.radio.ScanPresetEntry
 
 /**
+ * Per-radio calibration values stored at EEPROM offset 0x1DFB.
+ *
+ * @param xtal671              Crystal calibration offset (-128 to 127).
+ * @param maxPowerWattsUHF     Max UHF output in 0.1W units (display/info only).
+ * @param maxPowerSettingUHF   Max UHF raw power byte the radio enforces at TX time.
+ * @param maxPowerWattsVHF     Max VHF output in 0.1W units (display/info only).
+ * @param maxPowerSettingVHF   Max VHF raw power byte the radio enforces at TX time.
+ */
+data class TuneSettings(
+    val xtal671:            Int = 0,
+    val maxPowerWattsUHF:   Int = 255,
+    val maxPowerSettingUHF: Int = 255,
+    val maxPowerWattsVHF:   Int = 255,
+    val maxPowerSettingVHF: Int = 255,
+)
+
+/**
  * Application-level holder for the current EEPROM image so that ChannelEditActivity
  * and GroupLabelEditActivity can read and write the same buffer without passing it
  * through Intent.
@@ -32,4 +49,12 @@ object EepromHolder {
      * Populated by MainActivity after each EEPROM load.
      */
     var scanPresets: List<ScanPresetEntry> = emptyList()
+
+    /**
+     * Per-radio calibration values parsed from 0x1DFB (nicFW 2.5).
+     * Includes XTAL 671 crystal calibration and VHF/UHF max power caps.
+     * Populated by MainActivity after each EEPROM load.
+     * Defaults to uncapped (255) until an EEPROM is loaded.
+     */
+    var tuneSettings: TuneSettings = TuneSettings()
 }

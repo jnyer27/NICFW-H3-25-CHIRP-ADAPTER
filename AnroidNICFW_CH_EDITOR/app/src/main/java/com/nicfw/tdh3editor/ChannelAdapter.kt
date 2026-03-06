@@ -156,11 +156,26 @@ class ChannelAdapter(
                 } else {
                     EepromConstants.isTxRestricted(channel.freqRxHz)
                 }
-                channelPower.text  =
-                    if (wattsText != "N/T" && txRestricted)
-                        "$wattsText (BP)"   // Band Plan forces N/T on this frequency
-                    else
+
+                // Issue #5: warn when stored channel power exceeds the radio's
+                // VHF/UHF power setting cap (Tune Settings at 0x1DFB).
+                // The radio silently clamps at TX time; the stored byte is unchanged.
+                val rawPower = channel.power.toIntOrNull() ?: 0
+                val ts = EepromHolder.tuneSettings
+                val isVhf = channel.freqRxHz < EepromConstants.VHF_UHF_BOUNDARY_HZ
+                val cap = if (isVhf) ts.maxPowerSettingVHF else ts.maxPowerSettingUHF
+                val exceedsCap = rawPower > 0 && rawPower > cap
+
+                channelPower.text = when {
+                    wattsText != "N/T" && txRestricted && exceedsCap ->
+                        "$wattsText (BP) ⚠"   // Band Plan restricts TX AND over cap
+                    wattsText != "N/T" && txRestricted ->
+                        "$wattsText (BP)"      // Band Plan forces N/T on this frequency
+                    exceedsCap ->
+                        "$wattsText ⚠"        // Exceeds VHF/UHF power cap — will be clamped
+                    else ->
                         wattsText
+                }
 
                 val groups = buildGroupsDisplay(channel)
                 channelGroups.text       = groups

@@ -348,6 +348,45 @@ object EepromParser {
         }
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Tune Settings  (0x1DFB — per-radio calibration)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Reads the 5-byte Tune Settings block at 0x1DFB:
+     *   [0] i8  xtal671             (-128 to 127)
+     *   [1] u8  maxPowerWattsUHF    (0.1W units, display only)
+     *   [2] u8  maxPowerSettingUHF  (raw cap enforced at TX time)
+     *   [3] u8  maxPowerWattsVHF    (0.1W units, display only)
+     *   [4] u8  maxPowerSettingVHF  (raw cap enforced at TX time)
+     *
+     * Returns default [TuneSettings] (all uncapped) if the offset is out of range.
+     */
+    fun readTuneSettings(eeprom: ByteArray): com.nicfw.tdh3editor.TuneSettings {
+        val base = EepromConstants.TUNE_SETTINGS_BASE
+        if (base + 5 > eeprom.size) return com.nicfw.tdh3editor.TuneSettings()
+        return com.nicfw.tdh3editor.TuneSettings(
+            xtal671            = eeprom[base].toInt(),          // i8 — Kotlin sign-extends
+            maxPowerWattsUHF   = eeprom[base + 1].toInt() and 0xFF,
+            maxPowerSettingUHF = eeprom[base + 2].toInt() and 0xFF,
+            maxPowerWattsVHF   = eeprom[base + 3].toInt() and 0xFF,
+            maxPowerSettingVHF = eeprom[base + 4].toInt() and 0xFF,
+        )
+    }
+
+    /**
+     * Writes [settings] back into the 5-byte Tune Settings block at 0x1DFB.
+     */
+    fun writeTuneSettings(eeprom: ByteArray, settings: com.nicfw.tdh3editor.TuneSettings) {
+        val base = EepromConstants.TUNE_SETTINGS_BASE
+        if (base + 5 > eeprom.size) return
+        eeprom[base]     = settings.xtal671.toByte()
+        eeprom[base + 1] = (settings.maxPowerWattsUHF   and 0xFF).toByte()
+        eeprom[base + 2] = (settings.maxPowerSettingUHF and 0xFF).toByte()
+        eeprom[base + 3] = (settings.maxPowerWattsVHF   and 0xFF).toByte()
+        eeprom[base + 4] = (settings.maxPowerSettingVHF and 0xFF).toByte()
+    }
+
     private fun readU32Be(b: ByteArray, off: Int): Long {
         return ((b[off].toInt() and 0xFF).toLong() shl 24) or
             ((b[off + 1].toInt() and 0xFF).toLong() shl 16) or
