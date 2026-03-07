@@ -89,6 +89,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         spin(binding.spinnerToneMonitor, C.RS_TONE_MONITOR_LIST)
         spin(binding.spinnerBattStyle,   C.RS_BATT_STYLE_LIST)
         spin(binding.spinnerPinAction,   C.RS_PIN_ACTION_LIST)
+        spin(binding.spinnerDtmfDecode,  C.RS_DTMF_DECODE_LIST)
     }
 
     /** Populates all UI widgets from [EepromHolder.radioSettings]. */
@@ -141,7 +142,6 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.editRepeaterTone.setText(ei(s.repeaterTone))
 
         binding.editIfFreq.setText(ei(s.ifFreq))
-        binding.editRxFilterTrans.setText(ei(s.rxFilterTrans))
         binding.editRfiComp.setText(ei(s.rfiComp))
         binding.editAgc0.setText(ei(s.agc0))
         binding.editAgc1.setText(ei(s.agc1))
@@ -158,7 +158,7 @@ class SettingsEditorActivity : AppCompatActivity() {
 
         binding.editDtmfDev.setText(ei(s.dtmfDev))
         binding.editDtmfSpeed.setText(ei(s.dtmfSpeed))
-        binding.editDtmfDecode.setText(ei(s.dtmfDecode))
+        binding.spinnerDtmfDecode.setSelection(s.dtmfDecode.coerceIn(0, C.RS_DTMF_DECODE_LIST.lastIndex))
 
         binding.editPowerSave.setText(ei(s.powerSave))
         binding.editDwDelay.setText(ei(s.dwDelay))
@@ -241,7 +241,6 @@ class SettingsEditorActivity : AppCompatActivity() {
             repeaterTone  = binding.editRepeaterTone.text.toString().asInt(1750).coerceIn(0, 65535),
 
             ifFreq        = binding.editIfFreq.text.toString().asInt(0).coerceIn(0, 255),
-            rxFilterTrans = binding.editRxFilterTrans.text.toString().asInt(0).coerceIn(0, 65535),
             rfiComp       = binding.editRfiComp.text.toString().asInt(0).coerceIn(0, 255),
             agc0          = binding.editAgc0.text.toString().asInt(24).coerceIn(0, 255),
             agc1          = binding.editAgc1.text.toString().asInt(32).coerceIn(0, 255),
@@ -258,7 +257,7 @@ class SettingsEditorActivity : AppCompatActivity() {
 
             dtmfDev       = binding.editDtmfDev.text.toString().asInt(80).coerceIn(0, 255),
             dtmfSpeed     = binding.editDtmfSpeed.text.toString().asInt(11).coerceIn(0, 255),
-            dtmfDecode    = binding.editDtmfDecode.text.toString().asInt(0).coerceIn(0, 255),
+            dtmfDecode    = binding.spinnerDtmfDecode.selectedItemPosition,
 
             powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 255),
             dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 255),

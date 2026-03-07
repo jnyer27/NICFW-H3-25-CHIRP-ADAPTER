@@ -72,14 +72,16 @@ object EepromConstants {
     const val RS_AGC2            = 0x196A  // u8  AGC Table 2  ✓ confirmed (value=37)
     const val RS_AGC3            = 0x196B  // u8  AGC Table 3  ✓ confirmed (value=40)
     const val RS_RFI_COMP        = 0x196C  // u8  0=Off  ✓ confirmed (set to 1, observed in EEPROM)
-    const val RS_DTMF_DECODE     = 0x196D  // u8  0=Off  ⚠ unconfirmed offset
-    const val RS_RX_FILTER_TRANS = 0x196E  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
+    // 0x196D = unknown (1 byte gap)
+    const val RS_DTMF_DECODE     = 0x196E  // u8  0=Off,1=Always,2=Squelched  ✓ confirmed (0→1 when DTMF Decode=Always)
+    // 0x196F = unknown (1 byte gap); RS_RX_FILTER_TRANS location unconfirmed — removed from UI pending new dump
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
     const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
     const val RS_SCRAMBLER_IF    = 0x1974  // u8  0=Off  ⚠ unconfirmed offset
 
     // Radio Settings enum lists ─────────────────────────────────────────────
+    val RS_DTMF_DECODE_LIST  = listOf("Off", "Always", "Squelched")
     val RS_BATT_STYLE_LIST   = listOf("Off", "Icon", "Percentage", "Voltage")
     val RS_TONE_MONITOR_LIST = listOf("Off", "On", "Clone")
     val RS_PTT_MODE_LIST     = listOf("Dual", "Single")

@@ -15,7 +15,7 @@ import com.nicfw.tdh3editor.radio.ScanPresetEntry
  *  - step:            raw u16 in 10 Hz units; see RS_STEP_RAW in EepromConstants
  *  - repeaterTone:    raw u16 in Hz (1750 = 1750 Hz)
  *  - pin:             raw u16, 0-9999
- *  - rxFilterTrans / txFilterTrans: raw u16; 0 = use firmware default (280 MHz)
+ *  - txFilterTrans: raw u16; 0 = use firmware default (280 MHz)
  *  - ifFreq:          raw u8;  0 = firmware default (displayed as 8.46 kHz)
  */
 data class RadioSettings(
@@ -48,7 +48,6 @@ data class RadioSettings(
     val step:            Int = 500,
     val afFilters:       Int = 0,
     val ifFreq:          Int = 0,
-    val rxFilterTrans:   Int = 0,
     val rfiComp:         Int = 0,
     val agc0:            Int = 24,
     val agc1:            Int = 32,

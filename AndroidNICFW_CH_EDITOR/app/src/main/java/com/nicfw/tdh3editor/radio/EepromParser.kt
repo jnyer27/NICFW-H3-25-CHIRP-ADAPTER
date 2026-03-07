@@ -406,7 +406,6 @@ object EepromParser {
             step            = u16(C.RS_STEP),
             afFilters       = u8(C.RS_AF_FILTERS),
             ifFreq          = u8(C.RS_IF_FREQ),
-            rxFilterTrans   = u16(C.RS_RX_FILTER_TRANS),
             rfiComp         = u8(C.RS_RFI_COMP),
             agc0            = u8(C.RS_AGC0),
             agc1            = u8(C.RS_AGC1),
@@ -471,7 +470,6 @@ object EepromParser {
         pu16(C.RS_STEP,           s.step)
         pu8(C.RS_AF_FILTERS,      s.afFilters)
         pu8(C.RS_IF_FREQ,         s.ifFreq)
-        pu16(C.RS_RX_FILTER_TRANS, s.rxFilterTrans)
         pu8(C.RS_RFI_COMP,        s.rfiComp)
         pu8(C.RS_AGC0,            s.agc0)
         pu8(C.RS_AGC1,            s.agc1)

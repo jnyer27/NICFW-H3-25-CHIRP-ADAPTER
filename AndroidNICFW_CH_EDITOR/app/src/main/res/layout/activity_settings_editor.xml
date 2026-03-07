@@ -64,7 +64,7 @@
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.3"
                     android:textColor="#7D5700"
-                    android:text="⚠  Fields marked ⚠ use EEPROM offsets derived by analysis — not confirmed in firmware source. Verify values match your radio before saving: DTMF Decode, Scrambler IF, RX/TX Filter Trans." />
+                    android:text="⚠  Fields marked ⚠ use EEPROM offsets derived by analysis — not confirmed in firmware source. Verify values match your radio before saving: Scrambler IF, TX Filter Trans." />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -364,13 +364,6 @@
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- RX Filter Trans ⚠ -->
-                    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RX Filter Trans ⚠ (0=default)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editRxFilterTrans" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=280 MHz" />
-                    </LinearLayout>
-                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
-
                     <!-- RFi Comp -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RFi Comp (0=Off)" android:textSize="14sp" />
@@ -621,10 +614,10 @@
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- DTMF Decode ⚠ -->
+                    <!-- DTMF Decode -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Decode ⚠ (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editDtmfDecode" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Decode" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerDtmfDecode" android:layout_width="140dp" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
