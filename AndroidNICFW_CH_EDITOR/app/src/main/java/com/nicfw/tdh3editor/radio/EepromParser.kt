@@ -433,7 +433,13 @@ object EepromParser {
             vfoLockActive   = bool(C.RS_VFO_LOCK_ACTIVE),
             asl             = u8(C.RS_ASL),
             disableFmt      = bool(C.RS_DISABLE_FMT),
-            scramblerIf     = u8(C.RS_SCRAMBLER_IF),
+            scramblerIf     = run {
+                val en   = u8(C.RS_SCRAMBLER_EN)
+                val freq = u8(C.RS_SCRAMBLER_FREQ)
+                if (en == 0) 0
+                else if (freq == 0) 8          // raw 0 = 3300 Hz = UI setting 8
+                else freq.coerceIn(1, 10)      // raw 1-7 → UI 1-7; raw 8-9 → UI 8-9 (unverified)
+            },
             pin             = u16(C.RS_PIN),
             pinAction       = u8(C.RS_PIN_ACTION),
         )
@@ -497,7 +503,16 @@ object EepromParser {
         pbool(C.RS_VFO_LOCK_ACTIVE, s.vfoLockActive)
         pu8(C.RS_ASL,             s.asl)
         pbool(C.RS_DISABLE_FMT,   s.disableFmt)
-        pu8(C.RS_SCRAMBLER_IF,    s.scramblerIf)
+        // Scrambler: two fields — RS_SCRAMBLER_EN (bool) + RS_SCRAMBLER_FREQ (index).
+        // Freq index: UI0=Off(en=0), UI8(3300Hz)→raw0, UI1-7→raw1-7, UI9-10→raw8-9(unverified).
+        val scrEn   = if (s.scramblerIf == 0) 0 else 1
+        val scrFreq = when (s.scramblerIf) {
+            0       -> 0                  // Off — enable=0 so freq is irrelevant
+            8       -> 0                  // 3300 Hz lives at raw index 0
+            else    -> s.scramblerIf      // 1-7 and 9-10 map directly to raw index
+        }
+        pu8(C.RS_SCRAMBLER_EN,   scrEn)
+        pu8(C.RS_SCRAMBLER_FREQ, scrFreq)
         pu16(C.RS_PIN,            s.pin)
         pu8(C.RS_PIN_ACTION,      s.pinAction)
     }

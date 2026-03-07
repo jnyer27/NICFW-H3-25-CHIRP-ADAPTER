@@ -89,7 +89,8 @@ class SettingsEditorActivity : AppCompatActivity() {
         spin(binding.spinnerToneMonitor, C.RS_TONE_MONITOR_LIST)
         spin(binding.spinnerBattStyle,   C.RS_BATT_STYLE_LIST)
         spin(binding.spinnerPinAction,   C.RS_PIN_ACTION_LIST)
-        spin(binding.spinnerDtmfDecode,  C.RS_DTMF_DECODE_LIST)
+        spin(binding.spinnerDtmfDecode,   C.RS_DTMF_DECODE_LIST)
+        spin(binding.spinnerScramblerIf,  C.RS_SCRAMBLER_LABELS)
     }
 
     /** Populates all UI widgets from [EepromHolder.radioSettings]. */
@@ -163,7 +164,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.editPowerSave.setText(ei(s.powerSave))
         binding.editDwDelay.setText(ei(s.dwDelay))
         binding.editAsl.setText(ei(s.asl))
-        binding.editScramblerIf.setText(ei(s.scramblerIf))
+        binding.spinnerScramblerIf.setSelection(s.scramblerIf.coerceIn(0, C.RS_SCRAMBLER_LABELS.lastIndex))
 
         binding.editPin.setText(ei(s.pin))
 
@@ -262,7 +263,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 255),
             dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 255),
             asl           = binding.editAsl.text.toString().asInt(0).coerceIn(0, 255),
-            scramblerIf   = binding.editScramblerIf.text.toString().asInt(0).coerceIn(0, 10),
+            scramblerIf   = binding.spinnerScramblerIf.selectedItemPosition,
 
             pin           = binding.editPin.text.toString().asInt(0).coerceIn(0, 9999),
 
