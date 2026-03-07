@@ -73,7 +73,7 @@ class ScanPresetEntryEditActivity : AppCompatActivity() {
             binding.editSpResume.setText(entry.scanResume.toString())
             binding.editSpPersist.setText(entry.scanPersist.toString())
             binding.spinnerSpModulation.setSelection(entry.modRaw.coerceIn(0, 3))
-            binding.spinnerSpUltrascan.setSelection(entry.ultrascan.coerceIn(0, 20))
+            binding.spinnerSpUltrascan.setSelection(entry.ultrascan.coerceIn(0, 7))
             binding.editSpLabel.setText(entry.label)
         } else {
             // Defaults for a new empty slot
@@ -129,7 +129,7 @@ class ScanPresetEntryEditActivity : AppCompatActivity() {
         val persist = binding.editSpPersist.text?.toString()?.trim()
             ?.toIntOrNull()?.coerceIn(0, 255) ?: 0
         val modRaw    = binding.spinnerSpModulation.selectedItemPosition.coerceIn(0, 3)
-        val ultrascan = binding.spinnerSpUltrascan.selectedItemPosition.coerceIn(0, 20)
+        val ultrascan = binding.spinnerSpUltrascan.selectedItemPosition.coerceIn(0, 7)
         val label     = binding.editSpLabel.text?.toString()?.trim()?.take(8) ?: ""
 
         val entry = ScanPresetEntry(
