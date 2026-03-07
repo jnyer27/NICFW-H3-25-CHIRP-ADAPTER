@@ -71,13 +71,13 @@ object EepromConstants {
     const val RS_AGC1            = 0x1969  // u8  AGC Table 1  ✓ confirmed (value=32)
     const val RS_AGC2            = 0x196A  // u8  AGC Table 2  ✓ confirmed (value=37)
     const val RS_AGC3            = 0x196B  // u8  AGC Table 3  ✓ confirmed (value=40)
-    const val RS_SHOW_XMIT_CURR  = 0x196C  // u8  bool  ⚠ unconfirmed offset
-    const val RS_SCRAMBLER_IF    = 0x196D  // u8  0=Off  ⚠ unconfirmed offset
+    const val RS_RFI_COMP        = 0x196C  // u8  0=Off  ✓ confirmed (set to 1, observed in EEPROM)
+    const val RS_SHOW_XMIT_CURR  = 0x196D  // u8  bool  ⚠ unconfirmed offset
     const val RS_RX_FILTER_TRANS = 0x196E  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
     const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
-    const val RS_RFI_COMP        = 0x1974  // u8  0=Off  ⚠ unconfirmed offset
+    const val RS_SCRAMBLER_IF    = 0x1974  // u8  0=Off  ⚠ unconfirmed offset
 
     // Radio Settings enum lists ─────────────────────────────────────────────
     val RS_BATT_STYLE_LIST   = listOf("Off", "Icon", "Percentage", "Voltage")
