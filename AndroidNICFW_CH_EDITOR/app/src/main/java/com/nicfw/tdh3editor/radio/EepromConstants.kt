@@ -150,8 +150,8 @@ object EepromConstants {
     // Verified against live EEPROM dump: FM entries raw=0, AM entries raw=1.
     val SCANPRESET_MOD_LABELS = listOf("FM", "AM", "USB", "Auto")
 
-    // Ultrascan speed labels (0–7); spinner index == raw EEPROM value.
-    val SCANPRESET_ULTRASCAN_LABELS = (0..7).map { it.toString() }
+    // Ultrascan speed labels (0–20); spinner index == raw EEPROM value.
+    val SCANPRESET_ULTRASCAN_LABELS = (0..20).map { it.toString() }
 
     // Band Plan memory layout (nicFW 2.5)
     // 0x1A00 : u16 magic (must equal 0xA46D)
