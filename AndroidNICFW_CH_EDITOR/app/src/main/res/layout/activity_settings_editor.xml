@@ -64,7 +64,7 @@
                     android:textSize="12sp"
                     android:lineSpacingMultiplier="1.3"
                     android:textColor="#7D5700"
-                    android:text="⚠  Fields marked ⚠ use EEPROM offsets derived by analysis — not confirmed in firmware source. Verify values match your radio before saving: Scrambler IF, TX Filter Trans." />
+                    android:text="⚠  Fields marked ⚠ use EEPROM offsets or encodings not fully confirmed. Verify values match your radio before saving: Scrambler IF (offset confirmed, value encoding TBD), TX Filter Trans (offset unconfirmed)." />
             </com.google.android.material.card.MaterialCardView>
 
             <!-- ═══════════════════════════════════════════════════════════════ -->

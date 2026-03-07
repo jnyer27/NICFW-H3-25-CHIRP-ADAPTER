@@ -23,6 +23,7 @@ object EepromConstants {
     // Main struct (0x1900–0x1966):
     const val RS_SQUELCH         = 0x1902  // u8  0-9
     const val RS_DUAL_WATCH      = 0x1903  // u8  bool
+    const val RS_SCRAMBLER_IF    = 0x1905  // u8  0=Off,1-10=2600-3500 Hz  ✓ offset confirmed; encoding TBD (stored 1 when UI shows 8; need clarification)
     const val RS_STEP            = 0x1906  // u16 BE, 10 Hz units (500 = 5.0 kHz)
     const val RS_PTT_MODE        = 0x190C  // u8  0=Dual, 1=Single
     const val RS_TX_MOD_METER    = 0x190D  // u8  bool
@@ -78,7 +79,6 @@ object EepromConstants {
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
     const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
-    const val RS_SCRAMBLER_IF    = 0x1974  // u8  0=Off,1=2600…10=3500 Hz  ⚠ unconfirmed offset (likely in unmapped gap 0x1920-0x1946)
 
     // Radio Settings enum lists ─────────────────────────────────────────────
     val RS_DTMF_DECODE_LIST  = listOf("Off", "Always", "Squelched")
