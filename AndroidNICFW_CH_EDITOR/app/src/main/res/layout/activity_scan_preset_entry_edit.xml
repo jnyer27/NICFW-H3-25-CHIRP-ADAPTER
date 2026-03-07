@@ -120,7 +120,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ultrascan Speed (0=slowest, 20=fastest)"
+                android:text="Ultrascan Speed (0=slowest, 7=fastest)"
                 android:layout_marginTop="12dp" />
             <Spinner
                 android:id="@+id/spinnerSpUltrascan"

@@ -237,7 +237,7 @@ object EepromParser {
      *   u16 step      (10 Hz units)
      *   u8  scanResume
      *   u8  scanPersist
-     *   u8  flags     — bits[6:2]=ultrascan(0–20), bits[1:0]=modulation(0=FM,1=AM,2=USB,3=Auto)
+     *   u8  flags     — bits[4:2]=ultrascan(0–7), bits[1:0]=modulation(0=FM,1=AM,2=USB,3=Auto)
      *   u8[8] label   — ASCII, space-padded (8 bytes)
      *   u8  null      — always 0x00
      */
@@ -255,7 +255,7 @@ object EepromParser {
                 val resume      = eeprom[off + 8].toInt() and 0xFF
                 val persist     = eeprom[off + 9].toInt() and 0xFF
                 val flags       = eeprom[off + 10].toInt() and 0xFF
-                val ultrascan   = (flags shr 2) and 0x1F
+                val ultrascan   = (flags shr 2) and 0x07
                 val modRaw      = flags and 0x03
                 val labelBytes  = eeprom.copyOfRange(off + 11, off + 19)
                 val label       = labelBytes.toString(Charsets.US_ASCII)
@@ -299,7 +299,7 @@ object EepromParser {
                     .coerceIn(0L, 65535L).toInt()               // 10 kHz units, u16
                 val step10      = (entry.stepHz / 10)
                     .coerceIn(0, 65535)                          // 10 Hz units, u16
-                val flags       = ((entry.ultrascan and 0x1F) shl 2) or (entry.modRaw and 0x03)
+                val flags       = ((entry.ultrascan and 0x07) shl 2) or (entry.modRaw and 0x03)
                 val labelPadded = entry.label.take(8).padEnd(8, ' ')
 
                 writeU32Be(eeprom, off,     startFreq10)
