@@ -66,13 +66,13 @@ object EepromConstants {
     const val RS_DW_DELAY        = 0x1965  // u8  DualWatch Start Delay, seconds
     const val RS_SUBTONE_DEV     = 0x1966  // u8  Squelch Tone Deviation
     // Filler area (0x1967–0x197F) — offsets derived from EEPROM analysis:
-    const val RS_DTMF_DECODE     = 0x1967  // u8  0=Off  ⚠ unconfirmed offset
+    const val RS_SHOW_XMIT_CURR  = 0x1967  // u8  bool  ✓ confirmed (0→1 when Show Xmit Current=On)
     const val RS_AGC0            = 0x1968  // u8  AGC Table 0  ✓ confirmed (value=24)
     const val RS_AGC1            = 0x1969  // u8  AGC Table 1  ✓ confirmed (value=32)
     const val RS_AGC2            = 0x196A  // u8  AGC Table 2  ✓ confirmed (value=37)
     const val RS_AGC3            = 0x196B  // u8  AGC Table 3  ✓ confirmed (value=40)
     const val RS_RFI_COMP        = 0x196C  // u8  0=Off  ✓ confirmed (set to 1, observed in EEPROM)
-    const val RS_SHOW_XMIT_CURR  = 0x196D  // u8  bool  ⚠ unconfirmed offset
+    const val RS_DTMF_DECODE     = 0x196D  // u8  0=Off  ⚠ unconfirmed offset
     const val RS_RX_FILTER_TRANS = 0x196E  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
