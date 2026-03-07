@@ -83,14 +83,20 @@ class SettingsEditorActivity : AppCompatActivity() {
 
         val C = EepromConstants
         spin(binding.spinnerSquelch,     C.RS_SQUELCH_LIST)
+        spin(binding.spinnerSte,         C.RS_STE_LIST)
         spin(binding.spinnerPttMode,     C.RS_PTT_MODE_LIST)
         spin(binding.spinnerStep,        C.RS_STEP_LABELS)
         spin(binding.spinnerAfFilters,   C.RS_AF_FILTERS_LIST)
+        spin(binding.spinnerIfFreq,      C.RS_IF_FREQ_LIST)
+        spin(binding.spinnerRfiComp,     C.RS_RFI_COMP_LIST)
+        spin(binding.spinnerSBarStyle,   C.RS_SBAR_STYLE_LIST)
+        spin(binding.spinnerKeyTones,    C.RS_KEY_TONES_LIST)
+        spin(binding.spinnerAsl,         C.RS_ASL_LIST)
         spin(binding.spinnerToneMonitor, C.RS_TONE_MONITOR_LIST)
         spin(binding.spinnerBattStyle,   C.RS_BATT_STYLE_LIST)
         spin(binding.spinnerPinAction,   C.RS_PIN_ACTION_LIST)
-        spin(binding.spinnerDtmfDecode,   C.RS_DTMF_DECODE_LIST)
-        spin(binding.spinnerScramblerIf,  C.RS_SCRAMBLER_LABELS)
+        spin(binding.spinnerDtmfDecode,  C.RS_DTMF_DECODE_LIST)
+        spin(binding.spinnerScramblerIf, C.RS_SCRAMBLER_LABELS)
     }
 
     /** Populates all UI widgets by re-parsing the live EEPROM buffer. */
@@ -101,12 +107,18 @@ class SettingsEditorActivity : AppCompatActivity() {
 
         // ── Spinners ──────────────────────────────────────────────────────────
         binding.spinnerSquelch.setSelection(s.squelch.coerceIn(0, C.RS_SQUELCH_LIST.lastIndex))
+        binding.spinnerSte.setSelection(s.ste.coerceIn(0, C.RS_STE_LIST.lastIndex))
         binding.spinnerPttMode.setSelection(s.pttMode.coerceIn(0, C.RS_PTT_MODE_LIST.lastIndex))
         // Step: find matching raw value in RS_STEP_RAW; default to index 1 (5.0 kHz)
         binding.spinnerStep.setSelection(
             C.RS_STEP_RAW.indexOf(s.step).takeIf { it >= 0 } ?: 1
         )
         binding.spinnerAfFilters.setSelection(s.afFilters.coerceIn(0, C.RS_AF_FILTERS_LIST.lastIndex))
+        binding.spinnerIfFreq.setSelection(s.ifFreq.coerceIn(0, C.RS_IF_FREQ_LIST.lastIndex))
+        binding.spinnerRfiComp.setSelection(s.rfiComp.coerceIn(0, C.RS_RFI_COMP_LIST.lastIndex))
+        binding.spinnerSBarStyle.setSelection(s.sBarStyle.coerceIn(0, C.RS_SBAR_STYLE_LIST.lastIndex))
+        binding.spinnerKeyTones.setSelection(s.keyTones.coerceIn(0, C.RS_KEY_TONES_LIST.lastIndex))
+        binding.spinnerAsl.setSelection(s.asl.coerceIn(0, C.RS_ASL_LIST.lastIndex))
         binding.spinnerToneMonitor.setSelection(s.toneMonitor.coerceIn(0, C.RS_TONE_MONITOR_LIST.lastIndex))
         binding.spinnerBattStyle.setSelection(s.battStyle.coerceIn(0, C.RS_BATT_STYLE_LIST.lastIndex))
         binding.spinnerPinAction.setSelection(s.pinAction.coerceIn(0, C.RS_PIN_ACTION_LIST.lastIndex))
@@ -117,7 +129,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.switchTxModMeter.isChecked      = s.txModMeter
         binding.switchShowXmitCurrent.isChecked = s.showXmitCurrent
         binding.switchDualWatch.isChecked       = s.dualWatch
-        binding.switchKeyTones.isChecked        = s.keyTones
+        binding.switchNoiseGate.isChecked       = s.noiseGate != 0
         binding.switchBluetooth.isChecked       = s.bluetooth
         binding.switchVfoLockActive.isChecked   = s.vfoLockActive
         binding.switchDisableFmt.isChecked      = s.disableFmt
@@ -126,9 +138,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         fun ei(v: Int) = v.toString()
         binding.editSqNoiseLev.setText(ei(s.sqNoiseLev))
         binding.editNoiseCeiling.setText(ei(s.noiseCeiling))
-        binding.editSte.setText(ei(s.ste))
         binding.editMicGain.setText(ei(s.micGain))
-        binding.editNoiseGate.setText(ei(s.noiseGate))
         binding.editRfGain.setText(ei(s.rfGain))
 
         binding.editLcdBrightness.setText(ei(s.lcdBrightness))
@@ -136,15 +146,12 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.editBreathe.setText(ei(s.breathe))
         binding.editLcdDim.setText(ei(s.lcdDim))
         binding.editLcdGamma.setText(ei(s.lcdGamma))
-        binding.editSBarStyle.setText(ei(s.sBarStyle))
 
         binding.editTxTimeout.setText(ei(s.txTimeout))
         binding.editTxDeviation.setText(ei(s.txDeviation))
         binding.editTxFilterTrans.setText(ei(s.txFilterTrans))
         binding.editRepeaterTone.setText(ei(s.repeaterTone))
 
-        binding.editIfFreq.setText(ei(s.ifFreq))
-        binding.editRfiComp.setText(ei(s.rfiComp))
         binding.editAgc0.setText(ei(s.agc0))
         binding.editAgc1.setText(ei(s.agc1))
         binding.editAgc2.setText(ei(s.agc2))
@@ -164,7 +171,6 @@ class SettingsEditorActivity : AppCompatActivity() {
 
         binding.editPowerSave.setText(ei(s.powerSave))
         binding.editDwDelay.setText(ei(s.dwDelay))
-        binding.editAsl.setText(ei(s.asl))
         binding.spinnerScramblerIf.setSelection(s.scramblerIf.coerceIn(0, C.RS_SCRAMBLER_LABELS.lastIndex))
 
         binding.editPin.setText(ei(s.pin))
@@ -204,9 +210,15 @@ class SettingsEditorActivity : AppCompatActivity() {
         val updated = RadioSettings(
             // ── Spinners ─────────────────────────────────────────────────────
             squelch     = binding.spinnerSquelch.selectedItemPosition,
+            ste         = binding.spinnerSte.selectedItemPosition,
             pttMode     = binding.spinnerPttMode.selectedItemPosition,
             step        = C.RS_STEP_RAW[binding.spinnerStep.selectedItemPosition],
             afFilters   = binding.spinnerAfFilters.selectedItemPosition,
+            ifFreq      = binding.spinnerIfFreq.selectedItemPosition,
+            rfiComp     = binding.spinnerRfiComp.selectedItemPosition,
+            sBarStyle   = binding.spinnerSBarStyle.selectedItemPosition,
+            keyTones    = binding.spinnerKeyTones.selectedItemPosition,
+            asl         = binding.spinnerAsl.selectedItemPosition,
             toneMonitor = binding.spinnerToneMonitor.selectedItemPosition,
             battStyle   = binding.spinnerBattStyle.selectedItemPosition,
             pinAction   = binding.spinnerPinAction.selectedItemPosition,
@@ -217,7 +229,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             txModMeter      = binding.switchTxModMeter.isChecked,
             showXmitCurrent = binding.switchShowXmitCurrent.isChecked,
             dualWatch       = binding.switchDualWatch.isChecked,
-            keyTones        = binding.switchKeyTones.isChecked,
+            noiseGate       = if (binding.switchNoiseGate.isChecked) 1 else 0,
             bluetooth       = binding.switchBluetooth.isChecked,
             vfoLockActive   = binding.switchVfoLockActive.isChecked,
             disableFmt      = binding.switchDisableFmt.isChecked,
@@ -225,45 +237,39 @@ class SettingsEditorActivity : AppCompatActivity() {
             // ── EditTexts — raw integers ──────────────────────────────────────
             sqNoiseLev    = binding.editSqNoiseLev.text.toString().asInt(0).coerceIn(0, 255),
             noiseCeiling  = binding.editNoiseCeiling.text.toString().asInt(0).coerceIn(0, 255),
-            ste           = binding.editSte.text.toString().asInt(0).coerceIn(0, 255),
-            micGain       = binding.editMicGain.text.toString().asInt(0).coerceIn(0, 31),
-            noiseGate     = binding.editNoiseGate.text.toString().asInt(0).coerceIn(0, 255),
+            micGain       = binding.editMicGain.text.toString().asInt(25).coerceIn(0, 31),
             rfGain        = binding.editRfGain.text.toString().asInt(0).coerceIn(0, 255),
 
-            lcdBrightness = binding.editLcdBrightness.text.toString().asInt(28).coerceIn(0, 28),
+            lcdBrightness = binding.editLcdBrightness.text.toString().asInt(28).coerceIn(0, 35),
             lcdTimeout    = binding.editLcdTimeout.text.toString().asInt(0).coerceIn(0, 255),
-            breathe       = binding.editBreathe.text.toString().asInt(0).coerceIn(0, 255),
-            lcdDim        = binding.editLcdDim.text.toString().asInt(0).coerceIn(0, 255),
+            breathe       = binding.editBreathe.text.toString().asInt(0).coerceIn(0, 30),
+            lcdDim        = binding.editLcdDim.text.toString().asInt(0).coerceIn(0, 14),
             lcdGamma      = binding.editLcdGamma.text.toString().asInt(0).coerceIn(0, 255),
-            sBarStyle     = binding.editSBarStyle.text.toString().asInt(0).coerceIn(0, 255),
 
             txTimeout     = binding.editTxTimeout.text.toString().asInt(120).coerceIn(0, 255),
-            txDeviation   = binding.editTxDeviation.text.toString().asInt(64).coerceIn(0, 255),
+            txDeviation   = binding.editTxDeviation.text.toString().asInt(64).coerceIn(0, 127),
             txFilterTrans = binding.editTxFilterTrans.text.toString().asInt(0).coerceIn(0, 65535),
             repeaterTone  = binding.editRepeaterTone.text.toString().asInt(1750).coerceIn(0, 65535),
 
-            ifFreq        = binding.editIfFreq.text.toString().asInt(0).coerceIn(0, 255),
-            rfiComp       = binding.editRfiComp.text.toString().asInt(0).coerceIn(0, 255),
-            agc0          = binding.editAgc0.text.toString().asInt(24).coerceIn(0, 255),
-            agc1          = binding.editAgc1.text.toString().asInt(32).coerceIn(0, 255),
-            agc2          = binding.editAgc2.text.toString().asInt(37).coerceIn(0, 255),
-            agc3          = binding.editAgc3.text.toString().asInt(40).coerceIn(0, 255),
+            agc0          = binding.editAgc0.text.toString().asInt(24).coerceIn(0, 63),
+            agc1          = binding.editAgc1.text.toString().asInt(32).coerceIn(0, 63),
+            agc2          = binding.editAgc2.text.toString().asInt(37).coerceIn(0, 63),
+            agc3          = binding.editAgc3.text.toString().asInt(40).coerceIn(0, 63),
 
-            scanResume    = binding.editScanResume.text.toString().asInt(10).coerceIn(0, 255),
+            scanResume    = binding.editScanResume.text.toString().asInt(10).coerceIn(0, 30),
             scanUpdate    = binding.editScanUpdate.text.toString().asInt(0).coerceIn(0, 255),
-            ultraScan     = binding.editUltraScan.text.toString().asInt(7).coerceIn(0, 20),
+            ultraScan     = binding.editUltraScan.text.toString().asInt(7).coerceIn(0, 7),
 
             vox           = binding.editVox.text.toString().asInt(0).coerceIn(0, 15),
 
             subToneDev    = binding.editSubToneDev.text.toString().asInt(74).coerceIn(0, 255),
 
             dtmfDev       = binding.editDtmfDev.text.toString().asInt(80).coerceIn(0, 255),
-            dtmfSpeed     = binding.editDtmfSpeed.text.toString().asInt(11).coerceIn(0, 255),
+            dtmfSpeed     = binding.editDtmfSpeed.text.toString().asInt(11).coerceIn(0, 15),
             dtmfDecode    = binding.spinnerDtmfDecode.selectedItemPosition,
 
-            powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 255),
-            dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 255),
-            asl           = binding.editAsl.text.toString().asInt(0).coerceIn(0, 255),
+            powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 20),
+            dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 15),
             scramblerIf   = binding.spinnerScramblerIf.selectedItemPosition,
 
             pin           = binding.editPin.text.toString().asInt(0).coerceIn(0, 9999),

@@ -65,7 +65,7 @@ data class RadioSettings(
     val voxTail:         Int = 20,
     // Tones & Keys
     val toneMonitor:     Int = 1,
-    val keyTones:        Boolean = false,
+    val keyTones:        Int     = 0,      // 0=Off, 1=On, 2=Differential, 3=Voice
     val subToneDev:      Int = 74,
     // DTMF
     val dtmfDev:         Int = 80,

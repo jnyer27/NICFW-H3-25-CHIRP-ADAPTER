@@ -91,14 +91,24 @@ object EepromConstants {
         "3300 Hz", "3400 Hz", "3500 Hz"
     )
     val RS_DTMF_DECODE_LIST  = listOf("Off", "Always", "Squelched")
-    val RS_BATT_STYLE_LIST   = listOf("Off", "Icon", "Percentage", "Voltage")
+    val RS_BATT_STYLE_LIST   = listOf("Off", "Icon", "Percent", "Volts")
     val RS_TONE_MONITOR_LIST = listOf("Off", "On", "Clone")
-    val RS_PTT_MODE_LIST     = listOf("Dual", "Single")
-    val RS_PIN_ACTION_LIST   = listOf("Off", "Lock", "Unlock")
+    val RS_PTT_MODE_LIST     = listOf("Dual", "Single", "Hybrid")
+    val RS_PIN_ACTION_LIST   = listOf("Off", "On", "Power On")
     val RS_AF_FILTERS_LIST   = listOf(
         "All", "Band Pass Only", "De-Emph + HP", "High Pass",
-        "De-Emph + LP", "Low Pass", "De-Emph Only", "None"
+        "De-Emph + LP", "Low Pass", "De-Emph Only", "None", "No RX/TX Filter"
     )
+    val RS_STE_LIST          = listOf("Off", "RX", "TX", "Both")
+    val RS_SBAR_STYLE_LIST   = listOf("Segment", "Stepped", "Solid")
+    val RS_IF_FREQ_LIST      = listOf(
+        "8.46 kHz", "7.25 kHz", "6.35 kHz", "5.64 kHz",
+        "5.08 kHz", "4.62 kHz", "4.23 kHz"
+    )
+    val RS_ASL_LIST          = listOf("Off", "COS", "USB", "I-COS")
+    val RS_KEY_TONES_LIST    = listOf("Off", "On", "Differential", "Voice")
+    // RFi Comp: 0 = Off, 1–30 = numeric level. Spinner index == raw EEPROM value.
+    val RS_RFI_COMP_LIST     = listOf("Off") + (1..30).map { it.toString() }
     // Step: display label → raw u16 value in 10 Hz units
     val RS_STEP_LABELS = listOf("2.5 kHz", "5.0 kHz", "6.25 kHz", "12.5 kHz", "25.0 kHz", "50.0 kHz")
     val RS_STEP_RAW    = listOf(250, 500, 625, 1250, 2500, 5000)

@@ -420,7 +420,7 @@ object EepromParser {
             vox             = u8(C.RS_VOX),
             voxTail         = u16(C.RS_VOX_TAIL),
             toneMonitor     = u8(C.RS_TONE_MONITOR),
-            keyTones        = bool(C.RS_KEY_TONES),
+            keyTones        = u8(C.RS_KEY_TONES).coerceIn(0, 3),
             subToneDev      = u8(C.RS_SUBTONE_DEV),
             dtmfDev         = u8(C.RS_DTMF_DEV),
             dtmfSpeed       = u8(C.RS_DTMF_SPEED),
@@ -490,7 +490,7 @@ object EepromParser {
         pu8(C.RS_VOX,             s.vox)
         pu16(C.RS_VOX_TAIL,       s.voxTail)
         pu8(C.RS_TONE_MONITOR,    s.toneMonitor)
-        pbool(C.RS_KEY_TONES,     s.keyTones)
+        pu8(C.RS_KEY_TONES,       s.keyTones.coerceIn(0, 3))
         pu8(C.RS_SUBTONE_DEV,     s.subToneDev)
         pu8(C.RS_DTMF_DEV,        s.dtmfDev)
         pu8(C.RS_DTMF_SPEED,      s.dtmfSpeed)

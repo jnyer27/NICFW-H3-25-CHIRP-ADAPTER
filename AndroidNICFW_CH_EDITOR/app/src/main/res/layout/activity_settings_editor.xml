@@ -98,7 +98,7 @@
 
                     <!-- Squelch -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Squelch" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Squelch (def: 2)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerSquelch" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="72dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -106,42 +106,42 @@
                     <!-- Sq Noise Level -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sq Noise Level" android:textSize="14sp" />
-                        <EditText android:id="@+id/editSqNoiseLev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editSqNoiseLev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 0)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Noise Ceiling -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Noise Ceiling" android:textSize="14sp" />
-                        <EditText android:id="@+id/editNoiseCeiling" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editNoiseCeiling" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 0)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- STE -->
+                    <!-- Sq Tail Elim -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="STE (Squelch Tail Elim)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editSte" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sq Tail Elim (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerSte" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Mic Gain -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Mic Gain" android:textSize="14sp" />
-                        <EditText android:id="@+id/editMicGain" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–31" />
+                        <EditText android:id="@+id/editMicGain" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–31 (def: 25)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Noise Gate -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Noise Gate" android:textSize="14sp" />
-                        <EditText android:id="@+id/editNoiseGate" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Noise Gate (def: Off)" android:textSize="14sp" />
+                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchNoiseGate" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- RF Gain -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RF Gain" android:textSize="14sp" />
-                        <EditText android:id="@+id/editRfGain" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=AGC" />
+                        <EditText android:id="@+id/editRfGain" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=AGC (def: 0)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -179,55 +179,55 @@
                     <!-- LCD Brightness -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Brightness" android:textSize="14sp" />
-                        <EditText android:id="@+id/editLcdBrightness" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–28" />
+                        <EditText android:id="@+id/editLcdBrightness" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–35 (def: 28)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- LCD Timeout -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Timeout (s, 0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editLcdTimeout" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editLcdTimeout" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- Breathe -->
+                    <!-- Heartbeat -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Breathe (s, 0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editBreathe" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="s" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Heartbeat (0=Off)" android:textSize="14sp" />
+                        <EditText android:id="@+id/editBreathe" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–30 (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- LCD Dim -->
+                    <!-- Dim Brightness -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Dim (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editLcdDim" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Dim Brightness (0=Off)" android:textSize="14sp" />
+                        <EditText android:id="@+id/editLcdDim" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–14 (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- LCD Gamma -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Gamma" android:textSize="14sp" />
-                        <EditText android:id="@+id/editLcdGamma" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editLcdGamma" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 0)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- LCD Inverted -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Inverted" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="LCD Inverted (def: Off)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchLcdInverted" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- S-Bar Style -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S-Bar Style (0=Segment)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editSBarStyle" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S-Bar Style (def: Segment)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerSBarStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- S-Bar Persistent -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S-Bar Persistent" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="S-Bar Persistent (def: Off)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchSBarPersistent" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
 
@@ -265,7 +265,7 @@
 
                     <!-- TX Mod Meter -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Mod Meter" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Mod Meter (def: On)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchTxModMeter" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -273,20 +273,20 @@
                     <!-- TX Timeout -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Timeout (s, 0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editTxTimeout" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editTxTimeout" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off (def: 120)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- TX Deviation -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Deviation" android:textSize="14sp" />
-                        <EditText android:id="@+id/editTxDeviation" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editTxDeviation" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–127 (def: 64)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- PTT Mode -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PTT Mode" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PTT Mode (def: Dual)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerPttMode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -294,13 +294,13 @@
                     <!-- TX Filter Trans ⚠ -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Filter Trans ⚠ (0=default)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editTxFilterTrans" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=280 MHz" />
+                        <EditText android:id="@+id/editTxFilterTrans" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=280 MHz (def: 0)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- Show Xmit Current -->
-<LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Show Xmit Current" android:textSize="14sp" />
+                    <!-- TX Current -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Current (def: Off)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchShowXmitCurrent" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -308,7 +308,7 @@
                     <!-- Repeater Tone -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Repeater Tone (Hz)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editRepeaterTone" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="Hz" />
+                        <EditText android:id="@+id/editRepeaterTone" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="Hz (def: 1750)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -345,57 +345,57 @@
 
                     <!-- Step -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Step" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Step (def: 5.0 kHz)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerStep" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="110dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AF Filters -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AF Filters" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AF Filters (def: All)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerAfFilters" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="150dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- IF Freq -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="IF Freq (0=8.46 kHz default)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editIfFreq" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=default" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="IF Freq (def: 8.46 kHz)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerIfFreq" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="120dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- RFi Comp -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RFi Comp (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editRfiComp" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RFi Comp (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerRfiComp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="72dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AGC 0 -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AGC 0" android:textSize="14sp" />
-                        <EditText android:id="@+id/editAgc0" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editAgc0" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–63 (def: 24)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AGC 1 -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AGC 1" android:textSize="14sp" />
-                        <EditText android:id="@+id/editAgc1" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editAgc1" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–63 (def: 32)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AGC 2 -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AGC 2" android:textSize="14sp" />
-                        <EditText android:id="@+id/editAgc2" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editAgc2" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–63 (def: 37)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AGC 3 -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AGC 3" android:textSize="14sp" />
-                        <EditText android:id="@+id/editAgc3" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editAgc3" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–63 (def: 40)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -432,7 +432,7 @@
 
                     <!-- Dual Watch -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Dual Watch" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Dual Watch (def: On)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchDualWatch" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -440,35 +440,35 @@
                     <!-- Scan Resume -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scan Resume (s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editScanResume" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editScanResume" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–30 (def: 10)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Scan Range -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scan Range (MHz)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editScanRange" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="MHz" />
+                        <EditText android:id="@+id/editScanRange" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="MHz (def: 1.00)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Scan Persist -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scan Persist (s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editScanPersist" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editScanPersist" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Scan Update -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scan Update (×0.1 s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editScanUpdate" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="raw" />
+                        <EditText android:id="@+id/editScanUpdate" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="×0.1 s (def: 0)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Ultrascan -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ultrascan (0=Off, 1–7)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editUltraScan" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–20" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ultrascan (0=Off, def: 7)" android:textSize="14sp" />
+                        <EditText android:id="@+id/editUltraScan" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–7 (def: 7)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -506,14 +506,14 @@
                     <!-- VOX Level -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="VOX Level (0=Off, 1–15)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editVox" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–15" />
+                        <EditText android:id="@+id/editVox" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–15 (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- VOX Tail -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="VOX Tail (s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editVoxTail" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editVoxTail" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s (def: 2.0)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -550,22 +550,22 @@
 
                     <!-- Tone Monitor -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tone Monitor" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Tone Monitor (def: On)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerToneMonitor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Key Tones -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Key Tones" android:textSize="14sp" />
-                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchKeyTones" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Key Tones (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerKeyTones" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="130dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Sub-Tone Deviation -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Sub-Tone Deviation" android:textSize="14sp" />
-                        <EditText android:id="@+id/editSubToneDev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editSubToneDev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 74)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -603,20 +603,20 @@
                     <!-- DTMF Deviation -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Deviation" android:textSize="14sp" />
-                        <EditText android:id="@+id/editDtmfDev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editDtmfDev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 80)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- DTMF Speed -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Speed" android:textSize="14sp" />
-                        <EditText android:id="@+id/editDtmfSpeed" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255" />
+                        <EditText android:id="@+id/editDtmfSpeed" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–15 (def: 11)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- DTMF Decode -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Decode" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Decode (def: Off)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerDtmfDecode" android:layout_width="140dp" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -624,7 +624,7 @@
                     <!-- DTMF Seq End Pause -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Seq End Pause (s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editDtmfSeqEndPause" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editDtmfSeqEndPause" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="s (def: 1.0)" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -661,14 +661,14 @@
 
                     <!-- Battery Style -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Battery Style" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Battery Style (def: Percent)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerBattStyle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="120dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Bluetooth -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Bluetooth" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Bluetooth (def: On)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchBluetooth" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -676,41 +676,41 @@
                     <!-- Power Save -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Power Save (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editPowerSave" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <EditText android:id="@+id/editPowerSave" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–20 (def: Off)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- DW Start Delay -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DW Start Delay (s)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editDwDelay" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="s" />
+                        <EditText android:id="@+id/editDwDelay" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–15 (def: 5)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- DW VFO Lock -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DW VFO Lock" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DW VFO Lock (def: Off)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchVfoLockActive" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- AllStar Link -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AllStar Link (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editAsl" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AllStar Link (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerAsl" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Disable FM Tuner -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disable FM Tuner" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Disable FM Tuner (def: Off)" android:textSize="14sp" />
                         <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchDisableFmt" android:layout_width="wrap_content" android:layout_height="wrap_content" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- Scrambler IF ⚠  (Off / 2600–3500 Hz; 3400/3500 Hz options unverified) -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scrambler IF ⚠" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scrambler IF ⚠ (def: Off)" android:textSize="14sp" />
                         <Spinner android:id="@+id/spinnerScramblerIf" android:layout_width="140dp" android:layout_height="wrap_content" />
                     </LinearLayout>
 
@@ -749,14 +749,14 @@
                     <!-- PIN -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PIN (0–9999)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editPin" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–9999" />
+                        <EditText android:id="@+id/editPin" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–9999 (def: 1234)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
                     <!-- PIN Action -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PIN Action" android:textSize="14sp" />
-                        <Spinner android:id="@+id/spinnerPinAction" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="PIN Action (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerPinAction" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="110dp" />
                     </LinearLayout>
 
                 </LinearLayout>
