@@ -374,6 +374,136 @@ object EepromParser {
         )
     }
 
+    /** Reads all fields of the nicFW 2.5 Settings block at 0x1900. */
+    fun readRadioSettings(eeprom: ByteArray): com.nicfw.tdh3editor.RadioSettings {
+        fun u8(off: Int)  = eeprom[off].toInt() and 0xFF
+        fun u16(off: Int) = ((eeprom[off].toInt() and 0xFF) shl 8) or (eeprom[off + 1].toInt() and 0xFF)
+        fun bool(off: Int) = (eeprom[off].toInt() and 0xFF) != 0
+        val C = EepromConstants
+        return com.nicfw.tdh3editor.RadioSettings(
+            squelch         = u8(C.RS_SQUELCH),
+            sqNoiseLev      = u8(C.RS_SQ_NOISE_LEV),
+            noiseCeiling    = u8(C.RS_NOISE_CEILING),
+            ste             = u8(C.RS_STE),
+            micGain         = u8(C.RS_MIC_GAIN),
+            noiseGate       = u8(C.RS_NOISE_GATE),
+            rfGain          = u8(C.RS_RF_GAIN),
+            lcdBrightness   = u8(C.RS_LCD_BRIGHTNESS),
+            lcdTimeout      = u8(C.RS_LCD_TIMEOUT),
+            breathe         = u8(C.RS_BREATHE),
+            lcdDim          = u8(C.RS_LCD_DIM),
+            lcdGamma        = u8(C.RS_LCD_GAMMA),
+            lcdInverted     = bool(C.RS_LCD_INVERTED),
+            sBarStyle       = u8(C.RS_SBAR_STYLE),
+            sBarPersistent  = bool(C.RS_SBAR_PERSISTENT),
+            txModMeter      = bool(C.RS_TX_MOD_METER),
+            txTimeout       = u8(C.RS_TX_TIMEOUT),
+            txDeviation     = u8(C.RS_TX_DEVIATION),
+            pttMode         = u8(C.RS_PTT_MODE),
+            txFilterTrans   = u16(C.RS_TX_FILTER_TRANS),
+            showXmitCurrent = bool(C.RS_SHOW_XMIT_CURR),
+            repeaterTone    = u16(C.RS_REPEATER_TONE),
+            step            = u16(C.RS_STEP),
+            afFilters       = u8(C.RS_AF_FILTERS),
+            ifFreq          = u8(C.RS_IF_FREQ),
+            rxFilterTrans   = u16(C.RS_RX_FILTER_TRANS),
+            rfiComp         = u8(C.RS_RFI_COMP),
+            agc0            = u8(C.RS_AGC0),
+            agc1            = u8(C.RS_AGC1),
+            agc2            = u8(C.RS_AGC2),
+            agc3            = u8(C.RS_AGC3),
+            dualWatch       = bool(C.RS_DUAL_WATCH),
+            scanResume      = u8(C.RS_SCAN_RESUME),
+            scanRange       = u16(C.RS_SCAN_RANGE),
+            scanPersist     = u16(C.RS_SCAN_PERSIST),
+            scanUpdate      = u8(C.RS_SCAN_UPDATE),
+            ultraScan       = u8(C.RS_ULTRA_SCAN),
+            vox             = u8(C.RS_VOX),
+            voxTail         = u16(C.RS_VOX_TAIL),
+            toneMonitor     = u8(C.RS_TONE_MONITOR),
+            keyTones        = bool(C.RS_KEY_TONES),
+            subToneDev      = u8(C.RS_SUBTONE_DEV),
+            dtmfDev         = u8(C.RS_DTMF_DEV),
+            dtmfSpeed       = u8(C.RS_DTMF_SPEED),
+            dtmfDecode      = u8(C.RS_DTMF_DECODE),
+            dtmfSeqEndPause = u8(C.RS_DTMF_SEQ_PAUSE),
+            battStyle       = u8(C.RS_BATT_STYLE),
+            bluetooth       = bool(C.RS_BLUETOOTH),
+            powerSave       = u8(C.RS_POWER_SAVE),
+            dwDelay         = u8(C.RS_DW_DELAY),
+            vfoLockActive   = bool(C.RS_VFO_LOCK_ACTIVE),
+            asl             = u8(C.RS_ASL),
+            disableFmt      = bool(C.RS_DISABLE_FMT),
+            scramblerIf     = u8(C.RS_SCRAMBLER_IF),
+            pin             = u16(C.RS_PIN),
+            pinAction       = u8(C.RS_PIN_ACTION),
+        )
+    }
+
+    /** Writes all fields of [settings] back into the 0x1900 Settings block. */
+    fun writeRadioSettings(eeprom: ByteArray, s: com.nicfw.tdh3editor.RadioSettings) {
+        fun pu8(off: Int, v: Int)  { eeprom[off] = (v and 0xFF).toByte() }
+        fun pu16(off: Int, v: Int) { eeprom[off] = ((v shr 8) and 0xFF).toByte(); eeprom[off + 1] = (v and 0xFF).toByte() }
+        fun pbool(off: Int, v: Boolean) { eeprom[off] = if (v) 1 else 0 }
+        val C = EepromConstants
+        pu8(C.RS_SQUELCH,         s.squelch)
+        pu8(C.RS_SQ_NOISE_LEV,    s.sqNoiseLev)
+        pu8(C.RS_NOISE_CEILING,   s.noiseCeiling)
+        pu8(C.RS_STE,             s.ste)
+        pu8(C.RS_MIC_GAIN,        s.micGain)
+        pu8(C.RS_NOISE_GATE,      s.noiseGate)
+        pu8(C.RS_RF_GAIN,         s.rfGain)
+        pu8(C.RS_LCD_BRIGHTNESS,  s.lcdBrightness)
+        pu8(C.RS_LCD_TIMEOUT,     s.lcdTimeout)
+        pu8(C.RS_BREATHE,         s.breathe)
+        pu8(C.RS_LCD_DIM,         s.lcdDim)
+        pu8(C.RS_LCD_GAMMA,       s.lcdGamma)
+        pbool(C.RS_LCD_INVERTED,  s.lcdInverted)
+        pu8(C.RS_SBAR_STYLE,      s.sBarStyle)
+        pbool(C.RS_SBAR_PERSISTENT, s.sBarPersistent)
+        pbool(C.RS_TX_MOD_METER,  s.txModMeter)
+        pu8(C.RS_TX_TIMEOUT,      s.txTimeout)
+        pu8(C.RS_TX_DEVIATION,    s.txDeviation)
+        pu8(C.RS_PTT_MODE,        s.pttMode)
+        pu16(C.RS_TX_FILTER_TRANS, s.txFilterTrans)
+        pbool(C.RS_SHOW_XMIT_CURR, s.showXmitCurrent)
+        pu16(C.RS_REPEATER_TONE,  s.repeaterTone)
+        pu16(C.RS_STEP,           s.step)
+        pu8(C.RS_AF_FILTERS,      s.afFilters)
+        pu8(C.RS_IF_FREQ,         s.ifFreq)
+        pu16(C.RS_RX_FILTER_TRANS, s.rxFilterTrans)
+        pu8(C.RS_RFI_COMP,        s.rfiComp)
+        pu8(C.RS_AGC0,            s.agc0)
+        pu8(C.RS_AGC1,            s.agc1)
+        pu8(C.RS_AGC2,            s.agc2)
+        pu8(C.RS_AGC3,            s.agc3)
+        pbool(C.RS_DUAL_WATCH,    s.dualWatch)
+        pu8(C.RS_SCAN_RESUME,     s.scanResume)
+        pu16(C.RS_SCAN_RANGE,     s.scanRange)
+        pu16(C.RS_SCAN_PERSIST,   s.scanPersist)
+        pu8(C.RS_SCAN_UPDATE,     s.scanUpdate)
+        pu8(C.RS_ULTRA_SCAN,      s.ultraScan)
+        pu8(C.RS_VOX,             s.vox)
+        pu16(C.RS_VOX_TAIL,       s.voxTail)
+        pu8(C.RS_TONE_MONITOR,    s.toneMonitor)
+        pbool(C.RS_KEY_TONES,     s.keyTones)
+        pu8(C.RS_SUBTONE_DEV,     s.subToneDev)
+        pu8(C.RS_DTMF_DEV,        s.dtmfDev)
+        pu8(C.RS_DTMF_SPEED,      s.dtmfSpeed)
+        pu8(C.RS_DTMF_DECODE,     s.dtmfDecode)
+        pu8(C.RS_DTMF_SEQ_PAUSE,  s.dtmfSeqEndPause)
+        pu8(C.RS_BATT_STYLE,      s.battStyle)
+        pbool(C.RS_BLUETOOTH,     s.bluetooth)
+        pu8(C.RS_POWER_SAVE,      s.powerSave)
+        pu8(C.RS_DW_DELAY,        s.dwDelay)
+        pbool(C.RS_VFO_LOCK_ACTIVE, s.vfoLockActive)
+        pu8(C.RS_ASL,             s.asl)
+        pbool(C.RS_DISABLE_FMT,   s.disableFmt)
+        pu8(C.RS_SCRAMBLER_IF,    s.scramblerIf)
+        pu16(C.RS_PIN,            s.pin)
+        pu8(C.RS_PIN_ACTION,      s.pinAction)
+    }
+
     /**
      * Writes [settings] back into the 5-byte Tune Settings block at 0x1DFB.
      */
