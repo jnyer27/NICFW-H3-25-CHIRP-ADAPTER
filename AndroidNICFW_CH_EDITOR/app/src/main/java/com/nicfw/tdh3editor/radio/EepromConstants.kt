@@ -32,7 +32,7 @@ object EepromConstants {
     const val RS_SCAN_RANGE      = 0x1912  // u16 BE, × 10 kHz (100 = 1.00 MHz)
     const val RS_SCAN_PERSIST    = 0x1914  // u16 BE, × 0.1 s
     const val RS_SCAN_RESUME     = 0x1916  // u8  seconds
-    const val RS_ULTRA_SCAN      = 0x1917  // u8  0=Off, 1-7
+    const val RS_ULTRA_SCAN      = 0x1917  // u8  0-20 (verified on radio)
     const val RS_TONE_MONITOR    = 0x1918  // u8  0=Off,1=On,2=Clone
     const val RS_LCD_BRIGHTNESS  = 0x1919  // u8  0-28
     const val RS_LCD_TIMEOUT     = 0x191A  // u8  seconds, 0=Off
@@ -78,7 +78,7 @@ object EepromConstants {
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
     const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
-    const val RS_SCRAMBLER_IF    = 0x1974  // u8  0=Off  ⚠ unconfirmed offset
+    const val RS_SCRAMBLER_IF    = 0x1974  // u8  0=Off,1=2600…10=3500 Hz  ⚠ unconfirmed offset (likely in unmapped gap 0x1920-0x1946)
 
     // Radio Settings enum lists ─────────────────────────────────────────────
     val RS_DTMF_DECODE_LIST  = listOf("Off", "Always", "Squelched")

@@ -249,7 +249,7 @@ class SettingsEditorActivity : AppCompatActivity() {
 
             scanResume    = binding.editScanResume.text.toString().asInt(10).coerceIn(0, 255),
             scanUpdate    = binding.editScanUpdate.text.toString().asInt(0).coerceIn(0, 255),
-            ultraScan     = binding.editUltraScan.text.toString().asInt(7).coerceIn(0, 7),
+            ultraScan     = binding.editUltraScan.text.toString().asInt(7).coerceIn(0, 20),
 
             vox           = binding.editVox.text.toString().asInt(0).coerceIn(0, 15),
 
@@ -262,7 +262,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 255),
             dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 255),
             asl           = binding.editAsl.text.toString().asInt(0).coerceIn(0, 255),
-            scramblerIf   = binding.editScramblerIf.text.toString().asInt(0).coerceIn(0, 255),
+            scramblerIf   = binding.editScramblerIf.text.toString().asInt(0).coerceIn(0, 10),
 
             pin           = binding.editPin.text.toString().asInt(0).coerceIn(0, 9999),
 

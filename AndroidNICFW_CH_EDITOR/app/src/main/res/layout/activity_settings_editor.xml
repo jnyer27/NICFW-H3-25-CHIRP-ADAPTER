@@ -468,7 +468,7 @@
                     <!-- Ultrascan -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Ultrascan (0=Off, 1–7)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editUltraScan" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–7" />
+                        <EditText android:id="@+id/editUltraScan" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–20" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -708,10 +708,10 @@
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- Scrambler IF ⚠ -->
+                    <!-- Scrambler IF ⚠  (0=Off, 1=2600…10=3500 Hz) -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scrambler IF ⚠ (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editScramblerIf" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=Off" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Scrambler IF ⚠ (0=Off, 1–10)" android:textSize="14sp" />
+                        <EditText android:id="@+id/editScramblerIf" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–10" />
                     </LinearLayout>
 
                 </LinearLayout>
