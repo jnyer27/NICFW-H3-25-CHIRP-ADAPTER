@@ -93,9 +93,10 @@ class SettingsEditorActivity : AppCompatActivity() {
         spin(binding.spinnerScramblerIf,  C.RS_SCRAMBLER_LABELS)
     }
 
-    /** Populates all UI widgets from [EepromHolder.radioSettings]. */
+    /** Populates all UI widgets by re-parsing the live EEPROM buffer. */
     private fun populateFromHolder() {
-        val s = EepromHolder.radioSettings
+        val eep = EepromHolder.eeprom ?: return
+        val s = EepromParser.readRadioSettings(eep)
         val C = EepromConstants
 
         // ── Spinners ──────────────────────────────────────────────────────────
