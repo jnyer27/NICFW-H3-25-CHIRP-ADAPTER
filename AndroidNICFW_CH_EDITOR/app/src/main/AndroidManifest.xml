@@ -69,6 +69,10 @@
             android:exported="false"
             android:theme="@style/Theme.NicFwChannelEditor" />
         <activity
+            android:name=".SettingsEditorActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NicFwChannelEditor" />
+        <activity
             android:name=".TuneSettingsActivity"
             android:exported="false"
             android:theme="@style/Theme.NicFwChannelEditor" />

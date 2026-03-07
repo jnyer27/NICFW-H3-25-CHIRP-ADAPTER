@@ -19,6 +19,91 @@ object EepromConstants {
     const val NUM_CHANNELS = 198
     const val SETTINGS_BASE = 0x1900
 
+    // ── Radio Settings offsets (nicFW 2.5, block at 0x1900) ──────────────────
+    // Main struct (0x1900–0x1966):
+    const val RS_SQUELCH         = 0x1902  // u8  0-9
+    const val RS_DUAL_WATCH      = 0x1903  // u8  bool
+    const val RS_SCRAMBLER_EN    = 0x1905  // u8  bool enable flag (0=Off, 1=enabled)  ✓ confirmed
+    const val RS_STEP            = 0x1906  // u16 BE, 10 Hz units (500 = 5.0 kHz)
+    const val RS_PTT_MODE        = 0x190C  // u8  0=Dual, 1=Single
+    const val RS_TX_MOD_METER    = 0x190D  // u8  bool
+    const val RS_MIC_GAIN        = 0x190E  // u8  0-31
+    const val RS_TX_DEVIATION    = 0x190F  // u8
+    const val RS_BATT_STYLE      = 0x1911  // u8  0=Off,1=Icon,2=Percentage,3=Voltage
+    const val RS_SCAN_RANGE      = 0x1912  // u16 BE, × 10 kHz (100 = 1.00 MHz)
+    const val RS_SCAN_PERSIST    = 0x1914  // u16 BE, × 0.1 s
+    const val RS_SCAN_RESUME     = 0x1916  // u8  seconds
+    const val RS_ULTRA_SCAN      = 0x1917  // u8  0-20 (verified on radio)
+    const val RS_TONE_MONITOR    = 0x1918  // u8  0=Off,1=On,2=Clone
+    const val RS_LCD_BRIGHTNESS  = 0x1919  // u8  0-28
+    const val RS_LCD_TIMEOUT     = 0x191A  // u8  seconds, 0=Off
+    const val RS_BREATHE         = 0x191B  // u8  seconds, 0=Off
+    const val RS_DTMF_DEV        = 0x191C  // u8  DTMF deviation
+    const val RS_LCD_GAMMA       = 0x191D  // u8
+    const val RS_REPEATER_TONE   = 0x191E  // u16 BE, Hz
+    const val RS_BLUETOOTH       = 0x1947  // u8  bool
+    const val RS_POWER_SAVE      = 0x1948  // u8  0=Off
+    const val RS_KEY_TONES       = 0x1949  // u8  bool
+    const val RS_STE             = 0x194A  // u8  SquelchTail Elim, 0=Off
+    const val RS_RF_GAIN         = 0x194B  // u8  0=AGC, 1-42
+    const val RS_SBAR_STYLE      = 0x194C  // u8  0=Segment
+    const val RS_SQ_NOISE_LEV    = 0x194D  // u8  Squelch Noise Level
+    const val RS_VOX             = 0x1952  // u8  0=Off, 1-15
+    const val RS_VOX_TAIL        = 0x1953  // u16 BE, × 0.1 s (20 = 2.0 s)
+    const val RS_TX_TIMEOUT      = 0x1955  // u8  seconds, 0=Off
+    const val RS_LCD_DIM         = 0x1956  // u8  0=Off
+    const val RS_DTMF_SPEED      = 0x1957  // u8
+    const val RS_NOISE_GATE      = 0x1958  // u8
+    const val RS_SCAN_UPDATE     = 0x1959  // u8  × 0.1 s
+    const val RS_ASL             = 0x195A  // u8  AllStarLink, 0=Off
+    const val RS_DISABLE_FMT     = 0x195B  // u8  bool, Disable FM Tuner
+    const val RS_PIN             = 0x195C  // u16 BE, 0-9999
+    const val RS_PIN_ACTION      = 0x195E  // u8  0=Off,1=Lock,2=Unlock
+    const val RS_LCD_INVERTED    = 0x195F  // u8  bool
+    const val RS_AF_FILTERS      = 0x1960  // u8  0-7 (see RS_AF_FILTERS_LIST)
+    const val RS_IF_FREQ         = 0x1961  // u8  0=default (8.46 kHz display)
+    const val RS_SBAR_PERSISTENT = 0x1962  // u8  bool  Persistent S-Bar
+    const val RS_VFO_LOCK_ACTIVE = 0x1964  // u8  bool  DualWatch VFO Lock
+    const val RS_DW_DELAY        = 0x1965  // u8  DualWatch Start Delay, seconds
+    const val RS_SUBTONE_DEV     = 0x1966  // u8  Squelch Tone Deviation
+    // Filler area (0x1967–0x197F) — offsets derived from EEPROM analysis:
+    const val RS_SHOW_XMIT_CURR  = 0x1967  // u8  bool  ✓ confirmed (0→1 when Show Xmit Current=On)
+    const val RS_AGC0            = 0x1968  // u8  AGC Table 0  ✓ confirmed (value=24)
+    const val RS_AGC1            = 0x1969  // u8  AGC Table 1  ✓ confirmed (value=32)
+    const val RS_AGC2            = 0x196A  // u8  AGC Table 2  ✓ confirmed (value=37)
+    const val RS_AGC3            = 0x196B  // u8  AGC Table 3  ✓ confirmed (value=40)
+    const val RS_RFI_COMP        = 0x196C  // u8  0=Off  ✓ confirmed (set to 1, observed in EEPROM)
+    const val RS_SCRAMBLER_FREQ  = 0x196D  // u8  freq index: 0=3300Hz(UI8), 1-7=2600-3200Hz(UI1-7)  ✓ confirmed; UI9-10 encoding unverified
+    const val RS_DTMF_DECODE     = 0x196E  // u8  0=Off,1=Always,2=Squelched  ✓ confirmed (0→1 when DTMF Decode=Always)
+    // 0x196F = unknown (1 byte gap); RS_RX_FILTER_TRANS location unconfirmed — removed from UI pending new dump
+    const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
+    const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
+    const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
+
+    // Radio Settings enum lists ─────────────────────────────────────────────
+    // Scrambler: index == scramblerIf field (0=Off, 1=2600Hz … 10=3500Hz).
+    // EEPROM encoding uses two fields: RS_SCRAMBLER_EN (enable) + RS_SCRAMBLER_FREQ (index).
+    // Freq index mapping: UI1-7 → raw1-7; UI8(3300Hz) → raw0; UI9-10 → raw8-9 (unverified).
+    val RS_SCRAMBLER_LABELS  = listOf(
+        "Off",
+        "2600 Hz", "2700 Hz", "2800 Hz", "2900 Hz",
+        "3000 Hz", "3100 Hz", "3200 Hz",
+        "3300 Hz", "3400 Hz", "3500 Hz"
+    )
+    val RS_DTMF_DECODE_LIST  = listOf("Off", "Always", "Squelched")
+    val RS_BATT_STYLE_LIST   = listOf("Off", "Icon", "Percentage", "Voltage")
+    val RS_TONE_MONITOR_LIST = listOf("Off", "On", "Clone")
+    val RS_PTT_MODE_LIST     = listOf("Dual", "Single")
+    val RS_PIN_ACTION_LIST   = listOf("Off", "Lock", "Unlock")
+    val RS_AF_FILTERS_LIST   = listOf(
+        "All", "Band Pass Only", "De-Emph + HP", "High Pass",
+        "De-Emph + LP", "Low Pass", "De-Emph Only", "None"
+    )
+    // Step: display label → raw u16 value in 10 Hz units
+    val RS_STEP_LABELS = listOf("2.5 kHz", "5.0 kHz", "6.25 kHz", "12.5 kHz", "25.0 kHz", "50.0 kHz")
+    val RS_STEP_RAW    = listOf(250, 500, 625, 1250, 2500, 5000)
+    val RS_SQUELCH_LIST      = (0..9).map { it.toString() }
+
     // Group label table: 15 entries (A–O) × 6 bytes ASCII at 0x1C90
     const val GROUP_LABELS_BASE = 0x1C90
     const val GROUP_LABEL_SIZE  = 6

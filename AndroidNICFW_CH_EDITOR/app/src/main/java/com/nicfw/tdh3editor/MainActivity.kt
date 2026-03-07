@@ -137,6 +137,7 @@ class MainActivity : AppCompatActivity() {
                 EepromHolder.bandPlan      = EepromParser.parseBandPlan(bytes)
                 EepromHolder.scanPresets   = EepromParser.parseScanPresets(bytes)
                 EepromHolder.tuneSettings  = EepromParser.readTuneSettings(bytes)
+                EepromHolder.radioSettings = EepromParser.readRadioSettings(bytes)
                 refreshChannelList(bytes)
                 runOnUiThread {
                     updateConnectionUi()
@@ -376,6 +377,7 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_band_plan)?.isEnabled    = hasEeprom
         menu.findItem(R.id.action_edit_scan_presets)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_radio_settings)?.isEnabled  = hasEeprom
         menu.findItem(R.id.action_tune_settings)?.isEnabled    = hasEeprom
         // Import EEPROM dump is always available — no radio connection needed
         menu.findItem(R.id.action_import_dump)?.isEnabled = true
@@ -413,6 +415,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_edit_scan_presets -> {
                 startActivity(ScanPresetEditorActivity.intent(this))
+                true
+            }
+            R.id.action_radio_settings -> {
+                startActivity(SettingsEditorActivity.intent(this))
                 true
             }
             R.id.action_tune_settings -> {
@@ -543,6 +549,7 @@ class MainActivity : AppCompatActivity() {
             EepromHolder.bandPlan      = EepromParser.parseBandPlan(data)
             EepromHolder.scanPresets   = EepromParser.parseScanPresets(data)
             EepromHolder.tuneSettings  = EepromParser.readTuneSettings(data)
+            EepromHolder.radioSettings = EepromParser.readRadioSettings(data)
             refreshChannelList(data)
         }
     }
@@ -1220,7 +1227,8 @@ class MainActivity : AppCompatActivity() {
                 EepromHolder.groupLabels  = EepromParser.parseGroupLabels(data)
                 EepromHolder.bandPlan     = EepromParser.parseBandPlan(data)
                 EepromHolder.scanPresets  = EepromParser.parseScanPresets(data)
-                EepromHolder.tuneSettings = EepromParser.readTuneSettings(data)
+                EepromHolder.tuneSettings  = EepromParser.readTuneSettings(data)
+                EepromHolder.radioSettings = EepromParser.readRadioSettings(data)
                 refreshChannelList(data)
                 runOnUiThread {
                     binding.progressBar.visibility = View.GONE

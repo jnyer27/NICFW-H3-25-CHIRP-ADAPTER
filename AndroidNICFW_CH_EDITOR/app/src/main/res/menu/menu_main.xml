@@ -38,6 +38,11 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_radio_settings"
+        android:title="Radio Settings…"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_tune_settings"
         android:title="Tune Settings…"
         app:showAsAction="never" />
