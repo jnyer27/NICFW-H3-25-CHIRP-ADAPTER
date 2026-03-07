@@ -9,7 +9,7 @@ package com.nicfw.tdh3editor.radio
  *   u16 step       — 10 Hz units
  *   u8  scanResume — scan resume count
  *   u8  scanPersist — scan persist count
- *   u8  flags      — bits[4:2] = ultrascan (0–7), bits[1:0] = modulation
+ *   u8  flags      — bits[6:2] = ultrascan (0–20), bits[1:0] = modulation
  *                    modulation: 0=FM, 1=AM, 2=USB, 3=Auto
  *   u8[8] label    — ASCII, space-padded to 8 bytes
  *   u8  null       — always 0x00 (null terminator)
@@ -22,7 +22,7 @@ package com.nicfw.tdh3editor.radio
  * @param scanResume Number of scan resume cycles (0 = don't resume).
  * @param scanPersist Number of scan persist cycles.
  * @param modRaw     Raw 2-bit modulation value: 0=FM, 1=AM, 2=USB, 3=Auto.
- * @param ultrascan  Ultrascan speed (0–7; 7 = fastest).
+ * @param ultrascan  Ultrascan speed (0–20; 20 = fastest; confirmed on radio).
  * @param label      Display label, 8 chars max.
  */
 data class ScanPresetEntry(
