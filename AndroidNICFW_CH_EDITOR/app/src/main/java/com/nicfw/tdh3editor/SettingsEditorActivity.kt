@@ -97,6 +97,8 @@ class SettingsEditorActivity : AppCompatActivity() {
         spin(binding.spinnerPinAction,   C.RS_PIN_ACTION_LIST)
         spin(binding.spinnerDtmfDecode,  C.RS_DTMF_DECODE_LIST)
         spin(binding.spinnerScramblerIf, C.RS_SCRAMBLER_LABELS)
+        spin(binding.spinnerRfGain,      C.RS_RF_GAIN_LIST)
+        spin(binding.spinnerPowerSave,   C.RS_POWER_SAVE_LIST)
     }
 
     /** Populates all UI widgets by re-parsing the live EEPROM buffer. */
@@ -139,7 +141,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.editSqNoiseLev.setText(ei(s.sqNoiseLev))
         binding.editNoiseCeiling.setText(ei(s.noiseCeiling))
         binding.editMicGain.setText(ei(s.micGain))
-        binding.editRfGain.setText(ei(s.rfGain))
+        binding.spinnerRfGain.setSelection(s.rfGain.coerceIn(0, C.RS_RF_GAIN_LIST.lastIndex))
 
         binding.editLcdBrightness.setText(ei(s.lcdBrightness))
         binding.editLcdTimeout.setText(ei(s.lcdTimeout))
@@ -149,7 +151,9 @@ class SettingsEditorActivity : AppCompatActivity() {
 
         binding.editTxTimeout.setText(ei(s.txTimeout))
         binding.editTxDeviation.setText(ei(s.txDeviation))
-        binding.editTxFilterTrans.setText(ei(s.txFilterTrans))
+        // TX Filter Trans: raw 0 means "use default (280.0 MHz)"; display as "280.0" so the
+        // user sees the actual frequency rather than a confusing zero.
+        binding.editTxFilterTrans.setText(if (s.txFilterTrans == 0) "280.0" else s.txFilterTrans.toString())
         binding.editRepeaterTone.setText(ei(s.repeaterTone))
 
         binding.editAgc0.setText(ei(s.agc0))
@@ -169,7 +173,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.editDtmfSpeed.setText(ei(s.dtmfSpeed))
         binding.spinnerDtmfDecode.setSelection(s.dtmfDecode.coerceIn(0, C.RS_DTMF_DECODE_LIST.lastIndex))
 
-        binding.editPowerSave.setText(ei(s.powerSave))
+        binding.spinnerPowerSave.setSelection(s.powerSave.coerceIn(0, C.RS_POWER_SAVE_LIST.lastIndex))
         binding.editDwDelay.setText(ei(s.dwDelay))
         binding.spinnerScramblerIf.setSelection(s.scramblerIf.coerceIn(0, C.RS_SCRAMBLER_LABELS.lastIndex))
 
@@ -238,7 +242,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             sqNoiseLev    = binding.editSqNoiseLev.text.toString().asInt(0).coerceIn(0, 255),
             noiseCeiling  = binding.editNoiseCeiling.text.toString().asInt(0).coerceIn(0, 255),
             micGain       = binding.editMicGain.text.toString().asInt(25).coerceIn(0, 31),
-            rfGain        = binding.editRfGain.text.toString().asInt(0).coerceIn(0, 255),
+            rfGain        = binding.spinnerRfGain.selectedItemPosition,   // 0=AGC, 1–42 direct
 
             lcdBrightness = binding.editLcdBrightness.text.toString().asInt(28).coerceIn(0, 35),
             lcdTimeout    = binding.editLcdTimeout.text.toString().asInt(0).coerceIn(0, 255),
@@ -248,7 +252,11 @@ class SettingsEditorActivity : AppCompatActivity() {
 
             txTimeout     = binding.editTxTimeout.text.toString().asInt(120).coerceIn(0, 255),
             txDeviation   = binding.editTxDeviation.text.toString().asInt(64).coerceIn(0, 127),
-            txFilterTrans = binding.editTxFilterTrans.text.toString().asInt(0).coerceIn(0, 65535),
+            // "280.0" (displayed default) maps back to raw 0; any other numeric value is stored directly.
+            txFilterTrans = binding.editTxFilterTrans.text.toString().trim().let { txt ->
+                if (txt == "280.0" || txt == "0") 0
+                else txt.toIntOrNull()?.coerceIn(0, 65535) ?: 0
+            },
             repeaterTone  = binding.editRepeaterTone.text.toString().asInt(1750).coerceIn(0, 65535),
 
             agc0          = binding.editAgc0.text.toString().asInt(24).coerceIn(0, 63),
@@ -268,7 +276,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             dtmfSpeed     = binding.editDtmfSpeed.text.toString().asInt(11).coerceIn(0, 15),
             dtmfDecode    = binding.spinnerDtmfDecode.selectedItemPosition,
 
-            powerSave     = binding.editPowerSave.text.toString().asInt(0).coerceIn(0, 20),
+            powerSave     = binding.spinnerPowerSave.selectedItemPosition,   // 0=Off, 1–20 direct
             dwDelay       = binding.editDwDelay.text.toString().asInt(5).coerceIn(0, 15),
             scramblerIf   = binding.spinnerScramblerIf.selectedItemPosition,
 
