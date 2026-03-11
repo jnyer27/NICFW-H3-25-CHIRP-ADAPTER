@@ -804,36 +804,28 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
         # Calibration (per-radio; at 0x1DFB. Cloning from another radio copies these.)
         cal = self._memobj.calibration
         adv = RadioSettingGroup("calibration", "Calibration (per-radio)")
-        adv.append(RadioSetting("xtal671", "XTAL (Crystal) calibration", RadioSettingValueInteger(-128, 127, int(cal.xtal671))))
-        adv.append(RadioSetting("maxPowerWattsUHF", "Max Power Watts UHF (0.1W)", RadioSettingValueInteger(0, 255, int(cal.maxPowerWattsUHF))))
-        adv.append(RadioSetting("maxPowerSettingUHF", "Max Power Setting UHF", RadioSettingValueInteger(0, 255, int(cal.maxPowerSettingUHF))))
-        adv.append(RadioSetting("maxPowerWattsVHF", "Max Power Watts VHF (0.1W)", RadioSettingValueInteger(0, 255, int(cal.maxPowerWattsVHF))))
-        adv.append(RadioSetting("maxPowerSettingVHF", "Max Power Setting VHF", RadioSettingValueInteger(0, 255, int(cal.maxPowerSettingVHF))))
+        # protectTuneSettings MUST be first so apply_el sets the flag before
+        # processing the other calibration fields (order = processing order).
         adv.append(RadioSetting(
             "protectTuneSettings",
             "Protect Tune Settings (don't overwrite on upload)",
             RadioSettingValueBoolean(False)  # default: not protected (backward compatible)
         ))
+        adv.append(RadioSetting("xtal671", "XTAL (Crystal) calibration", RadioSettingValueInteger(-128, 127, int(cal.xtal671))))
+        adv.append(RadioSetting("maxPowerWattsUHF", "Max Power Watts UHF (0.1W)", RadioSettingValueInteger(0, 255, int(cal.maxPowerWattsUHF))))
+        adv.append(RadioSetting("maxPowerSettingUHF", "Max Power Setting UHF", RadioSettingValueInteger(0, 255, int(cal.maxPowerSettingUHF))))
+        adv.append(RadioSetting("maxPowerWattsVHF", "Max Power Watts VHF (0.1W)", RadioSettingValueInteger(0, 255, int(cal.maxPowerWattsVHF))))
+        adv.append(RadioSetting("maxPowerSettingVHF", "Max Power Setting VHF", RadioSettingValueInteger(0, 255, int(cal.maxPowerSettingVHF))))
         top.append(adv)
 
         return top
 
     def set_settings(self, ui):
         s = self._memobj.settings
-
-        # Pre-scan: extract protect flag before the recursive apply_el traversal
         _protect_tune = False
-        for _el in ui:
-            if isinstance(_el, RadioSettingGroup):
-                for _child in _el:
-                    if isinstance(_child, RadioSetting) and _child.get_name() == "protectTuneSettings":
-                        _v = _child.value.get_value() if hasattr(_child.value, "get_value") else _child.value
-                        _protect_tune = bool(_v)
-            elif isinstance(_el, RadioSetting) and _el.get_name() == "protectTuneSettings":
-                _v = _el.value.get_value() if hasattr(_el.value, "get_value") else _el.value
-                _protect_tune = bool(_v)
 
         def apply_el(element):
+            nonlocal _protect_tune  # allows apply_el to set the flag when it encounters protectTuneSettings
             if isinstance(element, RadioSettingGroup):
                 for child in element:
                     apply_el(child)
@@ -1047,7 +1039,7 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                     pass
             else:
                 if name == "protectTuneSettings":
-                    pass  # handled by pre-scan; no mmap update needed
+                    _protect_tune = bool(val)  # flag set; protectTuneSettings is first in the group
                 elif not _protect_tune:
                     cal = self._memobj.calibration
                     if name == "xtal671":
