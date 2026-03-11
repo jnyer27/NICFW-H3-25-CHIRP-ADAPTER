@@ -383,6 +383,9 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_import_dump)?.isEnabled = true
         // XTAL 671 calculator is a standalone tool — always available
         menu.findItem(R.id.action_xtal671_calculator)?.isEnabled = true
+        // Reflect current protect-tune preference as a checkmark
+        menu.findItem(R.id.action_protect_tune)?.isChecked =
+            getSharedPreferences("nicfw_prefs", MODE_PRIVATE).getBoolean("pref_protect_tune", false)
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -427,6 +430,18 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_xtal671_calculator -> {
                 startActivity(Xtal671CalculatorActivity.intent(this))
+                true
+            }
+            R.id.action_protect_tune -> {
+                val prefs = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
+                val now = !prefs.getBoolean("pref_protect_tune", false)
+                prefs.edit().putBoolean("pref_protect_tune", now).apply()
+                item.isChecked = now
+                val msg = if (now)
+                    "Tune Settings protected — radio calibration will be preserved on write"
+                else
+                    "Tune Settings protection OFF"
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -1256,9 +1271,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSaveConfirm() {
         val eep = eeprom ?: return
+        val protect = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
+            .getBoolean("pref_protect_tune", false)
+        val baseMsg = getString(R.string.save_confirm_message)
+        val message = if (protect)
+            "$baseMsg\n\n\uD83D\uDD12 Tune Settings PROTECTED — the target radio's calibration " +
+            "(XTAL, power caps) will be read first and preserved. This adds a brief pre-read step."
+        else
+            baseMsg
         AlertDialog.Builder(this)
             .setTitle(R.string.save_confirm_title)
-            .setMessage(R.string.save_confirm_message)
+            .setMessage(message)
             .setPositiveButton(R.string.ok) { _, _ -> saveToRadio(eep) }
             .setNegativeButton(R.string.cancel, null)
             .show()
@@ -1269,14 +1292,40 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Not connected", Toast.LENGTH_SHORT).show()
             return
         }
+        val protect = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
+            .getBoolean("pref_protect_tune", false)
         stream.readTimeoutMs = 500
         binding.progressBar.visibility = View.VISIBLE
         binding.progressText.visibility = View.VISIBLE
         binding.btnSave.isEnabled = false
         lifecycleScope.launch {
             try {
+                // ── Phase 1 (protect only): pre-read target radio's tune calibration ──
+                val uploadData: ByteArray = if (protect) {
+                    withContext(Dispatchers.Main) {
+                        binding.progressText.text = "Reading target radio calibration\u2026"
+                        binding.progressBar.isIndeterminate = true
+                    }
+                    val radioEeprom = withContext(Dispatchers.IO) {
+                        Protocol.download(stream) { _, _ -> }
+                    }
+                    // Patch a copy of the template: replace 5 tune bytes with target radio's values
+                    val patched = data.copyOf()
+                    val base = EepromConstants.TUNE_SETTINGS_BASE  // 0x1DFB
+                    if (base + 5 <= radioEeprom.size && base + 5 <= patched.size) {
+                        System.arraycopy(radioEeprom, base, patched, base, 5)
+                    }
+                    withContext(Dispatchers.Main) {
+                        binding.progressBar.isIndeterminate = false
+                    }
+                    patched  // upload this copy — EepromHolder.eeprom (the template) is untouched
+                } else {
+                    data
+                }
+
+                // ── Phase 2: upload ──────────────────────────────────────────────────
                 withContext(Dispatchers.IO) {
-                    Protocol.upload(stream, data) { cur, total ->
+                    Protocol.upload(stream, uploadData) { cur, total ->
                         runOnUiThread {
                             binding.progressBar.progress = cur
                             binding.progressText.text = getString(R.string.cloning, cur, total)
@@ -1287,7 +1336,9 @@ class MainActivity : AppCompatActivity() {
                     binding.progressBar.visibility = View.GONE
                     binding.progressText.visibility = View.GONE
                     updateConnectionUi()
-                    Toast.makeText(this@MainActivity, "Saved to radio", Toast.LENGTH_SHORT).show()
+                    val msg = if (protect) "Written — radio tune settings preserved"
+                              else "Saved to radio"
+                    Toast.makeText(this@MainActivity, msg, Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 runOnUiThread {

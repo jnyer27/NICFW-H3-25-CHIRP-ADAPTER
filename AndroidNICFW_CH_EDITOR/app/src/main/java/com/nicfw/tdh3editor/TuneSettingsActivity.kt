@@ -72,6 +72,7 @@ class TuneSettingsActivity : AppCompatActivity() {
         setupPickers()
         populateFromHolder()
         setupButtons()
+        setupProtectToggle()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -132,6 +133,27 @@ class TuneSettingsActivity : AppCompatActivity() {
         binding.btnTuneSave.setOnClickListener   { saveAndFinish() }
     }
 
+    /** Reads the shared protect preference and wires the toggle in both directions. */
+    private fun setupProtectToggle() {
+        val prefs = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
+        val protect = prefs.getBoolean("pref_protect_tune", false)
+        binding.switchProtectTune.isChecked = protect
+        updateProtectState(protect)
+
+        binding.switchProtectTune.setOnCheckedChangeListener { _, checked ->
+            prefs.edit().putBoolean("pref_protect_tune", checked).apply()
+            updateProtectState(checked)
+        }
+    }
+
+    /** Enables or disables the picker controls and Save button based on protect state. */
+    private fun updateProtectState(protect: Boolean) {
+        binding.pickerVhfCap.isEnabled = !protect
+        binding.pickerUhfCap.isEnabled = !protect
+        binding.pickerXtal.isEnabled   = !protect
+        binding.btnTuneSave.isEnabled  = !protect
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // XTAL hint
     // ─────────────────────────────────────────────────────────────────────────
@@ -149,6 +171,15 @@ class TuneSettingsActivity : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     private fun saveAndFinish() {
+        // Hard guard: if protection is enabled, don't write (UI already blocks via button state,
+        // but this ensures safety even if called programmatically).
+        if (getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
+                .getBoolean("pref_protect_tune", false)) {
+            Toast.makeText(this, "Tune Settings are protected \u2014 not written", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
         val eep = EepromHolder.eeprom ?: run {
             Toast.makeText(this, "No EEPROM data", Toast.LENGTH_SHORT).show()
             return
