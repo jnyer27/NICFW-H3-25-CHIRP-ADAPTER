@@ -5,6 +5,7 @@ Android app for editing the 198 memory channels of a **TIDRADIO TD-H3** running
 service UUID as [nicFWRemoteBT](https://github.com/nicsure/nicfwremotebt), and
 implements the same EEPROM protocol and channel layout as the Python CHIRP driver in
 the parent repo ([tidradio_h3_nicfw25.py](../tidradio_h3_nicfw25.py)).
+Download APK Here: https://drive.google.com/file/d/15VHP9435Xb3QcM1pZcxp9L_YZdm8Gk0J/view?usp=drive_link
 
 ---
 
