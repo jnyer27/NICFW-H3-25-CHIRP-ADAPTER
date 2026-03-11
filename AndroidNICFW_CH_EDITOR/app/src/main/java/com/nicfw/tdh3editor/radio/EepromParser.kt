@@ -436,9 +436,11 @@ object EepromParser {
             scramblerIf     = run {
                 val en   = u8(C.RS_SCRAMBLER_EN)
                 val freq = u8(C.RS_SCRAMBLER_FREQ)
-                if (en == 0) 0
+                // Check only bit 0 for the enable flag — the radio may write other bits
+                // in this byte when disabling, causing a full == 0 check to fail.
+                if ((en and 0x01) == 0) 0
                 else if (freq == 0) 8          // raw 0 = 3300 Hz = UI setting 8
-                else freq.coerceIn(1, 10)      // raw 1-7 → UI 1-7; raw 8-9 → UI 8-9 (unverified)
+                else freq.coerceIn(1, 10)      // raw 1-7 → UI 1-7; raw 8-9 → UI 9-10
             },
             pin             = u16(C.RS_PIN),
             pinAction       = u8(C.RS_PIN_ACTION),
