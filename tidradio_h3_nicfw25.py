@@ -804,13 +804,6 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
         # Calibration (per-radio; at 0x1DFB. Cloning from another radio copies these.)
         cal = self._memobj.calibration
         adv = RadioSettingGroup("calibration", "Calibration (per-radio)")
-        # protectTuneSettings MUST be first so apply_el sets the flag before
-        # processing the other calibration fields (order = processing order).
-        adv.append(RadioSetting(
-            "protectTuneSettings",
-            "Protect Tune Settings (don't overwrite on upload)",
-            RadioSettingValueBoolean(False)  # default: not protected (backward compatible)
-        ))
         adv.append(RadioSetting("xtal671", "XTAL (Crystal) calibration", RadioSettingValueInteger(-128, 127, int(cal.xtal671))))
         adv.append(RadioSetting("maxPowerWattsUHF", "Max Power Watts UHF (0.1W)", RadioSettingValueInteger(0, 255, int(cal.maxPowerWattsUHF))))
         adv.append(RadioSetting("maxPowerSettingUHF", "Max Power Setting UHF", RadioSettingValueInteger(0, 255, int(cal.maxPowerSettingUHF))))
@@ -822,10 +815,8 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
 
     def set_settings(self, ui):
         s = self._memobj.settings
-        _protect_tune = False
 
         def apply_el(element):
-            nonlocal _protect_tune  # allows apply_el to set the flag when it encounters protectTuneSettings
             if isinstance(element, RadioSettingGroup):
                 for child in element:
                     apply_el(child)
@@ -1038,21 +1029,18 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                 except (ValueError, IndexError):
                     pass
             else:
-                if name == "protectTuneSettings":
-                    _protect_tune = bool(val)  # flag set; protectTuneSettings is first in the group
-                elif not _protect_tune:
-                    cal = self._memobj.calibration
-                    if name == "xtal671":
-                        v = int(val)
-                        cal.xtal671 = max(-128, min(127, v))
-                    elif name == "maxPowerWattsUHF":
-                        cal.maxPowerWattsUHF = int(val) & 0xFF
-                    elif name == "maxPowerSettingUHF":
-                        cal.maxPowerSettingUHF = int(val) & 0xFF
-                    elif name == "maxPowerWattsVHF":
-                        cal.maxPowerWattsVHF = int(val) & 0xFF
-                    elif name == "maxPowerSettingVHF":
-                        cal.maxPowerSettingVHF = int(val) & 0xFF
+                cal = self._memobj.calibration
+                if name == "xtal671":
+                    v = int(val)
+                    cal.xtal671 = max(-128, min(127, v))
+                elif name == "maxPowerWattsUHF":
+                    cal.maxPowerWattsUHF = int(val) & 0xFF
+                elif name == "maxPowerSettingUHF":
+                    cal.maxPowerSettingUHF = int(val) & 0xFF
+                elif name == "maxPowerWattsVHF":
+                    cal.maxPowerWattsVHF = int(val) & 0xFF
+                elif name == "maxPowerSettingVHF":
+                    cal.maxPowerSettingVHF = int(val) & 0xFF
 
         for el in ui:
             apply_el(el)
