@@ -109,6 +109,10 @@ object EepromConstants {
     val RS_KEY_TONES_LIST    = listOf("Off", "On", "Differential", "Voice")
     // RFi Comp: 0 = Off, 1–30 = numeric level. Spinner index == raw EEPROM value.
     val RS_RFI_COMP_LIST     = listOf("Off") + (1..30).map { it.toString() }
+    // RF Gain: 0 = AGC (automatic), 1–42 = manual gain. Spinner index == raw EEPROM value.
+    val RS_RF_GAIN_LIST      = listOf("AGC") + (1..42).map { it.toString() }
+    // Power Save: 0 = Off, 1–20 = level. Spinner index == raw EEPROM value.
+    val RS_POWER_SAVE_LIST   = listOf("Off") + (1..20).map { it.toString() }
     // Step: display label → raw u16 value in 10 Hz units
     val RS_STEP_LABELS = listOf("2.5 kHz", "5.0 kHz", "6.25 kHz", "12.5 kHz", "25.0 kHz", "50.0 kHz")
     val RS_STEP_RAW    = listOf(250, 500, 625, 1250, 2500, 5000)
