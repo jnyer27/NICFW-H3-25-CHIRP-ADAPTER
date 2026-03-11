@@ -135,6 +135,7 @@ class SettingsEditorActivity : AppCompatActivity() {
         binding.switchBluetooth.isChecked       = s.bluetooth
         binding.switchVfoLockActive.isChecked   = s.vfoLockActive
         binding.switchDisableFmt.isChecked      = s.disableFmt
+        binding.switchAmAgcFix.isChecked        = s.amAgcFix
 
         // ── EditTexts — raw integers ──────────────────────────────────────────
         fun ei(v: Int) = v.toString()
@@ -237,6 +238,7 @@ class SettingsEditorActivity : AppCompatActivity() {
             bluetooth       = binding.switchBluetooth.isChecked,
             vfoLockActive   = binding.switchVfoLockActive.isChecked,
             disableFmt      = binding.switchDisableFmt.isChecked,
+            amAgcFix        = binding.switchAmAgcFix.isChecked,
 
             // ── EditTexts — raw integers ──────────────────────────────────────
             sqNoiseLev    = binding.editSqNoiseLev.text.toString().asInt(0).coerceIn(0, 255),

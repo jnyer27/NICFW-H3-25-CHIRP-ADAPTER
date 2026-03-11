@@ -411,6 +411,7 @@ object EepromParser {
             agc1            = u8(C.RS_AGC1),
             agc2            = u8(C.RS_AGC2),
             agc3            = u8(C.RS_AGC3),
+            amAgcFix        = bool(C.RS_AM_AGC_FIX),
             dualWatch       = bool(C.RS_DUAL_WATCH),
             scanResume      = u8(C.RS_SCAN_RESUME),
             scanRange       = u16(C.RS_SCAN_RANGE),
@@ -483,6 +484,7 @@ object EepromParser {
         pu8(C.RS_AGC1,            s.agc1)
         pu8(C.RS_AGC2,            s.agc2)
         pu8(C.RS_AGC3,            s.agc3)
+        pbool(C.RS_AM_AGC_FIX,   s.amAgcFix)
         pbool(C.RS_DUAL_WATCH,    s.dualWatch)
         pu8(C.RS_SCAN_RESUME,     s.scanResume)
         pu16(C.RS_SCAN_RANGE,     s.scanRange)

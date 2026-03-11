@@ -397,6 +397,13 @@
                         <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AGC 3" android:textSize="14sp" />
                         <EditText android:id="@+id/editAgc3" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–63 (def: 40)" />
                     </LinearLayout>
+                    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
+
+                    <!-- AM AGC Fix -->
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="AM AGC Fix (def: Off)" android:textSize="14sp" />
+                        <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/switchAmAgcFix" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+                    </LinearLayout>
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

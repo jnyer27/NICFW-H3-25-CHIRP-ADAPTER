@@ -79,6 +79,7 @@ object EepromConstants {
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
     const val RS_DTMF_SEQ_PAUSE  = 0x1972  // u8  × 0.1 s  ✓ confirmed (10=1.0 s)
     const val RS_NOISE_CEILING   = 0x1973  // u8  ✓ confirmed (value=55)
+    const val RS_AM_AGC_FIX      = 0x1974  // u8  bool (0=Off, 1=On)  ✓ confirmed
 
     // Radio Settings enum lists ─────────────────────────────────────────────
     // Scrambler: index == scramblerIf field (0=Off, 1=2600Hz … 10=3500Hz).

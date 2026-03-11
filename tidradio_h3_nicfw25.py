@@ -154,7 +154,9 @@ struct {
     u8 vfoLockActive;
     u8 dualWatchDelay;
     u8 subToneDeviation;
-    u8 filler[25];
+    u8 filler1967[13];   // 0x1967-0x1973: showXmitCurrent, AGC 0-3, RFi Comp, etc.
+    u8 amAgcFix;         // 0x1974  AM AGC Fix (0=Off, 1=On)  ✓ confirmed
+    u8 filler1975[11];   // 0x1975-0x197F
 } settings;
 
 // 0x1A00 bandplan magic 0xA46D, then bandPlans[20]
@@ -682,6 +684,7 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
         misc.append(RadioSetting("disableFmt", "Disable FM Tuner", RadioSettingValueBoolean(bool(s.disableFmt))))
         misc.append(RadioSetting("dualWatchDelay", "Dual Watch Delay", RadioSettingValueInteger(0, 255, int(s.dualWatchDelay))))
         misc.append(RadioSetting("subToneDeviation", "Sub Tone Deviation", RadioSettingValueInteger(0, 127, int(s.subToneDeviation))))
+        misc.append(RadioSetting("amAgcFix", "AM AGC Fix", RadioSettingValueBoolean(bool(s.amAgcFix))))
         top.append(misc)
 
         # Security
@@ -943,6 +946,8 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                 s.lockedVfo = int(val) & 0xFF
             elif name == "vfoLockActive":
                 s.vfoLockActive = 1 if val else 0
+            elif name == "amAgcFix":
+                s.amAgcFix = 1 if val else 0
             elif name and name.startswith("bandPlan_") and "_" in name[9:]:
                 parts = name.split("_")
                 if len(parts) >= 3:

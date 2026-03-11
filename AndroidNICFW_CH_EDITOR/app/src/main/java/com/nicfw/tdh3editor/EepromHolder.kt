@@ -53,6 +53,7 @@ data class RadioSettings(
     val agc1:            Int = 32,
     val agc2:            Int = 37,
     val agc3:            Int = 40,
+    val amAgcFix:        Boolean = false,
     // Scan
     val dualWatch:       Boolean = true,
     val scanResume:      Int = 10,
