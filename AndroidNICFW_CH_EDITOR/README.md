@@ -19,14 +19,29 @@ Download APK Here: https://drive.google.com/file/d/15VHP9435Xb3QcM1pZcxp9L_YZdm8
 - **Band plan TX indicator** — channels whose frequency is blocked for TX by the radio's
   band plan show `(BP)` next to the power level (e.g. `4.9W (BP)` for FM broadcast)
 - **Per-channel editor** — frequency, duplex/offset, name, power, modulation, bandwidth,
-  TX tone, RX tone (CTCSS in Hz or DCS with polarity), and up to 4 group assignments
+  TX tone, RX tone (CTCSS in Hz or DCS with polarity), up to 4 group assignments,
+  and **Busy Lock** (auto-disabled when a TX offset or duplex mode is configured)
+- **Radio Settings Editor** — full editor for the nicFW Settings block (EEPROM 0x1900)
+  across 10 sections: Squelch & Audio, Display, TX Settings, RX & Tuning, Scan, VOX,
+  Tones & Keys, DTMF, System, Security. Includes RF Gain (AGC/1–42), Power Save (Off/1–20),
+  AM AGC Fix, Scrambler IF, TX Sub Tone Deviation, DTMF Volume/Speed/Decode, and more
 - **Band Plan Editor** — view and edit all 20 nicFW band plan entries (start/end
-  frequency, TX allowed, scan wrap, modulation override, bandwidth override, max power);
-  changes are written directly to the EEPROM
+  frequency, TX allowed, scan wrap, modulation override, bandwidth override, max power)
+- **Scan Presets Editor** — view and edit all 20 spectrum scan preset slots (start/end
+  frequency, step, resume, persist, modulation, ultrascan speed, label)
 - **Group Label Editor** — edit the 15 group labels (A–O) that are stored in the radio
   EEPROM; labels are shown throughout the app in place of raw letter codes
-- **EEPROM dump export** — saves raw `.bin` + human-readable tone analysis `.txt` via
-  the system share sheet (useful for debugging)
+- **Tune Settings** — edit per-radio calibration values: XTAL 671 correction, VHF/UHF
+  power caps (with live watt estimates and ⚠ channel-list advisory when exceeded)
+- **Protect Tune Settings** — checkable toggle (overflow menu) that locks calibration
+  fields and enables a safe multi-radio write: pre-reads the target radio's 5 calibration
+  bytes, patches them into the template copy, then uploads — template is never modified
+- **XTAL 671 Calculator** — standalone tool (no EEPROM needed) to compute the nicFW
+  XTAL correction value from a measured vs. expected frequency
+- **EEPROM dump save / import** — export raw `.bin` for backup or cross-radio cloning;
+  import a `.bin` file directly without a Bluetooth connection
+- **Multi-select channel operations** — move, bulk power, bulk group assign, delete
+- **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV file
 
 ---
 
@@ -117,36 +132,23 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
 
 ### Overflow menu (⋮)
 
-| Item | Description |
+| Item | Notes |
 |---|---|
-| **Edit Band Plan…** | Open the Band Plan Editor (enabled after loading EEPROM) |
-| **Edit Group Labels…** | Open the Group Label Editor (enabled after loading EEPROM) |
-| **Save EEPROM dump…** | Export raw `.bin` + tone analysis `.txt` via the share sheet |
+| **Import CHIRP CSV…** | Fill empty channel slots from a CHIRP-exported CSV (requires EEPROM) |
+| **Sort Channels by Group…** | Reorder all channels so each group is contiguous (requires EEPROM) |
+| **Edit Group Labels…** | Rename groups A–O stored in the EEPROM (requires EEPROM) |
+| **Save EEPROM dump…** | Export a raw 8 KB `.bin` backup file (requires EEPROM) |
+| **Import EEPROM dump…** | Load a `.bin` file as the active EEPROM (always available) |
+| **Edit Band Plan…** | Edit all 20 nicFW band plan entries (requires EEPROM) |
+| **Edit Scan Presets…** | Edit all 20 spectrum scan preset slots (requires EEPROM) |
+| **Radio Settings…** | Edit the full nicFW Settings block — 56 fields across 10 sections (requires EEPROM) |
+| **Tune Settings…** | Edit per-radio calibration: XTAL 671, VHF/UHF power caps (requires EEPROM) |
+| **XTAL 671 Calculator…** | Compute XTAL correction from measured vs. expected frequency (always available) |
+| **Protect Tune Settings** | Checkable toggle — locks calibration fields and enables safe multi-radio write (always available) |
 
-### Band Plan Editor
-
-Tap **⋮ → Edit Band Plan…** to view and edit all 20 nicFW band plan entries.
-
-Each entry covers:
-
-| Field | Description |
-|---|---|
-| Start / End (MHz) | Frequency range for this entry |
-| TX Allowed | Whether the radio permits transmitting in this range |
-| Scan Wrap | Whether scan wraps at this band boundary |
-| Max Power | 0 = Ignore (no limit); 1–255 = power setting ceiling |
-| Modulation | Ignore / FM / AM / USB / Auto / Enforce FM / Enforce AM / Enforce USB |
-| Bandwidth | Ignore / Wide / Narrow / FM Tuner (raw 5) / BW(3/4/6/7) placeholders |
-
-Tap a slot to edit it. Tap **Clear Entry** to zero the slot. Tap **Save** to write all
-changes back to the EEPROM (the band plan section is updated immediately; tap **Save to
-radio** in the main screen to persist to the radio).
-
-### Group Label Editor
-
-Tap **⋮ → Edit Group Labels…** to rename any of the 15 groups (A–O). Labels are stored
-directly in the radio EEPROM (6 chars each at offset `0x1C90`) and are updated throughout
-the app immediately on save. Tap **Save to radio** in the main screen to persist changes.
+> For detailed documentation of all overflow menu screens (Radio Settings, Band Plan Editor,
+> Scan Presets, Tune Settings, Protect Tune Settings multi-radio workflow, XTAL Calculator,
+> and more), see the full [User Guide](../UserGuide.md).
 
 ---
 

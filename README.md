@@ -137,6 +137,8 @@ In nicFW V2.5 the **XTAL (crystal) calibration** is stored at **EEPROM 0x1DFB**,
 | 3 | Band plan modulation labels wrong (raw 1 mapped to AM, raw 2 to Enforce FM) | Simplified to direct raw=index mapping; corrected labels verified from EEPROM dump |
 | 4 | Band plan bandwidth labels wrong (FM Tuner mapped to raw 3 instead of raw 5) | Simplified to direct raw=index mapping; FM Tuner now at index/raw 5 |
 | 5 | FM broadcast frequencies (e.g. 88.1 MHz) rejected as out of range | Added 76–108 MHz to `valid_bands` |
+| 6 | Busy Lock bit written even when a TX offset or duplex mode is configured (radio does not support Busy Lock on repeater channels) | `set_memory()` now forces `_mem.busyLock = 0` when `mem.duplex` is `+`, `−`, or `split` |
+| 7 | Same Busy Lock / duplex rule missing from `get_memory()` return path | `busyLock` field cleared in the returned `mem` object when duplex offset is present, so round-trip read–modify–write cannot re-enable Busy Lock on a repeater channel |
 
 ## License
 

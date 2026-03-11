@@ -25,8 +25,9 @@
    - [Save / Import EEPROM Dump](#74-save--import-eeprom-dump)
    - [Edit Band Plan](#75-edit-band-plan)
    - [Edit Scan Presets](#76-edit-scan-presets)
+   - [Radio Settings](#77-radio-settings)
    - [Tune Settings](#78-tune-settings)
-   - [XTAL 671 Calculator](#77-xtal-671-calculator)
+   - [XTAL 671 Calculator](#79-xtal-671-calculator)
 8. [CHIRP Adapter (Python Driver)](#8-chirp-adapter-python-driver)
 9. [Tips & Troubleshooting](#9-tips--troubleshooting)
 
@@ -211,6 +212,7 @@ Tap any channel row to open the **Channel Editor**.
 | **Power** | N/T, 1–255 (raw byte) | See power-to-watt table below |
 | **Mode** | Auto, FM, AM, USB | |
 | **Bandwidth** | Wide, Narrow | |
+| **Busy Lock** | On / Off | When On, prevents accidental TX on an occupied channel. Automatically forced Off and disabled whenever a TX offset or duplex mode is set — incompatible with repeater/split channels. |
 | **TX Tone** | None, CTCSS 67.0–250.3 Hz, DCS 023–754 N/R | Flat picker — all tones in one list |
 | **RX Tone** | Same as TX Tone | Squelch decode tone |
 | **Group 1–4** | None, A–O (with custom labels) | Up to 4 groups per channel |
@@ -417,13 +419,16 @@ Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced fea
 │  Import EEPROM dump…     │
 │  Edit Band Plan…         │
 │  Edit Scan Presets…      │
+│  Radio Settings…         │
 │  Tune Settings…          │
 │  XTAL 671 Calculator…    │
+│  ✓ Protect Tune Settings  │
 └──────────────────────────┘
 ```
 
 > **XTAL 671 Calculator** is always accessible — no EEPROM required.
 > **Import EEPROM dump** is always accessible regardless of connection state.
+> **Protect Tune Settings** is a checkable toggle — accessible any time; state persists across app restarts.
 > All other items require an EEPROM to be loaded first.
 
 ---
@@ -700,6 +705,147 @@ Tap any row to edit that scan preset slot:
 
 ---
 
+
+---
+
+### 7.7 Radio Settings
+
+View and edit the nicFW Settings block stored at EEPROM offset `0x1900`.
+Access via **⋮ → Radio Settings…** (requires EEPROM to be loaded).
+
+Tap **Save Settings** to write all changes to the in-memory EEPROM, then tap
+**Save to Radio** from the main screen to upload to the device.
+
+> Fields marked **⚠** use EEPROM offsets or encodings that are not fully
+> confirmed — treat them with extra caution.
+
+The editor is divided into ten sections:
+
+---
+
+#### Squelch & Audio
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **Squelch** | 0–9 (spinner) | 2 | Squelch threshold level |
+| **Sq Noise Level** | 0–255 | 0 | Raw noise floor threshold |
+| **Noise Ceiling** | 0–255 | 0 | Upper noise limit for squelch detection |
+| **Sq Tail Elim** | Off / On variants | Off | Squelch tail elimination mode |
+| **Mic Gain** | 0–31 | 25 | Microphone preamp gain |
+| **Noise Gate** | Off / On | Off | Enables the TX noise gate |
+| **RF Gain** | AGC / 1–42 | AGC | Receiver RF gain. AGC = automatic; 1–42 = fixed (lower = less gain) |
+
+---
+
+#### Display
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **LCD Brightness** | 0–35 | 28 | Backlight level |
+| **LCD Timeout (s)** | 0–255 (0 = Off) | Off | Screen off delay in seconds |
+| **Heartbeat** | 0–30 (0 = Off) | Off | Idle animation speed |
+| **Dim Brightness** | 0–14 (0 = Off) | Off | Reduced brightness level after timeout |
+| **LCD Gamma** | 0–255 | 0 | Display gamma correction |
+| **LCD Inverted** | Off / On | Off | Inverts the display colors |
+| **S-Bar Style** | Spinner | Segment | Signal bar display style |
+| **S-Bar Persistent** | Off / On | Off | Keep signal bar visible when idle |
+
+---
+
+#### TX Settings
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **TX Mod Meter** | Off / On | On | Shows TX modulation level on screen during transmit |
+| **TX Timeout (s)** | 0–255 (0 = Off) | 120 | Maximum continuous TX time before automatic cutoff |
+| **TX Sub Tone Deviation** | 0–127 | 64 | Sub-audible tone deviation level for CTCSS/DCS |
+| **PTT Mode** | Spinner | Dual | PTT button behavior (Dual = toggle + hold) |
+| **TX Filter Trans ⚠** | 0–65535 | 280.0 | TX filter transition frequency (offset unconfirmed) |
+| **TX Current** | Off / On | Off | Show transmit current on display |
+| **Repeater Tone (Hz)** | 0–65535 | 1750 | 1750 Hz burst tone for European repeater access |
+
+---
+
+#### RX & Tuning
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **Step** | Spinner | 5.0 kHz | VFO tuning step |
+| **AF Filters** | Spinner | All | Audio filter combination |
+| **IF Freq** | Spinner | 8.46 kHz | Intermediate frequency |
+| **RFi Comp** | Spinner | Off | RF interference compensation |
+| **AGC 0–3** | 0–63 each | 24 / 32 / 37 / 40 | AGC threshold levels (fine tuning) |
+| **AM AGC Fix** | Off / On | Off | Corrects AM mode AGC behavior; recommended On when using AM channels |
+
+---
+
+#### Scan
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **Dual Watch** | Off / On | On | Monitors two channels simultaneously |
+| **Scan Resume (s)** | 0–30 | 10 | Seconds before scan resumes after losing a signal |
+| **Scan Range (MHz)** | decimal | 1.00 | Frequency window scanned around current channel |
+| **Scan Persist (s)** | decimal (0 = Off) | Off | Hold time when a signal is found |
+| **Scan Update (×0.1 s)** | 0–255 | 0 | Display update interval during scan |
+| **Ultrascan** | 0–7 (0 = Off) | 7 | Spectrum scan speed (7 = fastest) |
+
+---
+
+#### VOX
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **VOX Level** | 0–15 (0 = Off) | Off | Voice-activated TX sensitivity |
+| **VOX Tail (s)** | decimal | 2.0 | Seconds TX stays open after voice stops |
+
+---
+
+#### Tones & Keys
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **Tone Monitor** | Spinner | On | Sub-audible tone monitor behavior |
+| **Key Tones** | Spinner | Off | Button press beep style |
+| **Sub-Tone Deviation** | 0–255 | 74 | Global sub-tone deviation level |
+
+---
+
+#### DTMF
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **DTMF Volume** | 0–255 | 80 | Received DTMF audio level |
+| **DTMF Speed** | 0–15 | 11 | DTMF tone transmit speed |
+| **DTMF Decode** | Spinner | Off | DTMF decode / squelch mode |
+| **DTMF Seq End Pause (s)** | decimal | 1.0 | Gap between DTMF sequence transmissions |
+
+---
+
+#### System
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **Battery Style** | Spinner | Percent | Battery indicator format |
+| **Bluetooth** | Off / On | On | Enable/disable the radio's Bluetooth module |
+| **Power Save** | Off / 1–20 | Off | Battery saving sleep interval. Higher = longer sleep cycles |
+| **DW Start Delay (s)** | 0–15 | 5 | Dual Watch activation delay after squelch closes |
+| **DW VFO Lock** | Off / On | Off | Lock VFO during Dual Watch mode |
+| **AllStar Link** | Spinner | Off | AllStar VoIP repeater link mode |
+| **Disable FM Tuner** | Off / On | Off | Hides the FM broadcast band from the tuner |
+| **Scrambler IF ⚠** | Spinner | Off | Scrambler intermediate frequency (encoding unconfirmed) |
+
+---
+
+#### Security
+
+| Field | Range | Default | Notes |
+|---|---|---|---|
+| **PIN** | 0–9999 | 1234 | Radio power-on or key-lock PIN |
+| **PIN Action** | Spinner | Off | When PIN is triggered (power-on / key-lock / off) |
+
+---
+
 ### 7.8 Tune Settings
 
 View and edit three per-radio calibration values stored at EEPROM offset `0x1DFB`.
@@ -755,7 +901,7 @@ Access via **⋮ → Tune Settings…** (requires EEPROM to be loaded).
 |---|---|---|---|
 | **VHF Power Setting Cap** | `0x1DFF` | 0–255 (raw byte) | Maximum TX power for VHF frequencies (<300 MHz). Channels whose stored power exceeds this value are clamped by the radio at transmit time. |
 | **UHF Power Setting Cap** | `0x1DFD` | 0–255 (raw byte) | Same cap for UHF frequencies (≥300 MHz). |
-| **XTAL 671 Correction** | `0x1DFB` | −128…+127 (signed) | Crystal oscillator correction applied by nicFW. Use the [XTAL 671 Calculator](#77-xtal-671-calculator) to compute the correct value for your unit. |
+| **XTAL 671 Correction** | `0x1DFB` | −128…+127 (signed) | Crystal oscillator correction applied by nicFW. Use the [XTAL 671 Calculator](#79-xtal-671-calculator) to compute the correct value for your unit. |
 
 > The live watt estimate displayed next to each cap picker (e.g., "≈ 5.0W") uses the
 > same interpolation table as the channel list power column.
@@ -788,6 +934,65 @@ Per-channel power byte (stored in EEPROM)
 | `5.0W (BP) ⚠` | Both Band Plan TX-restricted AND power exceeds cap |
 | `N/T` | No-transmit (power = 0 or Band Plan TX off) |
 
+
+---
+
+#### Protect Tune Settings
+
+A checkable toggle in the overflow menu (**⋮ → Protect Tune Settings**) that locks
+the per-radio calibration values and enables a safe multi-radio write workflow.
+
+The same toggle is also available inside the Tune Settings screen itself as a switch
+at the top of the page.
+
+**When protection is OFF (default):**
+- Tune Settings fields (XTAL, VHF cap, UHF cap) are fully editable.
+- **Save to Radio** uploads the EEPROM as-is — calibration bytes are whatever is
+  in the current template.
+
+**When protection is ON:**
+- The XTAL, VHF cap, and UHF cap pickers are greyed out and non-editable.
+- The **Save Tune Settings** button is disabled.
+- **Save to Radio** performs a two-phase protected write:
+
+```
+Phase 1 — Pre-read target radio
+  Progress: "Reading target radio calibration…"
+  Downloads the connected radio's full EEPROM
+  Extracts the 5 calibration bytes (0x1DFB–0x1DFF)
+
+Phase 2 — Patched upload
+  Progress: "Writing…"
+  Uploads a copy of the template EEPROM with those 5 bytes
+  substituted from the target radio's own calibration
+  Template in memory is never modified
+```
+
+#### Multi-Radio Template Workflow
+
+The typical use case for Protect Tune Settings is writing the same channel/settings
+configuration to a collection of radios while preserving each radio's factory
+calibration:
+
+1. Connect **Radio 1** → **Load from Radio**.
+2. Edit channels, settings, and band plan as desired. Do **not** edit Tune Settings.
+3. Enable **Protect Tune Settings** (✓ appears in the menu).
+4. Disconnect Radio 1, connect **Radio 2**.
+5. Tap **Save to Radio** → confirm dialog shows 🔒 protection note.
+6. Progress shows "Reading target radio calibration…" then "Writing…".
+7. Radio 2 receives the updated channels/settings but **keeps its own XTAL
+   and power caps**.
+8. Repeat steps 4–7 for Radio 3, 4, … — each radio keeps its own calibration.
+
+> **Template file workflow:** Save an EEPROM dump (**⋮ → Save EEPROM dump…**) while
+> protection is enabled. Load that `.bin` file later and apply it to any number of
+> radios — each will retain its own calibration on write.
+
+> **CHIRP note:** The Protect Tune Settings feature is **Android-only**.
+> The CHIRP driver does not implement a pre-read, so it always writes whatever
+> calibration bytes are in the loaded image. Use the Android app for multi-radio
+> template workflows.
+
 #### Workflow
 
 1. Tap **⋮ → Tune Settings…**
@@ -796,7 +1001,7 @@ Per-channel power byte (stored in EEPROM)
    - Set `255` to disable the cap (allow full power on all channels).
 3. Repeat for **UHF Power Setting Cap**.
 4. Adjust **XTAL 671** if needed — use the
-   [XTAL 671 Calculator](#77-xtal-671-calculator) to derive the correct value first.
+   [XTAL 671 Calculator](#79-xtal-671-calculator) to derive the correct value first.
 5. Tap **Save Tune Settings** → values are written to the in-memory EEPROM.
 6. Tap **Save to Radio** on the main screen to upload.
 
@@ -805,7 +1010,7 @@ Per-channel power byte (stored in EEPROM)
 
 ---
 
-### 7.7 XTAL 671 Calculator
+### 7.9 XTAL 671 Calculator
 
 A standalone frequency calibration tool — no EEPROM or radio connection required.
 It computes the **nicFW XTAL 671 correction value** needed to compensate for crystal
