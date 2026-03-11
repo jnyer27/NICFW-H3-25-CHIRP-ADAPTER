@@ -140,8 +140,8 @@
 
                     <!-- RF Gain -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RF Gain" android:textSize="14sp" />
-                        <EditText android:id="@+id/editRfGain" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=AGC (def: 0)" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="RF Gain (def: AGC)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerRfGain" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -277,9 +277,9 @@
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
-                    <!-- TX Deviation -->
+                    <!-- TX Sub Tone Deviation -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Deviation" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Sub Tone Deviation" android:textSize="14sp" />
                         <EditText android:id="@+id/editTxDeviation" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–127 (def: 64)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -293,8 +293,8 @@
 
                     <!-- TX Filter Trans ⚠ -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Filter Trans ⚠ (0=default)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editTxFilterTrans" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0=280 MHz (def: 0)" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="TX Filter Trans ⚠" android:textSize="14sp" />
+                        <EditText android:id="@+id/editTxFilterTrans" android:layout_width="100dp" android:layout_height="wrap_content" android:inputType="numberDecimal" android:gravity="end" android:hint="280.0 (default)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
@@ -600,9 +600,9 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="4dp">
 
-                    <!-- DTMF Deviation -->
+                    <!-- DTMF Volume -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Deviation" android:textSize="14sp" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="DTMF Volume" android:textSize="14sp" />
                         <EditText android:id="@+id/editDtmfDev" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–255 (def: 80)" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -675,8 +675,8 @@
 
                     <!-- Power Save -->
                     <LinearLayout android:layout_width="match_parent" android:layout_height="48dp" android:orientation="horizontal" android:gravity="center_vertical">
-                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Power Save (0=Off)" android:textSize="14sp" />
-                        <EditText android:id="@+id/editPowerSave" android:layout_width="80dp" android:layout_height="wrap_content" android:inputType="number" android:gravity="end" android:hint="0–20 (def: Off)" />
+                        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Power Save (def: Off)" android:textSize="14sp" />
+                        <Spinner android:id="@+id/spinnerPowerSave" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minWidth="100dp" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
 
