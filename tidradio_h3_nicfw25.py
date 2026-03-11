@@ -489,7 +489,9 @@ def _memory_to_channel(memobj, number, mem):
         _mem.name[i] = ord(c) if ord(c) < 256 else 0x20
     _mem.modulation = MODULATION_LIST.index(mem.mode) if mem.mode in MODULATION_LIST else 0
     _mem.bandwidth = 1 if mem.extra and any(e.get_name() == "bandwidth" and "Narrow" in str(e.value) for e in mem.extra) else 0
-    _mem.busyLock  = 1 if mem.extra and any(e.get_name() == "busyLock"  and bool(e.value)             for e in mem.extra) else 0
+    # Busy Lock is incompatible with repeater/split operation (radio rule).
+    _busy_requested = bool(mem.extra and any(e.get_name() == "busyLock" and bool(e.value) for e in mem.extra))
+    _mem.busyLock  = 1 if (_busy_requested and mem.duplex not in ("+", "-", "split")) else 0
     (txmode, txval, txpol), (rxmode, rxval, rxpol) = chirp_common.split_tone_encode(mem)
     _mem.txSubTone = _encode_tone(txmode, txval, txpol)
     _mem.rxSubTone = _encode_tone(rxmode, rxval, rxpol)
