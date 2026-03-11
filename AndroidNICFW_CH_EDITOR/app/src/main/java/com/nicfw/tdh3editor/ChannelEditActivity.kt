@@ -129,6 +129,9 @@ class ChannelEditActivity : AppCompatActivity() {
             binding.spinnerGroup3.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group3).coerceAtLeast(0))
             binding.spinnerGroup4.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group4).coerceAtLeast(0))
 
+            // Busy Lock
+            binding.switchBusyLock.isChecked = c.busyLock
+
             // ── Debug: show raw EEPROM tone words so we can verify DCS mapping ──
             val rawOff = EepromConstants.CHANNEL_BASE +
                          (channelNumber - 1) * EepromConstants.CHANNEL_STRUCT_SIZE
@@ -301,6 +304,9 @@ class ChannelEditActivity : AppCompatActivity() {
         c.group2 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup2.selectedItemPosition) ?: "None"
         c.group3 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup3.selectedItemPosition) ?: "None"
         c.group4 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup4.selectedItemPosition) ?: "None"
+
+        // Busy Lock — always saved
+        c.busyLock = binding.switchBusyLock.isChecked
 
         EepromParser.writeChannel(eep, c)
         EepromHolder.eeprom = eep

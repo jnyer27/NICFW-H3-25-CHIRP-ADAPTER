@@ -453,6 +453,9 @@ def _channel_to_memory(memobj, number, mem):
     bw_bit = int(raw[15]) & 1 if raw and len(raw) > 15 else 0
     bw = "Narrow" if bw_bit else "Wide"
     mem.extra.append(RadioSetting("bandwidth", "Bandwidth", RadioSettingValueList(BANDWIDTH_LIST, bw)))
+    # Busy Lock is bit 7 of flags byte.  ✓ confirmed via EEPROM diff.
+    busy_lock = bool((int(raw[15]) >> 7) & 1) if raw and len(raw) > 15 else False
+    mem.extra.append(RadioSetting("busyLock", "Busy Lock", RadioSettingValueBoolean(busy_lock)))
     # Step is global in the radio (Settings only). Per-memory tuning_step is for display; default 12.5 kHz.
     mem.tuning_step = next((s for s in VALID_TUNING_STEPS_HZ if mem.freq % s == 0), DEFAULT_TUNING_STEP_HZ)
     return mem
@@ -486,6 +489,7 @@ def _memory_to_channel(memobj, number, mem):
         _mem.name[i] = ord(c) if ord(c) < 256 else 0x20
     _mem.modulation = MODULATION_LIST.index(mem.mode) if mem.mode in MODULATION_LIST else 0
     _mem.bandwidth = 1 if mem.extra and any(e.get_name() == "bandwidth" and "Narrow" in str(e.value) for e in mem.extra) else 0
+    _mem.busyLock  = 1 if mem.extra and any(e.get_name() == "busyLock"  and bool(e.value)             for e in mem.extra) else 0
     (txmode, txval, txpol), (rxmode, rxval, rxpol) = chirp_common.split_tone_encode(mem)
     _mem.txSubTone = _encode_tone(txmode, txval, txpol)
     _mem.rxSubTone = _encode_tone(rxmode, rxval, rxpol)

@@ -46,6 +46,7 @@ object EepromParser {
         val mode = MOD.getOrElse(modulation) { "FM" }
         val bandwidthBit = flags and 1
         val bandwidth = if (bandwidthBit != 0) "Narrow" else "Wide"
+        val busyLock = (flags and 0x80) != 0
         val rxSubTone = readU16Be(slice, 8)
         val txSubTone = readU16Be(slice, 10)
         val (rxMode, rxVal, rxPol) = ToneCodec.decode(rxSubTone)
@@ -76,6 +77,8 @@ object EepromParser {
             group2 = GROUPS.getOrElse(g1) { "None" },
             group3 = GROUPS.getOrElse(g2) { "None" },
             group4 = GROUPS.getOrElse(g3) { "None" },
+            busyLock = busyLock,
+            flagsRaw = flags,
         )
     }
 
@@ -115,7 +118,11 @@ object EepromParser {
             writeU16Be(slice, 13, g0 or (g1 shl 4) or (g2 shl 8) or (g3 shl 12))
             val modIndex = MOD.indexOf(channel.mode).coerceIn(0, 3)
             val bwBit = if (channel.bandwidth == "Narrow") 1 else 0
-            slice[15] = (bwBit or (modIndex shl 1)).toByte()
+            val busyBit = if (channel.busyLock) 0x80 else 0
+            // Preserve bits 3-6 (position, pttID, reversed) from the original read so a
+            // round-trip write doesn't silently clear firmware-set per-channel flags.
+            val preservedBits = channel.flagsRaw and 0x78
+            slice[15] = (busyBit or preservedBits or (modIndex shl 1) or bwBit).toByte()
             val nameBytes = channel.name.take(12).padEnd(12, ' ').map { it.code.toByte() }.toByteArray()
             nameBytes.copyInto(slice, 20)
         }

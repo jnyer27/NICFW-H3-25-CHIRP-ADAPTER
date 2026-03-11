@@ -24,6 +24,10 @@ data class Channel(
     var group2: String = "None",
     var group3: String = "None",
     var group4: String = "None",
+    var busyLock: Boolean = false,
+    /** Raw flags byte (byte 15 of channel struct). Preserves bits 3-6 (position, pttID, reversed)
+     *  so a round-trip write doesn't clobber per-channel flags set by the radio firmware. */
+    var flagsRaw: Int = 0,
 ) {
     fun displayFreq(): String = if (empty) "" else "%.4f".format(freqRxHz / 1_000_000.0)
     fun displayDuplex(): String = when {
