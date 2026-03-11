@@ -135,25 +135,6 @@ class ChannelEditActivity : AppCompatActivity() {
             binding.switchBusyLock.isChecked = c.busyLock
             updateBusyLockState()
 
-            // ── Debug: show raw EEPROM tone words so we can verify DCS mapping ──
-            val rawOff = EepromConstants.CHANNEL_BASE +
-                         (channelNumber - 1) * EepromConstants.CHANNEL_STRUCT_SIZE
-            val eepBytes = eeprom
-            if (eepBytes != null && rawOff + 12 <= eepBytes.size) {
-                val rawRx = ((eepBytes[rawOff + 8].toInt()  and 0xFF) shl 8) or
-                             (eepBytes[rawOff + 9].toInt()  and 0xFF)
-                val rawTx = ((eepBytes[rawOff + 10].toInt() and 0xFF) shl 8) or
-                             (eepBytes[rawOff + 11].toInt() and 0xFF)
-                val rawRx9 = rawRx and 0x01FF
-                val rawTx9 = rawTx and 0x01FF
-                binding.textToneDebug.text =
-                    "TX raw=0x${rawTx.toString(16).padStart(4, '0').uppercase()}  " +
-                    "9-bit=${rawTx9}  " +
-                    "oct=${rawTx9.toString(8).padStart(3, '0')}  |  " +
-                    "RX raw=0x${rawRx.toString(16).padStart(4, '0').uppercase()}  " +
-                    "9-bit=${rawRx9}  " +
-                    "oct=${rawRx9.toString(8).padStart(3, '0')}"
-            }
         }
 
         // ── Power cap advisory ─────────────────────────────────────────────

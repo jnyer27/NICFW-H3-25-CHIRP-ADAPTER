@@ -124,18 +124,6 @@
             android:layout_height="48dp"
             android:layout_marginTop="4dp" />
 
-        <!-- ── Tone debug (raw EEPROM hex) ────────────────────────────────── -->
-
-        <TextView
-            android:id="@+id/textToneDebug"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textSize="11sp"
-            android:fontFamily="monospace"
-            android:textColor="#FF888888"
-            android:text="TX tone: 0x0000  RX tone: 0x0000" />
-
         <!-- ── TX Tone ─────────────────────────────────────────────────────── -->
 
         <TextView
