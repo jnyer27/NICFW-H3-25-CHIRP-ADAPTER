@@ -3,6 +3,8 @@ package com.nicfw.tdh3editor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -129,8 +131,9 @@ class ChannelEditActivity : AppCompatActivity() {
             binding.spinnerGroup3.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group3).coerceAtLeast(0))
             binding.spinnerGroup4.setSelection(EepromConstants.GROUPS_LIST.indexOf(c.group4).coerceAtLeast(0))
 
-            // Busy Lock
+            // Busy Lock — populate first, then enforce the duplex rule
             binding.switchBusyLock.isChecked = c.busyLock
+            updateBusyLockState()
 
             // ── Debug: show raw EEPROM tone words so we can verify DCS mapping ──
             val rawOff = EepromConstants.CHANNEL_BASE +
@@ -170,6 +173,17 @@ class ChannelEditActivity : AppCompatActivity() {
                 updatePowerCapWarning(powerIdx)
             }
         }
+
+        // ── Busy Lock ↔ Duplex live coupling ──────────────────────────────────
+        // Busy Lock is incompatible with repeater/split operation: the radio does
+        // not allow Busy Lock when a TX offset is configured.  Disable + clear the
+        // switch automatically whenever the user types a duplex value, and re-enable
+        // it when they clear it back to simplex.
+        binding.editDuplex.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) { updateBusyLockState() }
+        })
 
         binding.btnCancel.setOnClickListener { finish() }
         binding.btnDone.setOnClickListener { saveAndFinish() }
@@ -213,6 +227,26 @@ class ChannelEditActivity : AppCompatActivity() {
             binding.textPowerCapWarning.visibility = View.VISIBLE
         } else {
             binding.textPowerCapWarning.visibility = View.GONE
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Busy Lock / Duplex rule
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Enforces the radio rule: Busy Lock is incompatible with a repeater/split offset.
+     * When a duplex value (+, -, split) is present the switch is unchecked and disabled
+     * so the user cannot accidentally enable it.  Clears back to enabled when simplex.
+     */
+    private fun updateBusyLockState() {
+        val hasOffset = binding.editDuplex.text?.toString()?.trim()
+            ?.let { it == "+" || it == "-" || it.equals("split", ignoreCase = true) } == true
+        if (hasOffset) {
+            binding.switchBusyLock.isChecked = false
+            binding.switchBusyLock.isEnabled = false
+        } else {
+            binding.switchBusyLock.isEnabled = true
         }
     }
 
@@ -305,8 +339,10 @@ class ChannelEditActivity : AppCompatActivity() {
         c.group3 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup3.selectedItemPosition) ?: "None"
         c.group4 = EepromConstants.GROUPS_LIST.getOrNull(binding.spinnerGroup4.selectedItemPosition) ?: "None"
 
-        // Busy Lock — always saved
-        c.busyLock = binding.switchBusyLock.isChecked
+        // Busy Lock — force off when a repeater/split offset is present (radio rule)
+        val hasOffset = duplexStr == "+" || duplexStr == "-" ||
+                        duplexStr.equals("split", ignoreCase = true)
+        c.busyLock = if (hasOffset) false else binding.switchBusyLock.isChecked
 
         EepromParser.writeChannel(eep, c)
         EepromHolder.eeprom = eep
