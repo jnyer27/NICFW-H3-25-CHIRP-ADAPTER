@@ -6,7 +6,9 @@ package com.nicfw.tdh3editor.radio
 object EepromConstants {
 
     val MODULATION_LIST = listOf("Auto", "FM", "AM", "USB")
-    val BANDWIDTH_LIST = listOf("Wide", "Narrow")
+    val BANDWIDTH_LIST  = listOf("Wide", "Narrow")
+    val DUPLEX_LABELS   = listOf("Off", "+", "-", "Split")
+    val DUPLEX_VALUES   = listOf("",    "+", "-", "split")  // maps to Channel.duplex strings
     val GROUPS_LIST = listOf("None", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O")
     val GROUP_LETTERS = listOf("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O")
 

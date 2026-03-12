@@ -3,8 +3,6 @@ package com.nicfw.tdh3editor
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -60,9 +58,10 @@ class ChannelEditActivity : AppCompatActivity() {
         binding.toolbar.title = getString(R.string.edit_channel) + " $channelNumber"
 
         // ── Existing spinners ──────────────────────────────────────────────────
-        binding.spinnerPower.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.POWERLEVEL_LIST)
-        binding.spinnerMode.adapter  = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.MODULATION_LIST)
+        binding.spinnerPower.adapter    = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.POWERLEVEL_LIST)
+        binding.spinnerMode.adapter     = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.MODULATION_LIST)
         binding.spinnerBandwidth.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.BANDWIDTH_LIST)
+        binding.spinnerDuplex.adapter   = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.DUPLEX_LABELS)
 
         // ── Flat tone spinners (one per side, no adapter swapping) ─────────────
         val toneAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, EepromConstants.TONE_LABELS)
@@ -95,7 +94,7 @@ class ChannelEditActivity : AppCompatActivity() {
                 binding.editFreqRx.setText("")
                 binding.editOffset.setText("")
                 binding.editName.setText("")
-                binding.editDuplex.setText("")
+                binding.spinnerDuplex.setSelection(0)
                 binding.spinnerPower.setSelection(0)
                 binding.spinnerMode.setSelection(1)
                 binding.spinnerBandwidth.setSelection(0)
@@ -107,7 +106,8 @@ class ChannelEditActivity : AppCompatActivity() {
                     else     -> ""
                 })
                 binding.editName.setText(c.name)
-                binding.editDuplex.setText(c.duplex)
+                binding.spinnerDuplex.setSelection(
+                    EepromConstants.DUPLEX_VALUES.indexOf(c.duplex).coerceAtLeast(0))
                 val powerIdx = EepromConstants.POWERLEVEL_LIST.indexOf(c.power).coerceAtLeast(0)
                 binding.spinnerPower.setSelection(powerIdx)
                 val modeIdx = EepromConstants.MODULATION_LIST.indexOf(c.mode).coerceAtLeast(0)
@@ -158,13 +158,15 @@ class ChannelEditActivity : AppCompatActivity() {
         // ── Busy Lock ↔ Duplex live coupling ──────────────────────────────────
         // Busy Lock is incompatible with repeater/split operation: the radio does
         // not allow Busy Lock when a TX offset is configured.  Disable + clear the
-        // switch automatically whenever the user types a duplex value, and re-enable
-        // it when they clear it back to simplex.
-        binding.editDuplex.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
-            override fun afterTextChanged(s: Editable?) { updateBusyLockState() }
-        })
+        // switch automatically whenever the user selects a duplex value, and
+        // re-enable it when they select Off (simplex).
+        binding.spinnerDuplex.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                updateBusyLockState()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+        }
+        updateBusyLockState()   // evaluate initial state after population
 
         binding.btnCancel.setOnClickListener { finish() }
         binding.btnDone.setOnClickListener { saveAndFinish() }
@@ -221,8 +223,7 @@ class ChannelEditActivity : AppCompatActivity() {
      * so the user cannot accidentally enable it.  Clears back to enabled when simplex.
      */
     private fun updateBusyLockState() {
-        val hasOffset = binding.editDuplex.text?.toString()?.trim()
-            ?.let { it == "+" || it == "-" || it.equals("split", ignoreCase = true) } == true
+        val hasOffset = binding.spinnerDuplex.selectedItemPosition > 0
         if (hasOffset) {
             binding.switchBusyLock.isChecked = false
             binding.switchBusyLock.isEnabled = false
@@ -240,7 +241,7 @@ class ChannelEditActivity : AppCompatActivity() {
         val c   = channel ?: return
 
         val freqRxStr  = binding.editFreqRx.text?.toString()?.trim()
-        val duplexStr  = binding.editDuplex.text?.toString()?.trim() ?: ""
+        val duplexStr  = EepromConstants.DUPLEX_VALUES.getOrNull(binding.spinnerDuplex.selectedItemPosition) ?: ""
         val nameStr    = (binding.editName.text?.toString() ?: "").take(12)
         val powerStr   = EepromConstants.POWERLEVEL_LIST.getOrNull(binding.spinnerPower.selectedItemPosition) ?: "1"
         val modeStr    = EepromConstants.MODULATION_LIST.getOrNull(binding.spinnerMode.selectedItemPosition) ?: "FM"
