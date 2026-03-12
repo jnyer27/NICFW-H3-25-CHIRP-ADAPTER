@@ -4,11 +4,11 @@
         <description>Signal (Carrier) Squelch gates unwanted signals by shutting off the audio amplifier until a strong enough carrier is received. Lower values (e.g. 2) open the gate for weaker signals; higher values (5–9) only allow very strong signals. Value 0 opens the gate continuously. Press the Flashlight/Monitor button to temporarily open squelch.</description>
         <notes>Level 1 is a 'noise only' setting and can be unpredictable.</notes>
     </entry>
-    <entry key="sq_noise_lev" screen="radio_settings" title="Sq Noise Level" range="15–55" default="47">
+    <entry key="sq_noise_lev" screen="radio_settings" title="Sq Noise Level" range="15–55" default="38">
         <description>Adjusts the noise threshold used by the squelch circuit. Lower values produce tighter squelch; higher values produce looser squelch. Be conservative with adjustments.</description>
         <notes>The noise ceiling is 55, so setting noise level to 55 gives either no noise trigger or one that triggers if a flea sneezes nearby.</notes>
     </entry>
-    <entry key="noise_ceiling" screen="radio_settings" title="Noise Ceiling" range="0–255" default="0">
+    <entry key="noise_ceiling" screen="radio_settings" title="Noise Ceiling" range="0–255" default="55">
         <description>Sets the upper bound for the noise measurement used by the squelch system. Works in conjunction with Sq Noise Level to define the noise trigger window.</description>
     </entry>
     <entry key="sq_tail_elim" screen="radio_settings" title="Sq Tail Elimination (STE)" range="Off, RX, TX, Both" default="Off">
@@ -28,14 +28,14 @@
     <entry key="lcd_brightness" screen="radio_settings" title="LCD Brightness" range="0–35" default="28">
         <description>Adjusts the full-brightness level of the display. 35 is the brightest. Value 0 does not fully disable the display but makes it very dim.</description>
     </entry>
-    <entry key="lcd_timeout" screen="radio_settings" title="LCD Timeout" range="Off (0), 1–250 sec" default="Off">
+    <entry key="lcd_timeout" screen="radio_settings" title="LCD Timeout" range="Off (0), 1–250 sec" default="15">
         <description>Determines how long (in seconds) the display stays on after no user input and no signal breaks squelch. Timeout does not apply while in the menu screen.</description>
         <notes>If set to a very low value, you may need to press V/M a couple of times to open the menu before it dims again.</notes>
     </entry>
     <entry key="heartbeat" screen="radio_settings" title="Heartbeat" range="Off (0), 1–30 sec" default="Off">
         <description>How frequently (in seconds) the keypad backlight LED blinks to remind you the radio is still on. Useful when the display has timed out.</description>
     </entry>
-    <entry key="dim_brightness" screen="radio_settings" title="Dim Brightness" range="Off (0), 1–14" default="Off">
+    <entry key="dim_brightness" screen="radio_settings" title="Dim Brightness" range="Off (0), 1–14" default="3">
         <description>Sets the display brightness level after no user input for the LCD Timeout period. When set to Off (0), the display turns off completely after timeout.</description>
     </entry>
     <entry key="lcd_gamma" screen="radio_settings" title="LCD Gamma" range="0–3" default="0">
@@ -50,7 +50,7 @@
     <entry key="sbar_always_on" screen="radio_settings" title="SBar Always On" range="Off, On" default="Off">
         <description>When On, keeps the signal strength meter bar visible on screen even when no signal is currently being received.</description>
     </entry>
-    <entry key="tx_timeout" screen="radio_settings" title="TX Timeout (TOT)" range="Off (0), 1–250 sec" default="Off">
+    <entry key="tx_timeout" screen="radio_settings" title="TX Timeout (TOT)" range="Off (0), 1–250 sec" default="120">
         <description>Prevents continuous accidental transmission. Sets the maximum number of seconds the radio will transmit before stopping. A value of 120 allows approximately 2 minutes of continuous transmission before you must re-key.</description>
     </entry>
     <entry key="tx_deviation" screen="radio_settings" title="TX Deviation" range="0–99" default="64">
@@ -66,7 +66,7 @@
         <description>Frequency of the burst tone some repeaters require to open access. To send the tone: start transmitting with PTT, then press the Flashlight/Monitor button to send the tone burst.</description>
         <notes>Not commonly used in North America. More common in European repeater systems.</notes>
     </entry>
-    <entry key="tx_mod_meter" screen="radio_settings" title="TX Mod Meter" range="Off, On" default="Off">
+    <entry key="tx_mod_meter" screen="radio_settings" title="TX Mod Meter" range="Off, On" default="On">
         <description>When On, displays an audio frequency (AF) modulation meter below the RSSI bar during transmission, giving a visual indication of the audio level being transmitted.</description>
     </entry>
     <entry key="agc0" screen="radio_settings" title="AGC Table 1" range="1–42" default="24">
@@ -88,23 +88,23 @@
     <entry key="if_freq" screen="radio_settings" title="IF Frequency" range="4.23, 4.62, 5.08, 5.64, 6.35, 7.25, 8.46 kHz" default="8.46 kHz">
         <description>Adjusts the intermediate frequency centre value, which affects the Q factor and thus the effective bandwidth. A lower IF can help reduce receiver desensitisation caused by strong transmissions on nearby frequencies, at some cost to receive quality. RF Gain can serve a similar purpose.</description>
     </entry>
-    <entry key="rfi_comp" screen="radio_settings" title="RFI Compensation" range="Off, 1–30" default="Off">
+    <entry key="rfi_comp" screen="radio_settings" title="RFI Compensation" range="Off, 1–30" default="5">
         <description>Reduces the frequency at which the signal strength meter is redrawn. This limits display-generated RF interference (RFI) that can appear in the received audio when the screen updates rapidly.</description>
         <notes>A value of 5 is usually sufficient. Fine-tune for your specific use case.</notes>
     </entry>
-    <entry key="scan_resume" screen="radio_settings" title="Scan Resume" range="Off (0), 1–250 sec" default="Off">
+    <entry key="scan_resume" screen="radio_settings" title="Scan Resume" range="Off (0), 1–250 sec" default="10">
         <description>Sets how long (in seconds) the scan pauses on an active signal before automatically resuming even if the signal hasn't dropped. Off means the scan waits until the signal is gone before resuming.</description>
     </entry>
     <entry key="scan_update" screen="radio_settings" title="Scan Update" range="Off (0), 1–50" default="Off">
         <description>Controls how often the displayed frequency refreshes during a scan. Value 0 gives maximum scan speed (no display refresh). Value 1 refreshes most often but slows the scan the most.</description>
     </entry>
-    <entry key="scan_range" screen="radio_settings" title="VFO Scan Range" range="0.01–600 MHz" default="10 MHz">
+    <entry key="scan_range" screen="radio_settings" title="VFO Scan Range" range="0.01–600 MHz" default="29 MHz">
         <description>Sets how many MHz above the starting frequency the radio scans in VFO mode before wrapping back to the start.</description>
     </entry>
     <entry key="scan_persist" screen="radio_settings" title="Scan Persist" range="0.0–20.0 sec" default="0">
         <description>Sets how long (in seconds) the scan holds on a frequency after the signal drops before moving on. Useful for catching intermittent signals.</description>
     </entry>
-    <entry key="ultra_scan" screen="radio_settings" title="UltraScan" range="Off (0), 1–20" default="Off">
+    <entry key="ultra_scan" screen="radio_settings" title="UltraScan" range="Off (0), 1–20" default="7">
         <description>Signal rejection algorithm that speeds up scanning by making an early pass/skip decision before the full lock time expires. Higher values are more selective (faster but may miss weaker signals); lower values match more signals (slower but more thorough). VFO mode only.</description>
         <notes>Watch the green LED blink rate. Find the level where it blinks inconsistently, then increase by 1 until it blinks mostly fast.</notes>
     </entry>
@@ -120,23 +120,23 @@
     <entry key="sub_tone_dev" screen="radio_settings" title="Sub Tone Deviation" range="1–127" default="74">
         <description>Adjusts the deviation (effectively the volume) of the sub-audible tone (CTCSS/DCS) transmitted alongside your audio. Increase if the receiving radio/repeater is not reliably opening with your sub-tone.</description>
     </entry>
-    <entry key="dtmf_volume" screen="radio_settings" title="DTMF Volume" range="0–127" default="32">
+    <entry key="dtmf_volume" screen="radio_settings" title="DTMF Volume" range="0–127" default="80">
         <description>Sets the volume at which DTMF (Dual-Tone Multi-Frequency) tones are transmitted. If a receiving radio or repeater is not correctly interpreting your DTMF tones, try adjusting this value.</description>
     </entry>
-    <entry key="dtmf_speed" screen="radio_settings" title="DTMF Speed" range="0–20" default="0">
+    <entry key="dtmf_speed" screen="radio_settings" title="DTMF Speed" range="0–20" default="11">
         <description>Changes the speed at which DTMF tones are sent when transmitting a pre-configured DTMF sequence. DTMF presets are configured in the nicFW Programmer desktop application.</description>
     </entry>
     <entry key="dtmf_decode" screen="radio_settings" title="DTMF Decode" range="Various modes" default="Off">
         <description>Configures how incoming DTMF tones on a received signal are decoded and handled by the radio.</description>
     </entry>
-    <entry key="dtmf_seq_pause" screen="radio_settings" title="DTMF Seq Pause" range="0.0–25.5 sec" default="0">
+    <entry key="dtmf_seq_pause" screen="radio_settings" title="DTMF Seq Pause" range="0.0–25.5 sec" default="1.0">
         <description>Sets the pause duration at the end of a DTMF sequence transmission before the radio considers the sequence complete.</description>
     </entry>
     <entry key="ptt_mode" screen="radio_settings" title="PTT Mode" range="Dual, Single, Hybrid" default="Dual">
         <description>Configures the screen layout and PTT button behaviour. Dual: both VFO-A and VFO-B shown; upper PTT = VFO-A, lower PTT = VFO-B. Single: only the active VFO shown; either PTT transmits on it. Hybrid: both VFOs shown but both PTT buttons transmit on the currently active VFO.</description>
         <notes>A speaker-mic on the K1 port always acts in Hybrid mode, transmitting on whichever VFO is active.</notes>
     </entry>
-    <entry key="step" screen="radio_settings" title="Step" range="0.01–500 kHz" default="12.5 kHz">
+    <entry key="step" screen="radio_settings" title="Step" range="0.01–500 kHz" default="25.0 kHz">
         <description>The frequency increment applied when tuning up or down with the keypad arrows in VFO mode. Also used as the step size during VFO mode scanning unless a Scan Preset specifies a different step.</description>
         <notes>Scan Presets can change the step and the new value remains after exiting the scan.</notes>
     </entry>
@@ -144,14 +144,14 @@
         <description>Puts the radio chip, audio amplifier, Bluetooth, and filters to sleep between signal checks. The value is in tenths-of-a-second sleep intervals (e.g. 10 = 1 second sleep). Larger values save more power but make the radio slower to detect signals. Only active when the LCD is off.</description>
         <notes>Turn off Power Save before using nicFW Programmer or you will likely encounter connection issues.</notes>
     </entry>
-    <entry key="dual_watch" screen="radio_settings" title="Dual Watch" range="Off, On" default="Off">
+    <entry key="dual_watch" screen="radio_settings" title="Dual Watch" range="Off, On" default="On">
         <description>Monitors VFO-A and VFO-B simultaneously. When a signal opens squelch on either VFO the radio pauses on that VFO. Once the signal ends, both VFOs are monitored again. Toggle with LP Flashlight/Monitor button.</description>
         <notes>By default the active VFO can change if a signal is heard on the other VFO. Enable VFO DW Lock to prevent this.</notes>
     </entry>
     <entry key="tx_current" screen="radio_settings" title="Show TX Current" range="Off, On" default="Off">
         <description>When On, displays the estimated transmit power output in watts on the radio screen during transmission.</description>
     </entry>
-    <entry key="dw_delay" screen="radio_settings" title="Dual Watch Delay" range="1–30 sec" default="1">
+    <entry key="dw_delay" screen="radio_settings" title="Dual Watch Delay" range="1–30 sec" default="5">
         <description>Creates a short delay after using PTT before Dual Watch begins scanning both VFOs again. This gives you time to have a two-way conversation while Dual Watch is enabled without having to disable it.</description>
     </entry>
     <entry key="vfo_dw_lock" screen="radio_settings" title="VFO DW Lock" range="Off, On" default="Off">
@@ -175,11 +175,11 @@
     <entry key="wireless_copy" screen="radio_settings" title="Wireless Copy" range="Cancel, Receive, Send" default="Cancel">
         <description>Wirelessly copies channel data between two TD-H3 radios over Bluetooth. Set one radio to Send and the other to Receive to transfer the active channel's settings. Cancel exits without transferring. Both radios must have Bluetooth enabled.</description>
     </entry>
-    <entry key="tone_monitor" screen="radio_settings" title="Tone Monitor" range="Off, On, Clone" default="Off">
+    <entry key="tone_monitor" screen="radio_settings" title="Tone Monitor" range="Off, On, Clone" default="On">
         <description>When On, monitors a received signal and detects any CTCSS tone or DCS code, displaying the value on screen. Useful for discovering what tone/code a repeater or radio is using. Clone mode automatically saves the detected tone to the active VFO as the TX CTCSS/DCS value.</description>
         <notes>VFO mode only for Clone. Tone detection can be inaccurate if XTAL 671 is not calibrated.</notes>
     </entry>
-    <entry key="batt_style" screen="radio_settings" title="Battery Style" range="Off, Icon, Percent, Volts" default="Icon">
+    <entry key="batt_style" screen="radio_settings" title="Battery Style" range="Off, Icon, Percent, Volts" default="Percent">
         <description>Changes how battery status is displayed on screen. Off = no display; Icon = battery icon; Percent = estimated remaining percentage; Volts = current battery voltage.</description>
     </entry>
     <entry key="pin_action" screen="radio_settings" title="PIN Action" range="Off, On, Power On" default="Off">
@@ -234,11 +234,11 @@
         <description>When On, prevents the radio from transmitting on this channel if a signal is currently being received (carrier detected). Helps avoid stepping on an ongoing conversation on a simplex frequency.</description>
         <notes>Only works with simplex (Duplex = Off). Automatically disabled when a separate TX frequency is configured.</notes>
     </entry>
-    <entry key="vhf_power_cap" screen="tune_settings" title="VHF Power Cap" range="0 (N/T), 1–255" default="255">
+    <entry key="vhf_power_cap" screen="tune_settings" title="VHF Power Cap" range="0 (N/T), 1–255" default="130">
         <description>Caps the maximum transmit power allowed on VHF frequencies (approximately 136–280 MHz). Setting to 0 disables VHF transmission entirely. Values 1–255 set the maximum power ceiling — channel TX Power settings above this cap are limited to the cap value.</description>
         <notes>Use this to enforce a power limit across all VHF channels without editing them individually.</notes>
     </entry>
-    <entry key="uhf_power_cap" screen="tune_settings" title="UHF Power Cap" range="0 (N/T), 1–255" default="255">
+    <entry key="uhf_power_cap" screen="tune_settings" title="UHF Power Cap" range="0 (N/T), 1–255" default="130">
         <description>Caps the maximum transmit power allowed on UHF frequencies (approximately 280–480 MHz). Setting to 0 disables UHF transmission entirely.</description>
         <notes>The final transistor is rated at 5.5W UHF. Keeping the cap at or below the equivalent value protects the PA.</notes>
     </entry>

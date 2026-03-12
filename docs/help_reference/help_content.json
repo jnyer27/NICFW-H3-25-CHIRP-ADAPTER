@@ -14,7 +14,7 @@
       "screen": "radio_settings",
       "title": "Sq Noise Level",
       "range": "15–55",
-      "default": "47",
+      "default": "38",
       "description": "Adjusts the noise threshold used by the squelch circuit. Lower values produce tighter squelch; higher values produce looser squelch. Be conservative with adjustments.",
       "notes": "The noise ceiling is 55, so setting noise level to 55 gives either no noise trigger or one that triggers if a flea sneezes nearby."
     },
@@ -23,7 +23,7 @@
       "screen": "radio_settings",
       "title": "Noise Ceiling",
       "range": "0–255",
-      "default": "0",
+      "default": "55",
       "description": "Sets the upper bound for the noise measurement used by the squelch system. Works in conjunction with Sq Noise Level to define the noise trigger window."
     },
     {
@@ -302,7 +302,7 @@
       "screen": "radio_settings",
       "title": "DTMF Volume",
       "range": "0–127",
-      "default": "32",
+      "default": "80",
       "description": "Sets the volume at which DTMF (Dual-Tone Multi-Frequency) tones are transmitted. If a receiving radio or repeater is not correctly interpreting your DTMF tones, try adjusting this value."
     },
     {
@@ -310,7 +310,7 @@
       "screen": "radio_settings",
       "title": "DTMF Speed",
       "range": "0–20",
-      "default": "0",
+      "default": "11",
       "description": "Changes the speed at which DTMF tones are sent when transmitting a pre-configured DTMF sequence. DTMF presets are configured in the nicFW Programmer desktop application."
     },
     {
@@ -326,7 +326,7 @@
       "screen": "radio_settings",
       "title": "DTMF Seq Pause",
       "range": "0.0–25.5 sec",
-      "default": "0",
+      "default": "1.0",
       "description": "Sets the pause duration at the end of a DTMF sequence transmission before the radio considers the sequence complete."
     },
     {
@@ -378,7 +378,7 @@
       "screen": "radio_settings",
       "title": "Dual Watch Delay",
       "range": "1–30 sec",
-      "default": "1",
+      "default": "5",
       "description": "Creates a short delay after using PTT before Dual Watch begins scanning both VFOs again. This gives you time to have a two-way conversation while Dual Watch is enabled without having to disable it."
     },
     {
@@ -429,7 +429,7 @@
       "screen": "radio_settings",
       "title": "Tone Monitor",
       "range": "Off, On, Clone",
-      "default": "Off",
+      "default": "On",
       "description": "When On, monitors a received signal and detects any CTCSS tone or DCS code, displaying the value on screen. Useful for discovering what tone/code a repeater or radio is using. Clone mode automatically saves the detected tone to the active VFO as the TX CTCSS/DCS value.",
       "notes": "VFO mode only for Clone. Tone detection can be inaccurate if XTAL 671 is not calibrated."
     },
@@ -565,7 +565,7 @@
       "screen": "tune_settings",
       "title": "VHF Power Cap",
       "range": "0 (N/T), 1–255",
-      "default": "255",
+      "default": "130",
       "description": "Caps the maximum transmit power allowed on VHF frequencies (approximately 136–280 MHz). Setting to 0 disables VHF transmission entirely. Values 1–255 set the maximum power ceiling — channel TX Power settings above this cap are limited to the cap value.",
       "notes": "Use this to enforce a power limit across all VHF channels without editing them individually."
     },
@@ -574,7 +574,7 @@
       "screen": "tune_settings",
       "title": "UHF Power Cap",
       "range": "0 (N/T), 1–255",
-      "default": "255",
+      "default": "130",
       "description": "Caps the maximum transmit power allowed on UHF frequencies (approximately 280–480 MHz). Setting to 0 disables UHF transmission entirely.",
       "notes": "The final transistor is rated at 5.5W UHF. Keeping the cap at or below the equivalent value protects the PA."
     },
