@@ -3,6 +3,7 @@ package com.nicfw.tdh3editor
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.TextView
@@ -44,6 +45,9 @@ class ChirpImportActivity : AppCompatActivity() {
 
     /** Channel numbers of empty slots in slot order (1-based). */
     private lateinit var emptySlots: List<Int>
+
+    /** Valid starting indices into [emptySlots] from which all entries fit. */
+    private lateinit var validStartIndices: List<Int>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +94,12 @@ class ChirpImportActivity : AppCompatActivity() {
             .filter { it.empty }
             .map { it.number }
 
+        validStartIndices = if (entries.size <= emptySlots.size) {
+            (0..emptySlots.size - entries.size).toList()
+        } else {
+            emptyList()
+        }
+
         val canImport = minOf(entries.size, emptySlots.size)
 
         // ── Summary text ──────────────────────────────────────────────────────
@@ -107,13 +117,16 @@ class ChirpImportActivity : AppCompatActivity() {
         // ── Group spinners ────────────────────────────────────────────────────
         setupGroupSpinners()
 
+        // ── Starting channel spinner ──────────────────────────────────────────
+        setupStartSlotSpinner()
+
         // ── Preview rows ──────────────────────────────────────────────────────
-        buildPreview(canImport)
+        buildPreview()
 
         // ── Buttons ───────────────────────────────────────────────────────────
         binding.btnImportCancel.setOnClickListener { finish() }
         binding.btnImportConfirm.isEnabled = canImport > 0
-        binding.btnImportConfirm.setOnClickListener { doImport(eep, canImport) }
+        binding.btnImportConfirm.setOnClickListener { doImport(eep) }
     }
 
     // ── Group spinners ────────────────────────────────────────────────────────
@@ -138,15 +151,45 @@ class ChirpImportActivity : AppCompatActivity() {
         ).forEach { it.adapter = makeAdapter() }
     }
 
+    // ── Starting channel spinner ──────────────────────────────────────────────
+
+    private fun setupStartSlotSpinner() {
+        if (validStartIndices.isEmpty()) {
+            binding.labelStartSlot.visibility = View.GONE
+            binding.spinnerStartSlot.visibility = View.GONE
+            return
+        }
+        val labels = validStartIndices.map { "Ch ${emptySlots[it]}" }
+        binding.spinnerStartSlot.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, labels)
+        binding.spinnerStartSlot.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                ) = buildPreview()
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+            }
+    }
+
+    /** Destination slot list based on the current starting channel spinner selection. */
+    private fun currentSlots(): List<Int> {
+        if (validStartIndices.isEmpty()) return emptySlots.take(entries.size)
+        val startIdx = validStartIndices.getOrElse(
+            binding.spinnerStartSlot.selectedItemPosition) { 0 }
+        return emptySlots.subList(startIdx, startIdx + entries.size)
+    }
+
     // ── Preview list ──────────────────────────────────────────────────────────
 
-    private fun buildPreview(canImport: Int) {
+    private fun buildPreview() {
+        val slots     = currentSlots()
+        val canImport = slots.size
         val container = binding.previewContainer
         container.removeAllViews()
 
         for (i in 0 until canImport) {
             val entry = entries[i]
-            val slot  = emptySlots[i]
+            val slot  = slots[i]
             val ch    = entry.channel
 
             val row = layoutInflater.inflate(R.layout.item_import_preview, container, false)
@@ -194,7 +237,10 @@ class ChirpImportActivity : AppCompatActivity() {
 
     // ── Import action ─────────────────────────────────────────────────────────
 
-    private fun doImport(eep: ByteArray, canImport: Int) {
+    private fun doImport(eep: ByteArray) {
+        val slots     = currentSlots()
+        val canImport = slots.size
+
         // Read group selections
         fun groupAt(spinner: Spinner) =
             EepromConstants.GROUPS_LIST.getOrNull(spinner.selectedItemPosition) ?: "None"
@@ -205,7 +251,7 @@ class ChirpImportActivity : AppCompatActivity() {
         val g4 = groupAt(binding.spinnerImportGroup4)
 
         for (i in 0 until canImport) {
-            val slot = emptySlots[i]
+            val slot = slots[i]
             val ch   = entries[i].channel.copy(
                 number = slot,
                 group1 = g1,
