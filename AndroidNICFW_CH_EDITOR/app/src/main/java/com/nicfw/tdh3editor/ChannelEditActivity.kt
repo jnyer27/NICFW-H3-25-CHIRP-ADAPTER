@@ -170,6 +170,27 @@ class ChannelEditActivity : AppCompatActivity() {
 
         binding.btnCancel.setOnClickListener { finish() }
         binding.btnDone.setOnClickListener { saveAndFinish() }
+
+        HelpSystem.init(this)
+        setupHelpButtons()
+    }
+
+    private fun setupHelpButtons() {
+        mapOf(
+            binding.helpFreqRx    to "freq_rx",
+            binding.helpOffset    to "freq_tx_offset",
+            binding.helpName      to "channel_name",
+            binding.helpDuplex    to "duplex",
+            binding.helpPower     to "tx_power",
+            binding.helpMode      to "modulation",
+            binding.helpBandwidth to "bandwidth",
+            binding.helpTxTone    to "tx_tone",
+            binding.helpRxTone    to "rx_tone",
+            binding.helpGroups    to "groups",
+            binding.helpBusyLock  to "busy_lock",
+        ).forEach { (btn, key) ->
+            btn.setOnClickListener { HelpSystem.show(this, key) }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

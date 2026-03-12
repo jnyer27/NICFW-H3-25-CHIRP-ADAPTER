@@ -66,6 +66,8 @@ class SettingsEditorActivity : AppCompatActivity() {
         setupSpinners()
         populateFromHolder()
         setupButtons()
+        HelpSystem.init(this)
+        setupHelpButtons()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -192,6 +194,69 @@ class SettingsEditorActivity : AppCompatActivity() {
     private fun setupButtons() {
         binding.btnSettingsCancel.setOnClickListener { finish() }
         binding.btnSettingsSave.setOnClickListener   { saveAndFinish() }
+    }
+
+    private fun setupHelpButtons() {
+        mapOf(
+            binding.helpSquelch          to "squelch",
+            binding.helpSqNoiseLev       to "sq_noise_lev",
+            binding.helpNoiseCeiling     to "noise_ceiling",
+            binding.helpSte              to "sq_tail_elim",
+            binding.helpMicGain          to "mic_gain",
+            binding.helpNoiseGate        to "noise_gate",
+            binding.helpRfGain           to "rf_gain",
+            binding.helpLcdBrightness    to "lcd_brightness",
+            binding.helpLcdTimeout       to "lcd_timeout",
+            binding.helpBreathe          to "heartbeat",
+            binding.helpLcdDim           to "dim_brightness",
+            binding.helpLcdGamma         to "lcd_gamma",
+            binding.helpLcdInverted      to "lcd_inverted",
+            binding.helpSBarStyle        to "sbar_style",
+            binding.helpSBarPersistent   to "sbar_always_on",
+            binding.helpTxTimeout        to "tx_timeout",
+            binding.helpTxDeviation      to "tx_deviation",
+            binding.helpTxFilterTrans    to "tx_vhf_uhf",
+            binding.helpRepeaterTone     to "repeater_tone",
+            binding.helpTxModMeter       to "tx_mod_meter",
+            binding.helpAgc0             to "agc0",
+            binding.helpAgc1             to "agc1",
+            binding.helpAgc2             to "agc2",
+            binding.helpAgc3             to "agc3",
+            binding.helpAfFilters        to "af_filters",
+            binding.helpIfFreq           to "if_freq",
+            binding.helpRfiComp          to "rfi_comp",
+            binding.helpScanResume       to "scan_resume",
+            binding.helpScanUpdate       to "scan_update",
+            binding.helpScanRange        to "scan_range",
+            binding.helpScanPersist      to "scan_persist",
+            binding.helpUltraScan        to "ultra_scan",
+            binding.helpVox              to "vox",
+            binding.helpVoxTail          to "vox_tail",
+            binding.helpKeyTones         to "key_tones",
+            binding.helpSubToneDev       to "sub_tone_dev",
+            binding.helpDtmfDev          to "dtmf_volume",
+            binding.helpDtmfSpeed        to "dtmf_speed",
+            binding.helpDtmfDecode       to "dtmf_decode",
+            binding.helpDtmfSeqEndPause  to "dtmf_seq_pause",
+            binding.helpPttMode          to "ptt_mode",
+            binding.helpStep             to "step",
+            binding.helpPowerSave        to "power_save",
+            binding.helpDualWatch        to "dual_watch",
+            binding.helpShowXmitCurrent  to "tx_current",
+            binding.helpDwDelay          to "dw_delay",
+            binding.helpVfoLockActive    to "vfo_dw_lock",
+            binding.helpDisableFmt       to "disable_fmt",
+            binding.helpAmAgcFix         to "am_agc_fix",
+            binding.helpBluetooth        to "bluetooth",
+            binding.helpAsl              to "asl",
+            binding.helpToneMonitor      to "tone_monitor",
+            binding.helpBattStyle        to "batt_style",
+            binding.helpPinAction        to "pin_action",
+            binding.helpPin              to "pin",
+            binding.helpScramblerIf      to "scrambler_if",
+        ).forEach { (btn, key) ->
+            btn.setOnClickListener { HelpSystem.show(this, key) }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────

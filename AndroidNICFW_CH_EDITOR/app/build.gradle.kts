@@ -53,4 +53,5 @@ dependencies {
     implementation(libs.coordinatorlayout)
     implementation(libs.recyclerview)
     implementation(libs.kotlinx.coroutines.android)
+    implementation("org.yaml:snakeyaml:2.0")
 }

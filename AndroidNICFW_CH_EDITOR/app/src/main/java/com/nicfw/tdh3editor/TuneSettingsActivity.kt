@@ -73,6 +73,19 @@ class TuneSettingsActivity : AppCompatActivity() {
         populateFromHolder()
         setupButtons()
         setupProtectToggle()
+        HelpSystem.init(this)
+        setupHelpButtons()
+    }
+
+    private fun setupHelpButtons() {
+        mapOf(
+            binding.helpVhfCap      to "vhf_power_cap",
+            binding.helpUhfCap      to "uhf_power_cap",
+            binding.helpXtal671     to "xtal_671",
+            binding.helpProtectTune to "protect_tune",
+        ).forEach { (btn, key) ->
+            btn.setOnClickListener { HelpSystem.show(this, key) }
+        }
     }
 
     // ─────────────────────────────────────────────────────────────────────────
