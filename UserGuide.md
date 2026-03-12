@@ -410,20 +410,21 @@ appears showing the count. Clearing sets those slots to empty (all bytes zeroed)
 Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced features.
 
 ```
-┌──────────────────────────┐
-│ ⋮                        │
-│  Import CHIRP CSV…       │
-│  Sort Channels by Group… │
-│  Edit Group Labels…      │
-│  Save EEPROM dump…       │
-│  Import EEPROM dump…     │
-│  Edit Band Plan…         │
-│  Edit Scan Presets…      │
-│  Radio Settings…         │
-│  Tune Settings…          │
-│  XTAL 671 Calculator…    │
-│  ✓ Protect Tune Settings  │
-└──────────────────────────┘
+┌────────────────────────────────────────┐
+│ ⋮                                      │
+│  Import CHIRP CSV from File…           │
+│  Import CHIRP CSV from Clipboard…      │
+│  Sort Channels by Group…               │
+│  Edit Group Labels…                    │
+│  Save EEPROM dump…                     │
+│  Import EEPROM dump…                   │
+│  Edit Band Plan…                       │
+│  Edit Scan Presets…                    │
+│  Radio Settings…                       │
+│  Tune Settings…                        │
+│  XTAL 671 Calculator…                  │
+│  ✓ Protect Tune Settings               │
+└────────────────────────────────────────┘
 ```
 
 > **XTAL 671 Calculator** is always accessible — no EEPROM required.
@@ -437,11 +438,18 @@ Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced fea
 
 Import a frequency list exported by the CHIRP radio programming software.
 
+Two input methods are supported:
+
+- **⋮ → Import CHIRP CSV from File…** — opens the system file picker to select a `.csv` file.
+- **⋮ → Import CHIRP CSV from Clipboard…** — reads a CHIRP CSV copied directly to the clipboard.
+
 #### Steps
 
 1. Export your channel list from CHIRP as a CSV file (`File → Export`).
-2. Transfer the CSV to your Android device (email, cloud storage, USB, etc.).
-3. In the app, tap **⋮ → Import CHIRP CSV…** and pick the file.
+2. Transfer the CSV to your Android device (email, cloud storage, USB, etc.),
+   **or** copy the CSV text to the clipboard on a device where CHIRP is running.
+3. In the app, tap **⋮ → Import CHIRP CSV from File…** and pick the file,
+   **or** tap **⋮ → Import CHIRP CSV from Clipboard…** to import from the clipboard.
 4. The **CHIRP Import** screen opens:
 
 ```
@@ -451,30 +459,35 @@ Import a frequency list exported by the CHIRP radio programming software.
 │  24 channel(s) in CSV · 31 empty slot(s) available   │
 │  ✓ All 24 channels will be imported                  │
 ├──────────────────────────────────────────────────────┤
-│  Assign groups to imported channels (optional):      │
+│  Assign Groups to All Imported Channels              │
 │                                                      │
-│  Group Slot 1  [ A — GMRS ▼]                        │
-│  Group Slot 2  [ None     ▼]                        │
-│  Group Slot 3  [ None     ▼]                        │
-│  Group Slot 4  [ None     ▼]                        │
+│  Group 1  [ A — GMRS ▼]  Group 2  [ None     ▼]    │
+│  Group 3  [ None     ▼]  Group 4  [ None     ▼]    │
 ├──────────────────────────────────────────────────────┤
-│  Preview (24 channels):                              │
-│  → Ch 8  │ GMRS 1   │ 462.5625 MHz  │ T: 100.0 Hz   │
-│  → Ch 9  │ GMRS 2   │ 462.5875 MHz                  │
-│  → Ch 10 │ WX1      │ 162.4000 MHz  (CSV #43)       │
-│  …                                                   │
+│  Starting Channel                                    │
+│  [ Ch 1 ▼ ]                                         │
+├──────────────────────────────────────────────────────┤
+│  Channel Preview                                     │
+│  → Ch 1  │ GMRS 1   │ 462.5625 MHz  │ T: 100.0 Hz  │
+│  → Ch 2  │ GMRS 2   │ 462.5875 MHz                 │
+│  → Ch 3  │ WX1      │ 162.4000 MHz  (CSV #43)      │
+│  …                                                  │
 ├──────────────────────────────────────────────────────┤
 │  [ Cancel ]                     [ Import ]           │
 └──────────────────────────────────────────────────────┘
 ```
 
-5. Optionally assign all imported channels to up to 4 groups using the spinners.
-6. Tap **Import** to write channels into the first available empty slots.
-7. Tap **Save to Radio** on the main screen to upload.
+5. Optionally assign all imported channels to up to 4 groups using the **Group** spinners.
+6. Use the **Starting Channel** spinner to choose which empty slot the first imported
+   channel lands in. The preview updates live — the `→ Ch N` labels shift to reflect
+   your selection. Only positions where all channels fit without overwriting occupied
+   slots are listed.
+7. Tap **Import** to write channels into the selected slot range.
+8. Tap **Save to Radio** on the main screen to upload.
 
 > ⚠ Imported channels fill **empty slots only** — existing channels are never overwritten.
 > If there are more CSV entries than empty slots, a warning is shown and excess entries
-> are skipped.
+> are skipped. The Starting Channel spinner is hidden in this case.
 
 ---
 
