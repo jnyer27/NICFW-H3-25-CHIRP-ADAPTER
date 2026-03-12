@@ -4,7 +4,12 @@
 
     <item
         android:id="@+id/action_import_chirp"
-        android:title="Import CHIRP CSV…"
+        android:title="Import CHIRP CSV from File…"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_import_chirp_clipboard"
+        android:title="Import CHIRP CSV from Clipboard…"
         app:showAsAction="never" />
 
     <item

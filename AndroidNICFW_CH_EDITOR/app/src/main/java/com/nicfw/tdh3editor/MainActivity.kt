@@ -2,6 +2,7 @@ package com.nicfw.tdh3editor
 
 import android.Manifest
 import android.bluetooth.BluetoothDevice
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -157,12 +158,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    // ─── CHIRP CSV file picker ────────────────────────────────────────────────
+    // ─── CHIRP CSV import ─────────────────────────────────────────────────────
     /**
      * Launches the system file picker for a CSV file, reads the content on the IO
-     * dispatcher, parses it with [ChirpCsvImporter] to validate it, then starts
-     * [ChirpImportActivity] with the raw CSV text so the import screen can present
-     * the full preview and group-assignment UI.
+     * dispatcher, then delegates to [processChirpCsv] for validation and launch.
      */
     private val csvPickerLauncher = registerForActivityResult(
         ActivityResultContracts.OpenDocument()
@@ -173,43 +172,48 @@ class MainActivity : AppCompatActivity() {
             return@registerForActivityResult
         }
         lifecycleScope.launch {
+            val csvText = withContext(Dispatchers.IO) {
+                contentResolver.openInputStream(uri)?.use { it.bufferedReader().readText() } ?: ""
+            }
+            if (csvText.isBlank()) {
+                Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
+                return@launch
+            }
+            processChirpCsv(csvText)
+        }
+    }
+
+    /**
+     * Validates [csvText] with [ChirpCsvImporter] and, if valid, launches
+     * [ChirpImportActivity] with the full preview and group-assignment UI.
+     * Called by both the file-picker and clipboard import paths.
+     */
+    private fun processChirpCsv(csvText: String) {
+        if (csvText.isBlank()) {
+            Toast.makeText(this, "No CSV content to import", Toast.LENGTH_SHORT).show()
+            return
+        }
+        lifecycleScope.launch {
             try {
-                // Read the file on the IO thread
-                val (csvText, commentsList) = withContext(Dispatchers.IO) {
-                    contentResolver.openInputStream(uri)?.use { stream ->
-                        val text = stream.bufferedReader().readText()
-                        // Extract comments in parallel with parse for the preview
-                        val comments = extractComments(text)
-                        Pair(text, comments)
-                    } ?: Pair("", emptyList<String>())
-                }
-
-                if (csvText.isBlank()) {
-                    Toast.makeText(this@MainActivity, "Could not read file", Toast.LENGTH_SHORT).show()
-                    return@launch
-                }
-
+                val commentsList = withContext(Dispatchers.IO) { extractComments(csvText) }
                 val entries = ChirpCsvImporter.parse(csvText)
                 if (entries.isEmpty()) {
                     Toast.makeText(
                         this@MainActivity,
-                        "No valid CHIRP channels found in selected file",
+                        "No valid CHIRP channels found",
                         Toast.LENGTH_LONG
                     ).show()
                     return@launch
                 }
-
-                // Launch the import preview / group-assignment screen
                 val intent = Intent(this@MainActivity, ChirpImportActivity::class.java).apply {
                     putExtra(ChirpImportActivity.EXTRA_CSV_TEXT, csvText)
                     putExtra(ChirpImportActivity.EXTRA_COMMENTS, ArrayList(commentsList))
                 }
                 startActivity(intent)
-
             } catch (e: Exception) {
                 Toast.makeText(
                     this@MainActivity,
-                    "Failed to read CSV: ${e.message}",
+                    "Failed to parse CSV: ${e.message}",
                     Toast.LENGTH_LONG
                 ).show()
             }
@@ -370,7 +374,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         val hasEeprom = (eeprom != null)
-        menu.findItem(R.id.action_import_chirp)?.isEnabled = hasEeprom
+        menu.findItem(R.id.action_import_chirp)?.isEnabled           = hasEeprom
+        menu.findItem(R.id.action_import_chirp_clipboard)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_edit_group_labels)?.isEnabled = hasEeprom
@@ -393,6 +398,20 @@ class MainActivity : AppCompatActivity() {
             R.id.action_import_chirp -> {
                 // Open system file picker — accept CSV and plain-text MIME types
                 csvPickerLauncher.launch(arrayOf("text/csv", "text/comma-separated-values", "text/plain", "*/*"))
+                true
+            }
+            R.id.action_import_chirp_clipboard -> {
+                if (eeprom == null) {
+                    Toast.makeText(this, "Load EEPROM from radio before importing", Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val csvText = clipboard.primaryClip?.getItemAt(0)?.text?.toString() ?: ""
+                if (csvText.isBlank()) {
+                    Toast.makeText(this, "Clipboard is empty", Toast.LENGTH_SHORT).show()
+                    return true
+                }
+                processChirpCsv(csvText)
                 true
             }
             R.id.action_sort_by_group -> {
