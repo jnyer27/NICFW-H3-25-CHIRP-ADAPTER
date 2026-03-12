@@ -23,7 +23,9 @@ object EepromConstants {
     // Main struct (0x1900–0x1966):
     const val RS_SQUELCH         = 0x1902  // u8  0-9
     const val RS_DUAL_WATCH      = 0x1903  // u8  bool
-    const val RS_SCRAMBLER_EN    = 0x1905  // u8  bool enable flag (0=Off, 1=enabled)  ✓ confirmed
+    const val RS_SCRAMBLER_EN    = 0x1905  // u8  NOT a scrambler enable — always 0x00 on hardware.
+                                           //     CHIRP driver maps this offset as activeVfo.
+                                           //     Retained for reference; not read or written by this app.
     const val RS_STEP            = 0x1906  // u16 BE, 10 Hz units (500 = 5.0 kHz)
     const val RS_PTT_MODE        = 0x190C  // u8  0=Dual, 1=Single
     const val RS_TX_MOD_METER    = 0x190D  // u8  bool
@@ -73,7 +75,7 @@ object EepromConstants {
     const val RS_AGC2            = 0x196A  // u8  AGC Table 2  ✓ confirmed (value=37)
     const val RS_AGC3            = 0x196B  // u8  AGC Table 3  ✓ confirmed (value=40)
     const val RS_RFI_COMP        = 0x196C  // u8  0=Off  ✓ confirmed (set to 1, observed in EEPROM)
-    const val RS_SCRAMBLER_FREQ  = 0x196D  // u8  freq index: 0=3300Hz(UI8), 1-7=2600-3200Hz(UI1-7)  ✓ confirmed; UI9-10 encoding unverified
+    const val RS_SCRAMBLER_FREQ  = 0x196D  // u8  direct index: 0=Off, 1-10=2600-3500 Hz  ✓ confirmed (all values 0-10 verified via EEPROM dumps)
     const val RS_DTMF_DECODE     = 0x196E  // u8  0=Off,1=Always,2=Squelched  ✓ confirmed (0→1 when DTMF Decode=Always)
     // 0x196F = unknown (1 byte gap); RS_RX_FILTER_TRANS location unconfirmed — removed from UI pending new dump
     const val RS_TX_FILTER_TRANS = 0x1970  // u16 BE, 0=default (280 MHz)  ⚠ unconfirmed
@@ -82,9 +84,9 @@ object EepromConstants {
     const val RS_AM_AGC_FIX      = 0x1974  // u8  bool (0=Off, 1=On)  ✓ confirmed
 
     // Radio Settings enum lists ─────────────────────────────────────────────
-    // Scrambler: index == scramblerIf field (0=Off, 1=2600Hz … 10=3500Hz).
-    // EEPROM encoding uses two fields: RS_SCRAMBLER_EN (enable) + RS_SCRAMBLER_FREQ (index).
-    // Freq index mapping: UI1-7 → raw1-7; UI8(3300Hz) → raw0; UI9-10 → raw8-9 (unverified).
+    // Scrambler: RS_SCRAMBLER_FREQ only (direct index 0-10).
+    // 0=Off, 1=2600Hz … 10=3500Hz — confirmed via binary diff of EEPROM dumps for all 10 values.
+    // RS_SCRAMBLER_EN (0x1905) is always 0x00 on hardware and is NOT used for on/off control.
     val RS_SCRAMBLER_LABELS  = listOf(
         "Off",
         "2600 Hz", "2700 Hz", "2800 Hz", "2900 Hz",

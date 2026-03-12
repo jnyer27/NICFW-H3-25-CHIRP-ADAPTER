@@ -833,7 +833,7 @@ The editor is divided into ten sections:
 | **DW VFO Lock** | Off / On | Off | Lock VFO during Dual Watch mode |
 | **AllStar Link** | Spinner | Off | AllStar VoIP repeater link mode |
 | **Disable FM Tuner** | Off / On | Off | Hides the FM broadcast band from the tuner |
-| **Scrambler IF ⚠** | Spinner | Off | Scrambler intermediate frequency (encoding unconfirmed) |
+| **Scrambler IF** | Spinner | Off | Scrambler intermediate frequency; Off = disabled, 2600–3500 Hz in 100 Hz steps |
 
 ---
 
