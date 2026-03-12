@@ -35,7 +35,6 @@ import com.nicfw.tdh3editor.radio.EepromConstants
 import com.nicfw.tdh3editor.radio.EepromParser
 import com.nicfw.tdh3editor.radio.Protocol
 import com.nicfw.tdh3editor.radio.RadioStream
-import com.nicfw.tdh3editor.radio.ToneCodec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -453,12 +452,10 @@ class MainActivity : AppCompatActivity() {
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Saves two files into the app's private external-files directory then shares them:
+     * Saves the raw EEPROM image into the app's private external-files directory
+     * then shares it:
      *
      *  • `tdh3_eeprom_<timestamp>.bin`  — raw 8 KB EEPROM image
-     *  • `tdh3_tones_<timestamp>.txt`   — human-readable hex dump of every channel's
-     *                                     rxSubTone / txSubTone words plus decoded values,
-     *                                     making it easy to spot DCS/CTCSS mapping bugs
      *
      * No WRITE_EXTERNAL_STORAGE permission required on API 29+.
      */
@@ -475,84 +472,18 @@ class MainActivity : AppCompatActivity() {
         val binFile = File(dir, "tdh3_eeprom_$ts.bin")
         binFile.writeBytes(eep)
 
-        // ── Tone analysis text ────────────────────────────────────────────────
-        val txtFile = File(dir, "tdh3_tones_$ts.txt")
-        buildToneAnalysis(eep, ts).let { txtFile.writeText(it) }
-
-        // ── Share both files ──────────────────────────────────────────────────
+        // ── Share file ────────────────────────────────────────────────────────
         val authority = "${packageName}.fileprovider"
-        val binUri  = FileProvider.getUriForFile(this, authority, binFile)
-        val txtUri  = FileProvider.getUriForFile(this, authority, txtFile)
+        val binUri = FileProvider.getUriForFile(this, authority, binFile)
 
-        val shareIntent = Intent(Intent.ACTION_SEND_MULTIPLE).apply {
-            type = "*/*"
-            putParcelableArrayListExtra(
-                Intent.EXTRA_STREAM,
-                arrayListOf(binUri, txtUri)
-            )
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "application/octet-stream"
+            putExtra(Intent.EXTRA_STREAM, binUri)
             putExtra(Intent.EXTRA_SUBJECT, "TD-H3 EEPROM dump $ts")
-            putExtra(
-                Intent.EXTRA_TEXT,
-                "TD-H3 EEPROM dump\n" +
-                "Binary: ${binFile.name} (${eep.size} bytes)\n" +
-                "Tone analysis: ${txtFile.name}"
-            )
+            putExtra(Intent.EXTRA_TEXT, "TD-H3 EEPROM dump\nBinary: ${binFile.name} (${eep.size} bytes)")
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
         startActivity(Intent.createChooser(shareIntent, "Share EEPROM dump"))
-    }
-
-    /**
-     * Builds a human-readable text report of every channel's raw tone sub-tone words
-     * and how [ToneCodec] currently decodes them — essential for diagnosing DCS mapping issues.
-     */
-    private fun buildToneAnalysis(eep: ByteArray, ts: String): String {
-        val sb = StringBuilder()
-        sb.appendLine("TD-H3 EEPROM Tone Debug  $ts")
-        sb.appendLine("Format: Ch N  offset  RX=0xWWWW → raw9=DDD → decoded VAL  TX=0xWWWW → …")
-        sb.appendLine("=".repeat(80))
-
-        for (ch in 1..EepromConstants.NUM_CHANNELS) {
-            val idx = ch - 1
-            val off = EepromConstants.CHANNEL_BASE + idx * EepromConstants.CHANNEL_STRUCT_SIZE
-            if (off + 12 > eep.size) break
-
-            val isEmpty = (eep[off].toInt() and 0xFF) == 0xFF &&
-                          (eep[off+1].toInt() and 0xFF) == 0xFF &&
-                          (eep[off+2].toInt() and 0xFF) == 0xFF &&
-                          (eep[off+3].toInt() and 0xFF) == 0xFF
-            val rxToneWord = ((eep[off+8].toInt() and 0xFF) shl 8) or (eep[off+9].toInt() and 0xFF)
-            val txToneWord = ((eep[off+10].toInt() and 0xFF) shl 8) or (eep[off+11].toInt() and 0xFF)
-
-            if (isEmpty && rxToneWord == 0 && txToneWord == 0) continue
-
-            val (rxMode, rxVal, rxPol) = ToneCodec.decode(rxToneWord)
-            val (txMode, txVal, txPol) = ToneCodec.decode(txToneWord)
-
-            fun toneDesc(word: Int, mode: String?, value: Double?, pol: String?): String {
-                val hex = "0x${word.toString(16).padStart(4, '0').uppercase()}"
-                val raw9 = word and 0x01FF
-                return when {
-                    word == 0     -> "$hex → None"
-                    word in 1..3000 -> "$hex → CTCSS ${value} Hz"
-                    (word and 0x8000) != 0 ->
-                        "$hex → raw9=$raw9 (0x${raw9.toString(16)}) → decoded $mode ${value} pol=$pol"
-                    else -> "$hex → unknown"
-                }
-            }
-
-            sb.appendLine(
-                "Ch %3d  off=0x%04X  %s  RX: %-50s  TX: %s".format(
-                    ch, off,
-                    if (isEmpty) "[empty]" else "       ",
-                    toneDesc(rxToneWord, rxMode, rxVal, rxPol),
-                    toneDesc(txToneWord, txMode, txVal, txPol)
-                )
-            )
-        }
-        sb.appendLine("=".repeat(80))
-        sb.appendLine("Done. Channels with all-zero tones omitted.")
-        return sb.toString()
     }
 
     override fun onResume() {
