@@ -146,13 +146,21 @@ settings:
     description: >
       Controls the extent of frequency modulation deviation above and below the carrier frequency. 64 is the stock firmware value. Values above approximately 70 may over-deviate into adjacent frequency slots.
 
+  - key: rx_vhf_uhf
+    screen: radio_settings
+    title: "RX VHF→UHF Threshold"
+    range: "200–400 MHz"
+    default: "280"
+    description: >
+      Frequency threshold that selects the appropriate RX front-end filter lineup between VHF and UHF. Frequencies below this value use the VHF filter; frequencies at or above use the UHF filter. This setting is unlikely to require adjustment.
+
   - key: tx_vhf_uhf
     screen: radio_settings
     title: "TX VHF→UHF Threshold"
     range: "200–400 MHz"
-    default: "280.0 MHz"
+    default: "280"
     description: >
-      Frequency threshold that selects the appropriate transmit front-end filter lineup between VHF and UHF. This setting is unlikely to require adjustment.
+      Frequency threshold that selects the appropriate TX output filter lineup between VHF and UHF. Frequencies below this value use the VHF filter; frequencies at or above use the UHF filter. This setting is unlikely to require adjustment.
 
   - key: repeater_tone
     screen: radio_settings
@@ -174,41 +182,41 @@ settings:
 
   - key: agc0
     screen: radio_settings
-    title: "AGC Table 0"
+    title: "AGC Table 1"
     range: "1–42"
     default: "24"
     description: >
-      Automatic Gain Control table value 0 (lowest threshold). Controls signal attenuation for the weakest signals. Values must remain in ascending order: AGC0 < AGC1 < AGC2 < AGC3. Lower this value to attenuate strong signals that bleed through.
+      Automatic Gain Control table value 1 (lowest threshold — menus 59–62 must stay in ascending order). Controls attenuation for weaker signals. To attenuate strong signals that bleed through, lower the values in menus 59–61 while keeping menu 62 at 40–42.
 
   - key: agc1
     screen: radio_settings
-    title: "AGC Table 1"
+    title: "AGC Table 2"
     range: "1–42"
     default: "32"
     description: >
-      Automatic Gain Control table value 1 (second threshold). Part of the 4-step AGC ladder. Must be greater than AGC0 and less than AGC2.
+      Automatic Gain Control table value 2 (second threshold). Part of the 4-step AGC ladder. Must be greater than AGC Table 1 and less than AGC Table 3.
 
   - key: agc2
     screen: radio_settings
-    title: "AGC Table 2"
+    title: "AGC Table 3"
     range: "1–42"
     default: "37"
     description: >
-      Automatic Gain Control table value 2 (third threshold). Part of the 4-step AGC ladder. Must be greater than AGC1 and less than AGC3.
+      Automatic Gain Control table value 3 (third threshold). Part of the 4-step AGC ladder. Must be greater than AGC Table 2 and less than AGC Table 4.
 
   - key: agc3
     screen: radio_settings
-    title: "AGC Table 3"
+    title: "AGC Table 4"
     range: "1–42"
     default: "40"
     description: >
-      Automatic Gain Control table value 3 (highest threshold — maximum gain). Set to 42 for maximum sensitivity on very weak signals. Values must remain ascending: AGC0 < AGC1 < AGC2 < AGC3.
+      Automatic Gain Control table value 4 (highest threshold — maximum gain). Set to 42 for maximum sensitivity on very weak signals. Values must remain ascending: Table 1 &lt; Table 2 &lt; Table 3 &lt; Table 4.
 
   - key: af_filters
     screen: radio_settings
     title: "AF Filters"
     range: "0–8"
-    default: "0 (all filters active)"
+    default: "0"
     description: >
       Selectively disables audio frequency filters for diagnostic or preference purposes. 0 = all default filters active. Options: 1=Band Pass only, 2=De-Emphasis+High Pass, 3=High Pass only, 4=De-Emphasis+Low Pass, 5=Low Pass only, 6=De-Emphasis only, 7=No RX filter, 8=No RX or TX filter.
     notes: >
@@ -440,6 +448,14 @@ settings:
     notes: >
       USB-C is recommended over the K1 port as serial data on K1 can be corrupted by audio.
 
+  - key: wireless_copy
+    screen: radio_settings
+    title: "Wireless Copy"
+    range: "Cancel, Receive, Send"
+    default: "Cancel"
+    description: >
+      Wirelessly copies channel data between two TD-H3 radios over Bluetooth. Set one radio to Send and the other to Receive to transfer the active channel's settings. Cancel exits without transferring. Both radios must have Bluetooth enabled.
+
   - key: tone_monitor
     screen: radio_settings
     title: "Tone Monitor"
@@ -611,11 +627,11 @@ settings:
     screen: tune_settings
     title: "XTAL 671 (Frequency Calibration)"
     range: "-128 to +127"
-    default: "0 (recommend starting at +34)"
+    default: "0"
     description: >
       Adjusts the 671.08864 MHz reference oscillator to compensate for crystal frequency tolerance. This value is critical for accurate CTCSS and DCS sub-tone generation. If the radio is off by more than 2 kHz, CTCSS will fail; more than 300 Hz and DCS will fail.
     notes: >
-      Use the XTAL 671 Calculator (⋮ menu) to compute the correct value. Formula: (offset_Hz / freq_MHz) × 671.08864. Most radios start near +34.
+      Most radios start near +34, not 0 — set this before using CTCSS or DCS. Use the XTAL 671 Calculator (⋮ menu) to compute the correct value. Formula: (offset_Hz / freq_MHz) × 671.08864.
 
   - key: protect_tune
     screen: tune_settings
