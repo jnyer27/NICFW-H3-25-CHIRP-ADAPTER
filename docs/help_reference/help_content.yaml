@@ -14,7 +14,7 @@ settings:
     screen: radio_settings
     title: "Sq Noise Level"
     range: "15–55"
-    default: "47"
+    default: "38"
     description: >
       Adjusts the noise threshold used by the squelch circuit. Lower values produce tighter squelch; higher values produce looser squelch. Be conservative with adjustments.
     notes: >
@@ -24,7 +24,7 @@ settings:
     screen: radio_settings
     title: "Noise Ceiling"
     range: "0–255"
-    default: "0"
+    default: "55"
     description: >
       Sets the upper bound for the noise measurement used by the squelch system. Works in conjunction with Sq Noise Level to define the noise trigger window.
 
@@ -76,7 +76,7 @@ settings:
     screen: radio_settings
     title: "LCD Timeout"
     range: "Off (0), 1–250 sec"
-    default: "Off"
+    default: "15"
     description: >
       Determines how long (in seconds) the display stays on after no user input and no signal breaks squelch. Timeout does not apply while in the menu screen.
     notes: >
@@ -94,7 +94,7 @@ settings:
     screen: radio_settings
     title: "Dim Brightness"
     range: "Off (0), 1–14"
-    default: "Off"
+    default: "3"
     description: >
       Sets the display brightness level after no user input for the LCD Timeout period. When set to Off (0), the display turns off completely after timeout.
 
@@ -134,7 +134,7 @@ settings:
     screen: radio_settings
     title: "TX Timeout (TOT)"
     range: "Off (0), 1–250 sec"
-    default: "Off"
+    default: "120"
     description: >
       Prevents continuous accidental transmission. Sets the maximum number of seconds the radio will transmit before stopping. A value of 120 allows approximately 2 minutes of continuous transmission before you must re-key.
 
@@ -146,13 +146,21 @@ settings:
     description: >
       Controls the extent of frequency modulation deviation above and below the carrier frequency. 64 is the stock firmware value. Values above approximately 70 may over-deviate into adjacent frequency slots.
 
+  - key: rx_vhf_uhf
+    screen: radio_settings
+    title: "RX VHF→UHF Threshold"
+    range: "200–400 MHz"
+    default: "280"
+    description: >
+      Frequency threshold that selects the appropriate RX front-end filter lineup between VHF and UHF. Frequencies below this value use the VHF filter; frequencies at or above use the UHF filter. This setting is unlikely to require adjustment.
+
   - key: tx_vhf_uhf
     screen: radio_settings
     title: "TX VHF→UHF Threshold"
     range: "200–400 MHz"
-    default: "280.0 MHz"
+    default: "280"
     description: >
-      Frequency threshold that selects the appropriate transmit front-end filter lineup between VHF and UHF. This setting is unlikely to require adjustment.
+      Frequency threshold that selects the appropriate TX output filter lineup between VHF and UHF. Frequencies below this value use the VHF filter; frequencies at or above use the UHF filter. This setting is unlikely to require adjustment.
 
   - key: repeater_tone
     screen: radio_settings
@@ -168,47 +176,47 @@ settings:
     screen: radio_settings
     title: "TX Mod Meter"
     range: "Off, On"
-    default: "Off"
+    default: "On"
     description: >
       When On, displays an audio frequency (AF) modulation meter below the RSSI bar during transmission, giving a visual indication of the audio level being transmitted.
 
   - key: agc0
     screen: radio_settings
-    title: "AGC Table 0"
+    title: "AGC Table 1"
     range: "1–42"
     default: "24"
     description: >
-      Automatic Gain Control table value 0 (lowest threshold). Controls signal attenuation for the weakest signals. Values must remain in ascending order: AGC0 < AGC1 < AGC2 < AGC3. Lower this value to attenuate strong signals that bleed through.
+      Automatic Gain Control table value 1 (lowest threshold — menus 59–62 must stay in ascending order). Controls attenuation for weaker signals. To attenuate strong signals that bleed through, lower the values in menus 59–61 while keeping menu 62 at 40–42.
 
   - key: agc1
     screen: radio_settings
-    title: "AGC Table 1"
+    title: "AGC Table 2"
     range: "1–42"
     default: "32"
     description: >
-      Automatic Gain Control table value 1 (second threshold). Part of the 4-step AGC ladder. Must be greater than AGC0 and less than AGC2.
+      Automatic Gain Control table value 2 (second threshold). Part of the 4-step AGC ladder. Must be greater than AGC Table 1 and less than AGC Table 3.
 
   - key: agc2
     screen: radio_settings
-    title: "AGC Table 2"
+    title: "AGC Table 3"
     range: "1–42"
     default: "37"
     description: >
-      Automatic Gain Control table value 2 (third threshold). Part of the 4-step AGC ladder. Must be greater than AGC1 and less than AGC3.
+      Automatic Gain Control table value 3 (third threshold). Part of the 4-step AGC ladder. Must be greater than AGC Table 2 and less than AGC Table 4.
 
   - key: agc3
     screen: radio_settings
-    title: "AGC Table 3"
+    title: "AGC Table 4"
     range: "1–42"
     default: "40"
     description: >
-      Automatic Gain Control table value 3 (highest threshold — maximum gain). Set to 42 for maximum sensitivity on very weak signals. Values must remain ascending: AGC0 < AGC1 < AGC2 < AGC3.
+      Automatic Gain Control table value 4 (highest threshold — maximum gain). Set to 42 for maximum sensitivity on very weak signals. Values must remain ascending: Table 1 &lt; Table 2 &lt; Table 3 &lt; Table 4.
 
   - key: af_filters
     screen: radio_settings
     title: "AF Filters"
     range: "0–8"
-    default: "0 (all filters active)"
+    default: "0"
     description: >
       Selectively disables audio frequency filters for diagnostic or preference purposes. 0 = all default filters active. Options: 1=Band Pass only, 2=De-Emphasis+High Pass, 3=High Pass only, 4=De-Emphasis+Low Pass, 5=Low Pass only, 6=De-Emphasis only, 7=No RX filter, 8=No RX or TX filter.
     notes: >
@@ -226,7 +234,7 @@ settings:
     screen: radio_settings
     title: "RFI Compensation"
     range: "Off, 1–30"
-    default: "Off"
+    default: "5"
     description: >
       Reduces the frequency at which the signal strength meter is redrawn. This limits display-generated RF interference (RFI) that can appear in the received audio when the screen updates rapidly.
     notes: >
@@ -236,7 +244,7 @@ settings:
     screen: radio_settings
     title: "Scan Resume"
     range: "Off (0), 1–250 sec"
-    default: "Off"
+    default: "10"
     description: >
       Sets how long (in seconds) the scan pauses on an active signal before automatically resuming even if the signal hasn't dropped. Off means the scan waits until the signal is gone before resuming.
 
@@ -252,7 +260,7 @@ settings:
     screen: radio_settings
     title: "VFO Scan Range"
     range: "0.01–600 MHz"
-    default: "10 MHz"
+    default: "29 MHz"
     description: >
       Sets how many MHz above the starting frequency the radio scans in VFO mode before wrapping back to the start.
 
@@ -268,7 +276,7 @@ settings:
     screen: radio_settings
     title: "UltraScan"
     range: "Off (0), 1–20"
-    default: "Off"
+    default: "7"
     description: >
       Signal rejection algorithm that speeds up scanning by making an early pass/skip decision before the full lock time expires. Higher values are more selective (faster but may miss weaker signals); lower values match more signals (slower but more thorough). VFO mode only.
     notes: >
@@ -310,7 +318,7 @@ settings:
     screen: radio_settings
     title: "DTMF Volume"
     range: "0–127"
-    default: "32"
+    default: "80"
     description: >
       Sets the volume at which DTMF (Dual-Tone Multi-Frequency) tones are transmitted. If a receiving radio or repeater is not correctly interpreting your DTMF tones, try adjusting this value.
 
@@ -318,7 +326,7 @@ settings:
     screen: radio_settings
     title: "DTMF Speed"
     range: "0–20"
-    default: "0"
+    default: "11"
     description: >
       Changes the speed at which DTMF tones are sent when transmitting a pre-configured DTMF sequence. DTMF presets are configured in the nicFW Programmer desktop application.
 
@@ -334,7 +342,7 @@ settings:
     screen: radio_settings
     title: "DTMF Seq Pause"
     range: "0.0–25.5 sec"
-    default: "0"
+    default: "1.0"
     description: >
       Sets the pause duration at the end of a DTMF sequence transmission before the radio considers the sequence complete.
 
@@ -352,7 +360,7 @@ settings:
     screen: radio_settings
     title: "Step"
     range: "0.01–500 kHz"
-    default: "12.5 kHz"
+    default: "25.0 kHz"
     description: >
       The frequency increment applied when tuning up or down with the keypad arrows in VFO mode. Also used as the step size during VFO mode scanning unless a Scan Preset specifies a different step.
     notes: >
@@ -372,7 +380,7 @@ settings:
     screen: radio_settings
     title: "Dual Watch"
     range: "Off, On"
-    default: "Off"
+    default: "On"
     description: >
       Monitors VFO-A and VFO-B simultaneously. When a signal opens squelch on either VFO the radio pauses on that VFO. Once the signal ends, both VFOs are monitored again. Toggle with LP Flashlight/Monitor button.
     notes: >
@@ -390,7 +398,7 @@ settings:
     screen: radio_settings
     title: "Dual Watch Delay"
     range: "1–30 sec"
-    default: "1"
+    default: "5"
     description: >
       Creates a short delay after using PTT before Dual Watch begins scanning both VFOs again. This gives you time to have a two-way conversation while Dual Watch is enabled without having to disable it.
 
@@ -440,11 +448,19 @@ settings:
     notes: >
       USB-C is recommended over the K1 port as serial data on K1 can be corrupted by audio.
 
+  - key: wireless_copy
+    screen: radio_settings
+    title: "Wireless Copy"
+    range: "Cancel, Receive, Send"
+    default: "Cancel"
+    description: >
+      Wirelessly copies channel data between two TD-H3 radios over Bluetooth. Set one radio to Send and the other to Receive to transfer the active channel's settings. Cancel exits without transferring. Both radios must have Bluetooth enabled.
+
   - key: tone_monitor
     screen: radio_settings
     title: "Tone Monitor"
     range: "Off, On, Clone"
-    default: "Off"
+    default: "On"
     description: >
       When On, monitors a received signal and detects any CTCSS tone or DCS code, displaying the value on screen. Useful for discovering what tone/code a repeater or radio is using. Clone mode automatically saves the detected tone to the active VFO as the TX CTCSS/DCS value.
     notes: >
@@ -454,7 +470,7 @@ settings:
     screen: radio_settings
     title: "Battery Style"
     range: "Off, Icon, Percent, Volts"
-    default: "Icon"
+    default: "Percent"
     description: >
       Changes how battery status is displayed on screen. Off = no display; Icon = battery icon; Percent = estimated remaining percentage; Volts = current battery voltage.
 
@@ -591,7 +607,7 @@ settings:
     screen: tune_settings
     title: "VHF Power Cap"
     range: "0 (N/T), 1–255"
-    default: "255"
+    default: "130"
     description: >
       Caps the maximum transmit power allowed on VHF frequencies (approximately 136–280 MHz). Setting to 0 disables VHF transmission entirely. Values 1–255 set the maximum power ceiling — channel TX Power settings above this cap are limited to the cap value.
     notes: >
@@ -601,7 +617,7 @@ settings:
     screen: tune_settings
     title: "UHF Power Cap"
     range: "0 (N/T), 1–255"
-    default: "255"
+    default: "130"
     description: >
       Caps the maximum transmit power allowed on UHF frequencies (approximately 280–480 MHz). Setting to 0 disables UHF transmission entirely.
     notes: >
@@ -611,11 +627,11 @@ settings:
     screen: tune_settings
     title: "XTAL 671 (Frequency Calibration)"
     range: "-128 to +127"
-    default: "0 (recommend starting at +34)"
+    default: "0"
     description: >
       Adjusts the 671.08864 MHz reference oscillator to compensate for crystal frequency tolerance. This value is critical for accurate CTCSS and DCS sub-tone generation. If the radio is off by more than 2 kHz, CTCSS will fail; more than 300 Hz and DCS will fail.
     notes: >
-      Use the XTAL 671 Calculator (⋮ menu) to compute the correct value. Formula: (offset_Hz / freq_MHz) × 671.08864. Most radios start near +34.
+      Most radios start near +34, not 0 — set this before using CTCSS or DCS. Use the XTAL 671 Calculator (⋮ menu) to compute the correct value. Formula: (offset_Hz / freq_MHz) × 671.08864.
 
   - key: protect_tune
     screen: tune_settings

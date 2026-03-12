@@ -24,68 +24,143 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/frequency_rx"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editFreqRx"
-                android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/frequency_rx"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editFreqRx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/helpFreqRx"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/frequency_tx"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editOffset"
-                android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/frequency_tx"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editOffset"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/helpOffset"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/channel_name"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editName"
-                android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:maxLength="12"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:hint="@string/channel_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="12"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageButton
+                android:id="@+id/helpName"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/duplex"
             android:layout_marginTop="8dp" />
-        <Spinner
-            android:id="@+id/spinnerDuplex"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerDuplex"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpDuplex"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/power"
             android:layout_marginTop="16dp" />
-        <Spinner
-            android:id="@+id/spinnerPower"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerPower"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpPower"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <!-- Advisory shown when the selected power exceeds the VHF/UHF Tune Settings cap -->
         <TextView
@@ -104,22 +179,52 @@
             android:layout_height="wrap_content"
             android:text="@string/mode"
             android:layout_marginTop="12dp" />
-        <Spinner
-            android:id="@+id/spinnerMode"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerMode"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpMode"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/bandwidth"
             android:layout_marginTop="12dp" />
-        <Spinner
-            android:id="@+id/spinnerBandwidth"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerBandwidth"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpBandwidth"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <!-- ── TX Tone ─────────────────────────────────────────────────────── -->
 
@@ -130,11 +235,26 @@
             android:textStyle="bold"
             android:layout_marginTop="16dp" />
 
-        <Spinner
-            android:id="@+id/spinnerTxTone"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerTxTone"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpTxTone"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <!-- ── RX Tone ─────────────────────────────────────────────────────── -->
 
@@ -145,11 +265,26 @@
             android:textStyle="bold"
             android:layout_marginTop="12dp" />
 
-        <Spinner
-            android:id="@+id/spinnerRxTone"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp">
+            <Spinner
+                android:id="@+id/spinnerRxTone"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp" />
+            <ImageButton
+                android:id="@+id/helpRxTone"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
+        </LinearLayout>
 
         <!-- ── Groups ─────────────────────────────────────────────────────── -->
 
@@ -177,10 +312,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Group 1" />
-                <Spinner
-                    android:id="@+id/spinnerGroup1"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="48dp" />
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <Spinner
+                        android:id="@+id/spinnerGroup1"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="48dp" />
+                    <ImageButton
+                        android:id="@+id/helpGroups"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_help_hint"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Help" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -257,6 +407,14 @@
                 android:id="@+id/switchBusyLock"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+            <ImageButton
+                android:id="@+id/helpBusyLock"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="4dp"
+                android:src="@drawable/ic_help_hint"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- ── Buttons ────────────────────────────────────────────────────── -->

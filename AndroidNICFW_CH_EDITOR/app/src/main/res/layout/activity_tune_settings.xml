@@ -113,6 +113,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp" />
 
+                    <ImageButton
+                        android:id="@+id/helpProtectTune"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/ic_help_hint"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:contentDescription="Help" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -158,6 +167,15 @@
                     android:textSize="16sp"
                     android:textColor="?attr/colorPrimary" />
 
+                <ImageButton
+                    android:id="@+id/helpVhfCap"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_help_hint"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Help" />
+
             </LinearLayout>
 
             <!-- ═══════════════════════════════════════════════════════════ -->
@@ -201,6 +219,15 @@
                     android:text="≈ 5.0 W"
                     android:textSize="16sp"
                     android:textColor="?attr/colorPrimary" />
+
+                <ImageButton
+                    android:id="@+id/helpUhfCap"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_help_hint"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Help" />
 
             </LinearLayout>
 
@@ -246,6 +273,15 @@
                     android:textSize="13sp"
                     android:lineSpacingMultiplier="1.3"
                     android:textColor="?android:attr/textColorSecondary" />
+
+                <ImageButton
+                    android:id="@+id/helpXtal671"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/ic_help_hint"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Help" />
 
             </LinearLayout>
 
