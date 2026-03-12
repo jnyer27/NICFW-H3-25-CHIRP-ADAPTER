@@ -2,14 +2,17 @@ package com.nicfw.tdh3editor
 
 import android.content.Context
 import androidx.appcompat.app.AlertDialog
-import org.json.JSONArray
-import org.json.JSONObject
+import org.xmlpull.v1.XmlPullParser
 
 /**
- * Loads help content from res/raw/help_content.json and displays per-setting
+ * Loads help content from res/xml/help_content.xml and displays per-setting
  * help dialogs throughout the app.
  *
- * Uses Android's built-in org.json parser — no external dependencies required.
+ * Uses Android's built-in XmlPullParser via Resources.getXml() —
+ * zero external dependencies, works on every Android API level.
+ *
+ * The XML resource is generated from docs/help_reference/help_content.yaml
+ * by running:  python scripts/yaml_to_xml.py
  *
  * Call [init] once per Activity (it is idempotent) then call [show] from any
  * help-button click listener.
@@ -28,28 +31,64 @@ object HelpSystem {
     private var entries: Map<String, HelpEntry> = emptyMap()
 
     /**
-     * Loads and parses help_content.json.  Safe to call multiple times —
+     * Loads and parses res/xml/help_content.xml.  Safe to call multiple times —
      * skips reload if already loaded.
      */
     fun init(context: Context) {
         if (entries.isNotEmpty()) return
         try {
-            val stream = context.resources.openRawResource(R.raw.help_content)
-            val json = stream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            val root = JSONObject(json)
-            val list: JSONArray = root.getJSONArray("settings")
-            val map = mutableMapOf<String, HelpEntry>()
-            for (i in 0 until list.length()) {
-                val m: JSONObject = list.getJSONObject(i)
-                val key = m.getString("key")
-                map[key] = HelpEntry(
-                    title       = m.optString("title", key).ifEmpty { key },
-                    range       = m.optString("range").ifEmpty { null },
-                    default     = m.optString("default").ifEmpty { null },
-                    description = m.optString("description", ""),
-                    notes       = m.optString("notes").ifEmpty { null }
-                )
+            val parser = context.resources.getXml(R.xml.help_content)
+            val map    = mutableMapOf<String, HelpEntry>()
+
+            var key          = ""
+            var title        = ""
+            var range        : String? = null
+            var entryDefault : String? = null
+            val descBuf      = StringBuilder()
+            val notesBuf     = StringBuilder()
+            var currentTag   = ""
+            var inEntry      = false
+
+            var ev = parser.next()                      // skip START_DOCUMENT
+            while (ev != XmlPullParser.END_DOCUMENT) {
+                when (ev) {
+                    XmlPullParser.START_TAG -> {
+                        currentTag = parser.name
+                        if (parser.name == "entry") {
+                            inEntry      = true
+                            key          = parser.getAttributeValue(null, "key") ?: ""
+                            title        = parser.getAttributeValue(null, "title") ?: key
+                            range        = parser.getAttributeValue(null, "range")
+                                               ?.takeIf { it.isNotEmpty() }
+                            entryDefault = parser.getAttributeValue(null, "default")
+                                               ?.takeIf { it.isNotEmpty() }
+                            descBuf.clear()
+                            notesBuf.clear()
+                        }
+                    }
+                    XmlPullParser.TEXT -> if (inEntry) when (currentTag) {
+                        "description" -> descBuf.append(parser.text)
+                        "notes"       -> notesBuf.append(parser.text)
+                    }
+                    XmlPullParser.END_TAG -> when (parser.name) {
+                        "description", "notes" -> currentTag = "entry"
+                        "entry" -> {
+                            if (key.isNotEmpty()) {
+                                map[key] = HelpEntry(
+                                    title       = title,
+                                    range       = range,
+                                    default     = entryDefault,
+                                    description = descBuf.toString().trim(),
+                                    notes       = notesBuf.toString().trim().ifEmpty { null }
+                                )
+                            }
+                            inEntry = false
+                        }
+                    }
+                }
+                ev = parser.next()
             }
+            parser.close()
             entries = map
         } catch (e: Exception) {
             // Don't crash the app if help content fails to load
