@@ -42,6 +42,10 @@ Download APK Here: [https://drive.google.com/file/d/15VHP9435Xb3QcM1pZcxp9L_YZdm
   import a `.bin` file directly without a Bluetooth connection
 - **Multi-select channel operations** — move, bulk power, bulk group assign, delete
 - **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV file
+- **Context help** — every setting in the Radio Settings, Channel Edit, and Tune Settings
+  screens has a lightbulb (?) button that opens an AlertDialog with the setting title,
+  value range, factory default, description, and any relevant notes; content is sourced
+  from the nicFW V2.5 manual and stored in `docs/help_reference/help_content.yaml`
 
 ---
 
