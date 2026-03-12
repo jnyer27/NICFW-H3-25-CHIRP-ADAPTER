@@ -121,8 +121,7 @@
                         android:src="@drawable/ic_help_hint"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="Help"
-                        style="?attr/borderlessButtonStyle" />
+                        android:contentDescription="Help" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -177,8 +176,7 @@
                     android:src="@drawable/ic_help_hint"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="?attr/colorOnSurfaceVariant"
-                    android:contentDescription="Help"
-                    style="?attr/borderlessButtonStyle" />
+                    android:contentDescription="Help" />
 
             </LinearLayout>
 
@@ -232,8 +230,7 @@
                     android:src="@drawable/ic_help_hint"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="?attr/colorOnSurfaceVariant"
-                    android:contentDescription="Help"
-                    style="?attr/borderlessButtonStyle" />
+                    android:contentDescription="Help" />
 
             </LinearLayout>
 
@@ -288,8 +285,7 @@
                     android:src="@drawable/ic_help_hint"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:tint="?attr/colorOnSurfaceVariant"
-                    android:contentDescription="Help"
-                    style="?attr/borderlessButtonStyle" />
+                    android:contentDescription="Help" />
 
             </LinearLayout>
 

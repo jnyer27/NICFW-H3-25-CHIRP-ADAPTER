@@ -50,8 +50,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <LinearLayout
@@ -81,8 +80,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <LinearLayout
@@ -112,8 +110,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <TextView
@@ -140,8 +137,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <TextView
@@ -168,8 +164,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- Advisory shown when the selected power exceeds the VHF/UHF Tune Settings cap -->
@@ -208,8 +203,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <TextView
@@ -236,8 +230,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- ── TX Tone ─────────────────────────────────────────────────────── -->
@@ -268,8 +261,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- ── RX Tone ─────────────────────────────────────────────────────── -->
@@ -300,8 +292,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- ── Groups ─────────────────────────────────────────────────────── -->
@@ -348,8 +339,7 @@
                         android:src="@drawable/ic_help_hint"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:tint="?attr/colorOnSurfaceVariant"
-                        android:contentDescription="Help"
-                        style="?attr/borderlessButtonStyle" />
+                        android:contentDescription="Help" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -435,8 +425,7 @@
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:tint="?attr/colorOnSurfaceVariant"
-                android:contentDescription="Help"
-                style="?attr/borderlessButtonStyle" />
+                android:contentDescription="Help" />
         </LinearLayout>
 
         <!-- ── Buttons ────────────────────────────────────────────────────── -->
