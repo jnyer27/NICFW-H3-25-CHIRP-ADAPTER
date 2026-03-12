@@ -107,7 +107,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -123,7 +122,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -139,7 +137,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -155,7 +152,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -171,7 +167,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -187,7 +182,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -203,7 +197,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -250,7 +243,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -266,7 +258,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -282,7 +273,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -298,7 +288,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -314,7 +303,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -330,7 +318,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -346,7 +333,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -362,7 +348,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -409,7 +394,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -425,7 +409,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -441,7 +424,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -457,7 +439,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -473,7 +454,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -489,7 +469,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -505,7 +484,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -552,7 +530,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -568,7 +545,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -584,7 +560,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -600,7 +575,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -616,7 +590,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -632,7 +605,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -648,7 +620,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -664,7 +635,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -680,7 +650,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -727,7 +696,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -743,7 +711,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -759,7 +726,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -775,7 +741,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -791,7 +756,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -807,7 +771,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -854,7 +817,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -870,7 +832,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -917,7 +878,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -933,7 +893,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -949,7 +908,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -996,7 +954,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1012,7 +969,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1028,7 +984,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1044,7 +999,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -1091,7 +1045,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1107,7 +1060,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1123,7 +1075,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1139,7 +1090,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1155,7 +1105,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1171,7 +1120,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1187,7 +1135,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1203,7 +1150,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 
@@ -1250,7 +1196,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
                     <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#1A000000" />
@@ -1266,7 +1211,6 @@
                             android:layout_marginStart="4dp"
                             android:src="@drawable/ic_help_hint"
                             android:background="?attr/selectableItemBackgroundBorderless"
-                            app:tint="?attr/colorOnSurfaceVariant"
                             android:contentDescription="Help" />
                     </LinearLayout>
 

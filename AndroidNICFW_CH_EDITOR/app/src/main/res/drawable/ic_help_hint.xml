@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
     Lightbulb with "?" — context help indicator icon (24×24dp).
-    Tint with ?attr/colorOnSurfaceVariant at usage site.
+    Gray (#9E9E9E) baked in; no runtime tint needed.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
@@ -19,7 +19,7 @@
     -->
     <path
         android:fillColor="@android:color/transparent"
-        android:strokeColor="#FF000000"
+        android:strokeColor="#FF9E9E9E"
         android:strokeWidth="1.5"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
@@ -31,7 +31,7 @@
 
     <!-- Question mark inside the bulb -->
     <path
-        android:fillColor="#FF000000"
+        android:fillColor="#FF9E9E9E"
         android:pathData="
             M11.3,13.5 L12.7,13.5 L12.7,14.8 L11.3,14.8 Z
             M12,7.5 C10.62,7.5 9.5,8.62 9.5,10 L10.9,10

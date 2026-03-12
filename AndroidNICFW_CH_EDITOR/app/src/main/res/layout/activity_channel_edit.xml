@@ -49,7 +49,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -79,7 +78,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -109,7 +107,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -136,7 +133,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -163,7 +159,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -202,7 +197,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -229,7 +223,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -260,7 +253,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -291,7 +283,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
@@ -338,7 +329,6 @@
                         android:layout_marginStart="4dp"
                         android:src="@drawable/ic_help_hint"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        app:tint="?attr/colorOnSurfaceVariant"
                         android:contentDescription="Help" />
                 </LinearLayout>
             </LinearLayout>
@@ -424,7 +414,6 @@
                 android:layout_marginStart="4dp"
                 android:src="@drawable/ic_help_hint"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="?attr/colorOnSurfaceVariant"
                 android:contentDescription="Help" />
         </LinearLayout>
 
