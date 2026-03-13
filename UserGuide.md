@@ -18,6 +18,7 @@
    - [Set TX Power (Bulk)](#62-set-tx-power-bulk)
    - [Set Channel Groups (Bulk)](#63-set-channel-groups-bulk)
    - [Delete / Clear Selected](#64-delete--clear-selected)
+   - [Move to Slot](#65-move-to-slot)
 7. [Overflow Menu Features](#7-overflow-menu-features)
    - [Import CHIRP CSV](#71-import-chirp-csv)
    - [Sort Channels by Group](#72-sort-channels-by-group)
@@ -30,6 +31,7 @@
    - [XTAL 671 Calculator](#79-xtal-671-calculator)
 8. [CHIRP Adapter (Python Driver)](#8-chirp-adapter-python-driver)
 9. [Tips & Troubleshooting](#9-tips--troubleshooting)
+10. [Context Help](#10-context-help)
 
 ---
 
@@ -144,10 +146,10 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 ┌──────────────────────────────────────────────────────┐
 │ #  │ Name       │  Freq (MHz) │ Power │ Groups │ BW  │
 ├──────────────────────────────────────────────────────┤
-│  1 │ GMRS 1     │ 462.5625   │  1.0W │  A  B  │ Nar │
-│  2 │ GMRS 2     │ 462.5875   │  1.0W │  A  B  │ Nar │
-│  3 │ MURS 1     │ 151.8200   │  5.0W │  B     │ Nar │
-│  4 │ WX1        │ 162.4000   │  N/T  │        │ Wid │
+│  1 │ GMRS 1     │ 462.5625   │  1.0W │  A  B  │  N  │
+│  2 │ GMRS 2     │ 462.5875   │  1.0W │  A  B  │  N  │
+│  3 │ MURS 1     │ 151.8200   │  5.0W │  B     │  N  │
+│  4 │ WX1        │ 162.4000   │  N/T  │        │  W  │
 │  5 │ (empty)    │            │       │        │     │
 │  …                                               …   │
 │ 198│ (empty)    │            │       │        │     │
@@ -163,7 +165,7 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 | Freq | RX frequency in MHz (TX offset shown on edit screen) |
 | Power | Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: `(BP)` = Band Plan restricts TX on this frequency; `⚠` = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see [Tune Settings §7.8](#78-tune-settings)) |
 | Groups | Active group assignments (up to 4 letters) |
-| BW | Bandwidth: `Wid` = Wide, `Nar` = Narrow |
+| BW | Bandwidth: `W` = Wide, `N` = Narrow |
 
 - **Tap** a channel row to open the channel editor.
 - **Long-press** a channel row to enter [Multi-Select Mode](#6-multi-select-mode).
@@ -276,13 +278,13 @@ appears at the bottom of the screen:
 ┌──────────────────────────────────────────────────────────┐
 │  Channel List                                            │
 │  …                                                       │
-│ ✓ │ GMRS 1  │ 462.5625  │  1.0W │  A  │ Nar  ← selected │
-│ ✓ │ GMRS 2  │ 462.5875  │  1.0W │  A  │ Nar  ← selected │
-│   │ MURS 1  │ 151.8200  │  5.0W │  B  │ Nar              │
-│ ✓ │ GMRS 3  │ 462.6125  │  1.0W │  A  │ Nar  ← selected │
+│ ✓ │ GMRS 1  │ 462.5625  │  1.0W │  A  │ N  ← selected │
+│ ✓ │ GMRS 2  │ 462.5875  │  1.0W │  A  │ N  ← selected │
+│   │ MURS 1  │ 151.8200  │  5.0W │  B  │ N             │
+│ ✓ │ GMRS 3  │ 462.6125  │  1.0W │  A  │ N  ← selected │
 │  …                                                       │
 ├──────────────────────────────────────────────────────────┤
-│ 3 selected  │ ↑ │ ↓ │ 📡 │ 🏷 │ 🗑 │ Done │
+│ 3 selected  │ ↑ │ ↓ │ ⤓ │ 📡 │ 🏷 │ 🗑 │ Done │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -292,6 +294,7 @@ appears at the bottom of the screen:
 |---|---|---|
 | **Move Up** | ↑ | Shifts all selected channels one slot up (swaps with the channel above) |
 | **Move Down** | ↓ | Shifts all selected channels one slot down |
+| **Move to Slot** | ⤓ | Opens a slot picker — moves the selected block to any slot (1–198) in one step |
 | **Set TX Power** | 📡 | Opens a power picker — applies chosen power to all selected channels |
 | **Set Groups** | 🏷 | Opens a group editor — assigns groups to all selected channels |
 | **Delete** | 🗑 | Clears (empties) all selected channel slots |
@@ -308,8 +311,9 @@ appears at the bottom of the screen:
 Move Up (↑) and Move Down (↓) shift the selected channels one position at a time in the
 channel list. The swap is performed in memory; tap **Save to Radio** afterward to persist.
 
-> **Tip:** For large reorders, use **Sort Channels by Group** from the overflow menu
-> instead of manually moving channels one by one.
+> **Tip:** For large moves, use **Move to Slot** (⤓) to jump the selection directly
+> to any slot in one step. For group-based reordering, use **Sort Channels by Group**
+> from the overflow menu.
 
 ---
 
@@ -402,6 +406,53 @@ appears showing the count. Clearing sets those slots to empty (all bytes zeroed)
 
 > Empty slots appear as `(empty)` in the channel list and can be reused by importing
 > CHIRP CSV data or by editing them manually.
+
+---
+
+### 6.5 Move to Slot
+
+Tap the **⤓** (arrow-to-underline) button while channels are selected to jump the
+entire selection to any slot in one action — no need to tap Move Up / Down dozens
+of times.
+
+```
+┌────────────────────────────────────────────────────┐
+│  Move 3 Channel(s) to Slot                         │
+├────────────────────────────────────────────────────┤
+│                                                    │
+│  Move selected channels starting at slot:          │
+│                                                    │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  Ch 10 – WX1                              ▼  │  │
+│  └──────────────────────────────────────────────┘  │
+│                                                    │
+│  3 channel(s) will occupy slot(s) 10–12            │
+│                                                    │
+│          [ Cancel ]          [ Move ]              │
+└────────────────────────────────────────────────────┘
+```
+
+**How it works:**
+
+1. Long-press to enter multi-select mode, then tap all channels you want to move.
+2. Tap **⤓** — the dialog opens with the Spinner pre-set to the first selected slot.
+3. Scroll the Spinner to choose the target **starting slot** (1–198).
+4. The hint line updates live: *"N channel(s) will occupy slot(s) X–Y"*.
+5. Tap **Move** — the selected channels are removed from their current positions and
+   inserted starting at the chosen slot. All remaining channels shift to fill the gaps.
+
+**Selection after move:**
+
+The moved channels remain selected (highlighted) in their new positions so you can
+immediately continue editing or move them again.
+
+**Edge cases:**
+
+| Situation | Result |
+|---|---|
+| Target slot is inside the current selection range | Computed from non-selected channels only — result is predictable |
+| All channels selected | Early exit with a toast — nothing to move relative to |
+| Target slot > available slots after removals | Channels land at the end of the list |
 
 ---
 
@@ -1272,6 +1323,63 @@ Target   Raw Value (approx.)
 | Scroll channel list | Swipe up/down on the list |
 | Reorder a channel | Drag the ≡ handle (outside multi-select mode) |
 | Go back from any editor | ← toolbar back arrow or Android back gesture |
+| Open context help for a field | Tap the **?** (lightbulb) icon next to the field label |
+
+---
+
+## 10. Context Help
+
+Every setting in the **Radio Settings**, **Channel Editor**, and **Tune Settings**
+screens has a built-in help button: a small **?** (lightbulb) icon next to the
+field label.
+
+```
+┌────────────────────────────────────────────────────┐
+│  Squelch Level                              [?]    │
+│  ┌──────────────────────────────────────────────┐  │
+│  │  5                                        ▼  │  │
+│  └──────────────────────────────────────────────┘  │
+└────────────────────────────────────────────────────┘
+```
+
+Tapping **?** opens an AlertDialog with:
+
+```
+┌────────────────────────────────────────────────────┐
+│  Squelch Level                                     │
+├────────────────────────────────────────────────────┤
+│  Range: 0–9  |  Default: 5                         │
+│                                                    │
+│  Controls the squelch threshold. Lower values open │
+│  squelch at weaker signals. 0 = squelch always     │
+│  open (carrier squelch disabled).                  │
+│                                                    │
+│  Note: Applies to the currently selected channel   │
+│  memory bank.                                      │
+│                            [ OK ]                  │
+└────────────────────────────────────────────────────┘
+```
+
+**Dialog fields:**
+
+| Field | Content |
+|---|---|
+| **Title** | Setting name |
+| **Range** | Valid value range or options |
+| **Default** | Factory default value |
+| **Description** | Plain-language explanation of what the setting does |
+| **Note** | Additional context, caveats, or interactions with other settings (when applicable) |
+
+**Where context help is available:**
+
+| Screen | Help available on |
+|---|---|
+| Channel Editor | All fields: Frequency, Duplex, Name, Power, Mode, Bandwidth, Busy Lock, TX Tone, RX Tone, Groups |
+| Radio Settings | All 56 settings across all 10 sections |
+| Tune Settings | VHF Power Cap, UHF Power Cap, XTAL 671 Correction |
+
+Help content is sourced from the nicFW V2.5 manual and stored in
+`docs/help_reference/help_content.yaml` in the repository.
 
 ---
 

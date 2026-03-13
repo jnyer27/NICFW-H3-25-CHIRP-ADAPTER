@@ -14,8 +14,8 @@ Download APK Here: [https://drive.google.com/file/d/15VHP9435Xb3QcM1pZcxp9L_YZdm
 - **BLE scan & connect** — scans for the nicFW BLE service and connects automatically;
   no manual pairing step required in most cases
 - **Classic SPP fallback** — paired-device picker for older connection methods
-- **198-channel list** — shows frequency, name, active group labels, TX/RX tone, and
-  duplex offset at a glance
+- **198-channel list** — shows frequency, name, active group labels, TX/RX tone,
+  duplex offset, and bandwidth (W/N) at a glance
 - **Band plan TX indicator** — channels whose frequency is blocked for TX by the radio's
   band plan show `(BP)` next to the power level (e.g. `4.9W (BP)` for FM broadcast)
 - **Per-channel editor** — frequency, duplex/offset, name, power, modulation, bandwidth,
@@ -40,7 +40,7 @@ Download APK Here: [https://drive.google.com/file/d/15VHP9435Xb3QcM1pZcxp9L_YZdm
   XTAL correction value from a measured vs. expected frequency
 - **EEPROM dump save / import** — export raw `.bin` for backup or cross-radio cloning;
   import a `.bin` file directly without a Bluetooth connection
-- **Multi-select channel operations** — move, bulk power, bulk group assign, delete
+- **Multi-select channel operations** — move up/down, move to slot (jump to any position), bulk power, bulk group assign, delete
 - **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV file
 - **Context help** — every setting in the Radio Settings, Channel Edit, and Tune Settings
   screens has a lightbulb (?) button that opens an AlertDialog with the setting title,
@@ -121,6 +121,7 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
    - TX / RX tone (CTCSS Hz or DCS code + polarity — blank if no tone is set)
    - Duplex offset (`+600kHz`, `-600kHz`, `Split`, or blank for simplex)
    - Power level — with `(BP)` suffix when TX is blocked by the band plan
+   - Bandwidth — `W` (Wide) or `N` (Narrow)
 4. **Edit a channel** — tap a card to open the editor:
    - RX frequency (MHz), duplex mode, offset or TX frequency
    - Name (max 12 characters)
