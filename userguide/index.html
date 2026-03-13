@@ -1,0 +1,3538 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="User Guide for the NICFW TD-H3 25 Android Channel Editor">
+      
+      
+        <meta name="author" content="NICFW">
+      
+      
+        <link rel="canonical" href="https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/userguide/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>Home - NICFW TD-H3 25 Channel Editor</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#td-h3-channel-editor-user-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="NICFW TD-H3 25 Channel Editor" class="md-header__button md-logo" aria-label="NICFW TD-H3 25 Channel Editor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            NICFW TD-H3 25 Channel Editor
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Home
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jnyer27/NICFW-H3-25-CHIRP-ADAPTER
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="NICFW TD-H3 25 Channel Editor" class="md-nav__button md-logo" aria-label="NICFW TD-H3 25 Channel Editor" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    NICFW TD-H3 25 Channel Editor
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    jnyer27/NICFW-H3-25-CHIRP-ADAPTER
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+  
+
+<nav class="md-nav md-nav--secondary" aria-label="On this page">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      On this page
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#table-of-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Table of Contents
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#1-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-connecting-to-the-radio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Connecting to the Radio
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Connecting to the Radio">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-a-ble-recommended" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option A — BLE (Recommended)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-b-classic-bluetooth-spp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option B — Classic Bluetooth (SPP)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connection-status" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection Status
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-loading-saving-the-radio-memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Loading &amp; Saving the Radio Memory
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Loading &amp; Saving the Radio Memory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#load-from-radio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Load from Radio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#save-to-radio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Save to Radio
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-channel-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Channel List
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-editing-a-single-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Editing a Single Channel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Editing a Single Channel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#field-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-calibration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Calibration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-cap-advisory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Cap Advisory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tone-picker-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tone Picker Format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-clearing-a-channel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Saving / Clearing a Channel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-multi-select-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Multi-Select Mode
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Multi-Select Mode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#61-move-up-down" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.1 Move Up / Down
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#62-set-tx-power-bulk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.2 Set TX Power (Bulk)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6.2 Set TX Power (Bulk)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#power-cap-advisory_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Cap Advisory
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#63-set-channel-groups-bulk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.3 Set Channel Groups (Bulk)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#64-delete-clear-selected" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.4 Delete / Clear Selected
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#65-move-to-slot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.5 Move to Slot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#66-export-as-chirp-csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6.6 Export as CHIRP CSV
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-channel-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Channel Search
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-overflow-menu-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Overflow Menu Features
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8. Overflow Menu Features">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#81-import-chirp-csv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.1 Import CHIRP CSV
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.1 Import CHIRP CSV">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Steps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tone-tsql-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tone / TSQL Handling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#82-sort-channels-by-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.2 Sort Channels by Group
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.2 Sort Channels by Group">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#83-edit-group-labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.3 Edit Group Labels
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#84-save-import-eeprom-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.4 Save / Import EEPROM Dump
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.4 Save / Import EEPROM Dump">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#save-eeprom-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Save EEPROM dump
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#import-eeprom-dump" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Import EEPROM dump
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#85-edit-band-plan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.5 Edit Band Plan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#86-edit-scan-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.6 Edit Scan Presets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#87-radio-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.7 Radio Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.7 Radio Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#squelch-audio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Squelch &amp; Audio
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tx-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TX Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rx-tuning" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RX &amp; Tuning
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vox" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        VOX
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tones-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tones &amp; Keys
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dtmf" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DTMF
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#88-tune-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.8 Tune Settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.8 Tune Settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#screen-layout" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Screen Layout
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#field-reference_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Field Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-power-caps-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Power Caps Work
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#channel-list-indicators" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Channel List Indicators
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#protect-tune-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Protect Tune Settings
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multi-radio-template-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-Radio Template Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#89-xtal-671-calculator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8.9 XTAL 671 Calculator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="8.9 XTAL 671 Calculator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#prerequisite-reset-xtal-to-0-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ⚠ Prerequisite — Reset XTAL to 0 First
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#calculator-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Calculator Screen
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-to-use" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How to Use
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formula" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Formula
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#interpreting-the-result" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Interpreting the Result
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-example-from-reference-spreadsheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification Example (from reference spreadsheet)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preset-frequencies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preset Frequencies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-chirp-adapter-python-driver" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. CHIRP Adapter (Python Driver)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="9. CHIRP Adapter (Python Driver)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#connection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connection
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chirp-tab-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CHIRP Tab Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CHIRP Tab Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#band-plan-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Band Plan Tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scan-presets-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scan Presets Tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-labels-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Labels Tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-channel-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Channel Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-tips-troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Tips &amp; Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="10. Tips &amp; Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#general-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Workflow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#power-estimate-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Power Estimate Reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#group-design-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Group Design Tips
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keyboard-navigation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Keyboard / Navigation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#11-context-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        11. Context Help
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="td-h3-channel-editor-user-guide">TD-H3 Channel Editor — User Guide<a class="headerlink" href="#td-h3-channel-editor-user-guide" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p><strong>App:</strong> NICFW TD-H3 Channel Editor
+<strong>Radio:</strong> TIDRadio TD-H3 running <strong>nicFW v2.5</strong>
+<strong>Platform:</strong> Android (min SDK 24 / Android 7.0)</p>
+</blockquote>
+<hr />
+<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<ol>
+<li><a href="#1-overview">Overview</a></li>
+<li><a href="#2-connecting-to-the-radio">Connecting to the Radio</a></li>
+<li><a href="#3-loading-saving-the-radio-memory">Loading &amp; Saving the Radio Memory</a></li>
+<li><a href="#4-channel-list">Channel List</a></li>
+<li><a href="#5-editing-a-single-channel">Editing a Single Channel</a></li>
+<li><a href="#6-multi-select-mode">Multi-Select Mode</a></li>
+<li><a href="#61-move-up-down">Move Up / Down</a></li>
+<li><a href="#62-set-tx-power-bulk">Set TX Power (Bulk)</a></li>
+<li><a href="#63-set-channel-groups-bulk">Set Channel Groups (Bulk)</a></li>
+<li><a href="#64-delete-clear-selected">Delete / Clear Selected</a></li>
+<li><a href="#65-move-to-slot">Move to Slot</a></li>
+<li><a href="#66-export-as-chirp-csv">Export as CHIRP CSV</a></li>
+<li><a href="#7-channel-search">Channel Search</a></li>
+<li><a href="#8-overflow-menu-features">Overflow Menu Features</a></li>
+<li><a href="#81-import-chirp-csv">Import CHIRP CSV</a></li>
+<li><a href="#82-sort-channels-by-group">Sort Channels by Group</a></li>
+<li><a href="#83-edit-group-labels">Edit Group Labels</a></li>
+<li><a href="#84-save-import-eeprom-dump">Save / Import EEPROM Dump</a></li>
+<li><a href="#85-edit-band-plan">Edit Band Plan</a></li>
+<li><a href="#86-edit-scan-presets">Edit Scan Presets</a></li>
+<li><a href="#87-radio-settings">Radio Settings</a></li>
+<li><a href="#88-tune-settings">Tune Settings</a></li>
+<li><a href="#89-xtal-671-calculator">XTAL 671 Calculator</a></li>
+<li><a href="#9-chirp-adapter-python-driver">CHIRP Adapter (Python Driver)</a></li>
+<li><a href="#10-tips-troubleshooting">Tips &amp; Troubleshooting</a></li>
+<li><a href="#11-context-help">Context Help</a></li>
+</ol>
+<hr />
+<h2 id="1-overview">1. Overview<a class="headerlink" href="#1-overview" title="Permanent link">&para;</a></h2>
+<p>The <strong>TD-H3 Channel Editor</strong> is an Android companion app for the TIDRadio TD-H3 running
+nicFW v2.5 firmware. It communicates with the radio over <strong>Bluetooth</strong> (BLE or Classic SPP)
+to read and write the full 8 KB EEPROM — the same memory block that stores all channels,
+band plan entries, scan presets, and group labels.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>┌────────────────────────────────────────────┐
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>│          TD-H3 Channel Editor              │
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├────────────────────────────────────────────┤
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>│  Status: Connected — TD-H3 (nicFW 2.5)    │
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│                              [ Connect ]   │
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>├────────────────────────────────────────────┤
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│  [ Load from Radio ]   [ Save to Radio ]   │
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>├────────────────────────────────────────────┤
+<a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░  Reading…  72/256 │
+<a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>├────────────────────────────────────────────┤
+<a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│ ┌─────────────────────────────────────┐    │
+<a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│ │ 1 │ GMRS 1   │ 462.5625  │ 1.0W  A │    │
+<a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│ │ 2 │ GMRS 2   │ 462.5875  │ 1.0W  A │    │
+<a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│ │ 3 │ MURS 1   │ 151.8200  │ 5.0W  B │    │
+<a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│ │ …                                    │    │
+<a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│ └─────────────────────────────────────┘    │
+<a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│                               ⋮ (198 ch)  │
+<a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>└────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Key concept:</strong> All edits are made in memory only. Nothing changes on the radio until
+you tap <strong>Save to Radio</strong>. This lets you make multiple changes and upload them all at once.</p>
+<hr />
+<h2 id="2-connecting-to-the-radio">2. Connecting to the Radio<a class="headerlink" href="#2-connecting-to-the-radio" title="Permanent link">&para;</a></h2>
+<p>Tap <strong>[ Connect ]</strong> on the main screen. A dialog appears with two options:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>┌──────────────────────────────────┐
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>│      Connect to Radio            │
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>├──────────────────────────────────┤
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>│                                  │
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>│  [ Scan for Radio (BLE) ]        │
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>│                                  │
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>│  [ Paired Devices (Classic BT) ] │
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>│                                  │
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>│              [ Cancel ]          │
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>└──────────────────────────────────┘
+</code></pre></div>
+<h3 id="option-a-ble-recommended">Option A — BLE (Recommended)<a class="headerlink" href="#option-a-ble-recommended" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tap <strong>Scan for Radio (BLE)</strong>.</li>
+<li>The app scans for nearby BLE devices. The TD-H3 broadcasts as <strong>TD-H3</strong> or similar.</li>
+<li>Tap the device name in the scan list to connect.</li>
+<li>Android 12+ requires the <strong>Nearby Devices</strong> permission; Android 11 and below requires
+  <strong>Location</strong> permission. Grant when prompted.</li>
+</ul>
+<h3 id="option-b-classic-bluetooth-spp">Option B — Classic Bluetooth (SPP)<a class="headerlink" href="#option-b-classic-bluetooth-spp" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Pair the radio to your phone first via Android's system Bluetooth settings.</li>
+<li>Tap <strong>Paired Devices (Classic BT)</strong> and select the radio from the list.</li>
+</ul>
+<h3 id="connection-status">Connection Status<a class="headerlink" href="#connection-status" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Status indicator</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Status: Disconnected</code></td>
+<td>No radio connected</td>
+</tr>
+<tr>
+<td><code>Status: Connecting…</code></td>
+<td>Handshake in progress</td>
+</tr>
+<tr>
+<td><code>Status: Connected — &lt;name&gt;</code></td>
+<td>Ready to load/save</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Tip:</strong> The BLE connection uses nicFW's remote-control protocol (0x4A enable /
+0x4B disable). If the radio firmware does not support remote mode, use Classic BT.</p>
+</blockquote>
+<hr />
+<h2 id="3-loading-saving-the-radio-memory">3. Loading &amp; Saving the Radio Memory<a class="headerlink" href="#3-loading-saving-the-radio-memory" title="Permanent link">&para;</a></h2>
+<h3 id="load-from-radio">Load from Radio<a class="headerlink" href="#load-from-radio" title="Permanent link">&para;</a></h3>
+<p>Tap <strong>[ Load from Radio ]</strong> (only enabled when connected). The app reads the full 8 KB
+EEPROM in 256 × 32-byte blocks. A progress bar and block counter are shown during
+the transfer (about 10–30 seconds depending on connection speed).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>  [ Load from Radio ]   [ Save to Radio ]
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  Reading block 142 / 256…
+</code></pre></div>
+<p>Once loaded, the channel list populates automatically with all 198 channel slots.</p>
+<h3 id="save-to-radio">Save to Radio<a class="headerlink" href="#save-to-radio" title="Permanent link">&para;</a></h3>
+<p>Tap <strong>[ Save to Radio ]</strong> to write all pending changes back to the radio. The same
+progress display is shown for the write pass. After save completes, the radio immediately
+uses the new channel data.</p>
+<blockquote>
+<p>⚠ <strong>Important:</strong> Saving rewrites the complete EEPROM. Do not disconnect the radio
+or leave the app during a save operation.</p>
+</blockquote>
+<hr />
+<h2 id="4-channel-list">4. Channel List<a class="headerlink" href="#4-channel-list" title="Permanent link">&para;</a></h2>
+<p>After loading, the main screen shows all 198 channel slots in a scrollable list.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>┌──────────────────────────────────────────────────────┐
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│ #  │ Name       │  Freq (MHz) │ Power │ Groups │ BW  │
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│  1 │ GMRS 1     │ 462.5625   │  1.0W │  A  B  │  N  │
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│  2 │ GMRS 2     │ 462.5875   │  1.0W │  A  B  │  N  │
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│  3 │ MURS 1     │ 151.8200   │  5.0W │  B     │  N  │
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│  4 │ WX1        │ 162.4000   │  N/T  │        │  W  │
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│  5 │ (empty)    │            │       │        │     │
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│  …                                               …   │
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│ 198│ (empty)    │            │       │        │     │
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>└──────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Column descriptions:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>#</code></td>
+<td>Channel slot number (1–198, fixed)</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>Up to 12-character label</td>
+</tr>
+<tr>
+<td>Freq</td>
+<td>RX frequency in MHz (TX offset shown on edit screen)</td>
+</tr>
+<tr>
+<td>Power</td>
+<td>Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: <code>(BP)</code> = Band Plan restricts TX on this frequency; <code>⚠</code> = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see <a href="#88-tune-settings">Tune Settings §8.8</a>)</td>
+</tr>
+<tr>
+<td>Groups</td>
+<td>Active group assignments (up to 4 letters)</td>
+</tr>
+<tr>
+<td>BW</td>
+<td>Bandwidth: <code>W</code> = Wide, <code>N</code> = Narrow</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Tap</strong> a channel row to open the channel editor.</li>
+<li><strong>Long-press</strong> a channel row to enter <a href="#6-multi-select-mode">Multi-Select Mode</a>.</li>
+<li><strong>Drag</strong> a channel by its drag handle (≡) to reorder within the list. Drag
+  reordering writes new slot numbers into the EEPROM immediately in memory.</li>
+</ul>
+<hr />
+<h2 id="5-editing-a-single-channel">5. Editing a Single Channel<a class="headerlink" href="#5-editing-a-single-channel" title="Permanent link">&para;</a></h2>
+<p>Tap any channel row to open the <strong>Channel Editor</strong>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌────────────────────────────────────────────────┐
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│ ← Edit Channel 3                               │
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>├────────────────────────────────────────────────┤
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│                                                │
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│  RX Frequency (MHz)   [ 151.8200             ] │
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│  TX Offset / Freq     [ 0                    ] │
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│  Duplex               [ (none)               ] │
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│  Name                 [ MURS 1               ] │
+<a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│                                                │
+<a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│  Power     [ 130 ▼]   Mode  [ FM ▼]           │
+<a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│  Bandwidth [ Wide ▼]                           │
+<a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>│                                                │
+<a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>│  TX Tone   [ None ▼]                           │
+<a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>│  RX Tone   [ None ▼]                           │
+<a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>│                                                │
+<a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>│  Group 1   [ B – MURS ▼]                      │
+<a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>│  Group 2   [ None ▼]                          │
+<a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>│  Group 3   [ None ▼]                          │
+<a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>│  Group 4   [ None ▼]                          │
+<a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>│                                                │
+<a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>│  [  Cancel  ]              [  Save  ]          │
+<a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>└────────────────────────────────────────────────┘
+</code></pre></div>
+<h3 id="field-reference">Field Reference<a class="headerlink" href="#field-reference" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Valid Values</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RX Frequency</strong></td>
+<td>MHz, 4 decimal places</td>
+<td>Leave blank to mark slot as empty</td>
+</tr>
+<tr>
+<td><strong>TX Offset / Freq</strong></td>
+<td>kHz (duplex ±) or MHz (split)</td>
+<td>Depends on Duplex setting</td>
+</tr>
+<tr>
+<td><strong>Duplex</strong></td>
+<td>(blank), <code>+</code>, <code>-</code>, <code>split</code></td>
+<td><code>+</code> adds offset, <code>-</code> subtracts, <code>split</code> sets independent TX</td>
+</tr>
+<tr>
+<td><strong>Name</strong></td>
+<td>Up to 12 characters</td>
+<td>Stored as ASCII in EEPROM</td>
+</tr>
+<tr>
+<td><strong>Power</strong></td>
+<td>N/T, 1–255 (raw byte)</td>
+<td>See power-to-watt table below</td>
+</tr>
+<tr>
+<td><strong>Mode</strong></td>
+<td>Auto, FM, AM, USB</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Bandwidth</strong></td>
+<td>Wide, Narrow</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Busy Lock</strong></td>
+<td>On / Off</td>
+<td>When On, prevents accidental TX on an occupied channel. Automatically forced Off and disabled whenever a TX offset or duplex mode is set — incompatible with repeater/split channels.</td>
+</tr>
+<tr>
+<td><strong>TX Tone</strong></td>
+<td>None, CTCSS 67.0–250.3 Hz, DCS 023–754 N/R</td>
+<td>Flat picker — all tones in one list</td>
+</tr>
+<tr>
+<td><strong>RX Tone</strong></td>
+<td>Same as TX Tone</td>
+<td>Squelch decode tone</td>
+</tr>
+<tr>
+<td><strong>Group 1–4</strong></td>
+<td>None, A–O (with custom labels)</td>
+<td>Up to 4 groups per channel</td>
+</tr>
+</tbody>
+</table>
+<h3 id="power-calibration">Power Calibration<a class="headerlink" href="#power-calibration" title="Permanent link">&para;</a></h3>
+<p>The power spinner stores a raw byte (0–255). Approximate watt equivalents:</p>
+<table>
+<thead>
+<tr>
+<th>Raw value</th>
+<th>Approx. watts</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0 / N/T</td>
+<td>No transmit</td>
+</tr>
+<tr>
+<td>29</td>
+<td>0.5 W</td>
+</tr>
+<tr>
+<td>58</td>
+<td>2.0 W</td>
+</tr>
+<tr>
+<td>130</td>
+<td>5.0 W</td>
+</tr>
+<tr>
+<td>255</td>
+<td>~8.7 W (extrapolated)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Values between calibration points are linearly interpolated. The watt label shown
+in the channel list is an estimate; actual output depends on battery and frequency.</p>
+</blockquote>
+<h3 id="power-cap-advisory">Power Cap Advisory<a class="headerlink" href="#power-cap-advisory" title="Permanent link">&para;</a></h3>
+<p>If <strong>Tune Settings</strong> has a VHF or UHF power cap configured (see <a href="#88-tune-settings">§8.8</a>),
+a non-blocking warning appears immediately below the Power spinner when the selected value
+exceeds the applicable cap:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>⚠ Exceeds VHF cap (130 ≈ 5.0W) — radio will clamp to cap at TX time
+</code></pre></div>
+<p>The spinner is <strong>not restricted</strong> — you may store any value. The radio enforces the cap
+silently at transmit time; the EEPROM byte is unchanged. This lets you retain a high stored
+power value and simply raise the cap later without re-editing every channel.</p>
+<hr />
+<h3 id="tone-picker-format">Tone Picker Format<a class="headerlink" href="#tone-picker-format" title="Permanent link">&para;</a></h3>
+<p>The flat tone spinner uses these formats:</p>
+<table>
+<thead>
+<tr>
+<th>Display</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>None</code></td>
+<td>No tone</td>
+</tr>
+<tr>
+<td><code>CTCSS 100.0 Hz</code></td>
+<td>CTCSS sub-audible tone</td>
+</tr>
+<tr>
+<td><code>DCS 023 N</code></td>
+<td>DCS code 023, Normal polarity</td>
+</tr>
+<tr>
+<td><code>DCS 023 R</code></td>
+<td>DCS code 023, Reverse polarity</td>
+</tr>
+</tbody>
+</table>
+<h3 id="saving-clearing-a-channel">Saving / Clearing a Channel<a class="headerlink" href="#saving-clearing-a-channel" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Tap <strong>Save</strong> to write changes into the in-memory EEPROM buffer.</li>
+<li>To <strong>clear</strong> a channel slot (make it empty), delete the RX Frequency field and tap Save.</li>
+<li>Changes take effect on the radio only after <strong>Save to Radio</strong> from the main screen.</li>
+</ul>
+<hr />
+<h2 id="6-multi-select-mode">6. Multi-Select Mode<a class="headerlink" href="#6-multi-select-mode" title="Permanent link">&para;</a></h2>
+<p><strong>Long-press</strong> any channel row to activate multi-select mode. A colored action bar
+appears at the bottom of the screen:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>┌──────────────────────────────────────────────────────────┐
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│  Channel List                                            │
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>│  …                                                       │
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│ ✓ │ GMRS 1  │ 462.5625  │  1.0W │  A  │ N  ← selected │
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│ ✓ │ GMRS 2  │ 462.5875  │  1.0W │  A  │ N  ← selected │
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│   │ MURS 1  │ 151.8200  │  5.0W │  B  │ N             │
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│ ✓ │ GMRS 3  │ 462.6125  │  1.0W │  A  │ N  ← selected │
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│  …                                                       │
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>├──────────────────────────────────────────────────────────┤
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│ 3 selected  │ ↑ │ ↓ │ ⤓ │ 📡 │ 🏷 │ 🗑 │ Done │
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>└──────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Selection bar buttons:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Button</th>
+<th>Icon</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Move Up</strong></td>
+<td>↑</td>
+<td>Shifts all selected channels one slot up (swaps with the channel above)</td>
+</tr>
+<tr>
+<td><strong>Move Down</strong></td>
+<td>↓</td>
+<td>Shifts all selected channels one slot down</td>
+</tr>
+<tr>
+<td><strong>Move to Slot</strong></td>
+<td>⤓</td>
+<td>Opens a slot picker — moves the selected block to any slot (1–198) in one step</td>
+</tr>
+<tr>
+<td><strong>Set TX Power</strong></td>
+<td>📡</td>
+<td>Opens a power picker — applies chosen power to all selected channels</td>
+</tr>
+<tr>
+<td><strong>Set Groups</strong></td>
+<td>🏷</td>
+<td>Opens a group editor — assigns groups to all selected channels</td>
+</tr>
+<tr>
+<td><strong>Export CSV</strong></td>
+<td>↑□</td>
+<td>Names and exports selected channels as a CHIRP-compatible CSV file</td>
+</tr>
+<tr>
+<td><strong>Delete</strong></td>
+<td>🗑</td>
+<td>Clears (empties) all selected channel slots</td>
+</tr>
+<tr>
+<td><strong>Done</strong></td>
+<td>text</td>
+<td>Exits multi-select mode, returns to normal browsing</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Tap additional rows while in multi-select mode to add/remove them from the selection.</li>
+<li>Tap a selected row again to deselect it.</li>
+<li>The selection count in the bar updates in real time.</li>
+</ul>
+<hr />
+<h3 id="61-move-up-down">6.1 Move Up / Down<a class="headerlink" href="#61-move-up-down" title="Permanent link">&para;</a></h3>
+<p>Move Up (↑) and Move Down (↓) shift the selected channels one position at a time in the
+channel list. The swap is performed in memory; tap <strong>Save to Radio</strong> afterward to persist.</p>
+<blockquote>
+<p><strong>Tip:</strong> For large moves, use <strong>Move to Slot</strong> (⤓) to jump the selection directly
+to any slot in one step. For group-based reordering, use <strong>Sort Channels by Group</strong>
+from the overflow menu.</p>
+</blockquote>
+<hr />
+<h3 id="62-set-tx-power-bulk">6.2 Set TX Power (Bulk)<a class="headerlink" href="#62-set-tx-power-bulk" title="Permanent link">&para;</a></h3>
+<p>Tap the <strong>📡</strong> (RF transmit / antenna) button while channels are selected:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>┌─────────────────────────────┐
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│  Set TX Power               │
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>│                             │
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>│  ┌───────────────────────┐  │
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│  │         126           │  │
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│  │   ─────────────────   │  │
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>│  │  ▶      130      ◀   │  │   ← scroll wheel
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>│  │   ─────────────────   │  │
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>│  │         131           │  │
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>│  └───────────────────────┘  │
+<a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>│                             │
+<a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>│     [ Cancel ]  [ Apply ]   │
+<a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>└─────────────────────────────┘
+</code></pre></div>
+<ul>
+<li>The scroll wheel (NumberPicker) is pre-seeded to the current power of the <strong>first
+  selected non-empty channel</strong>.</li>
+<li>Scroll the wheel to pick any value: <code>N/T</code>, <code>1</code>–<code>255</code>.</li>
+<li>Tap <strong>Apply</strong> to write the chosen power to every selected non-empty channel.</li>
+<li>Empty slots in the selection are skipped.</li>
+</ul>
+<p><strong>Power values at a glance:</strong></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>N/T ─── 29 ─────── 58 ──────────── 130 ────────── 255
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a> 0W    0.5W        2W              5W            ~8.7W
+</code></pre></div>
+<h4 id="power-cap-advisory_1">Power Cap Advisory<a class="headerlink" href="#power-cap-advisory_1" title="Permanent link">&para;</a></h4>
+<p>If the selected channels include VHF or UHF frequencies and a power cap is set in
+<strong>Tune Settings</strong> (see <a href="#88-tune-settings">§8.8</a>), an advisory appears <strong>below the scroll
+wheel</strong> when the chosen value exceeds the applicable cap:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>⚠ Exceeds VHF cap (130 ≈ 5.0W) — radio will clamp to cap at TX time
+</code></pre></div>
+<p>When the selection spans both bands, the <strong>more restrictive</strong> of the two caps is
+used in the advisory. Apply is never blocked — the stored value is saved as-is.</p>
+<hr />
+<h3 id="63-set-channel-groups-bulk">6.3 Set Channel Groups (Bulk)<a class="headerlink" href="#63-set-channel-groups-bulk" title="Permanent link">&para;</a></h3>
+<p>Tap the <strong>🏷</strong> (label/tag) button while channels are selected:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>┌──────────────────────────────────────────┐
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>│  Set Groups for Selected Channels        │
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>├──────────────────────────────────────────┤
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>│                                          │
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>│  Group Slot 1  [ — Keep — ▼]            │
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>│  Group Slot 2  [ A — GMRS ▼]            │
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>│  Group Slot 3  [ — Keep — ▼]            │
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>│  Group Slot 4  [ — Keep — ▼]            │
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>│                                          │
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>│          [ Cancel ]  [ Apply ]           │
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>└──────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Spinner options for each group slot:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>— Keep —</code></td>
+<td>Do not change this slot on the selected channels</td>
+</tr>
+<tr>
+<td><code>None</code></td>
+<td>Clear this slot (remove group assignment)</td>
+</tr>
+<tr>
+<td><code>A</code> through <code>O</code> (with labels)</td>
+<td>Assign the displayed group</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Each slot spinner is <strong>independent</strong> — you can set slot 2 to <code>A — GMRS</code> while leaving
+  slots 1, 3, and 4 unchanged (keep their current values).</li>
+<li>Custom group names (e.g., "GMRS", "MURS") are shown inline from the <strong>Group Labels</strong> you
+  defined in Edit Group Labels.</li>
+<li>Tap <strong>Apply</strong> to bulk-assign groups to all selected non-empty channels.</li>
+</ul>
+<hr />
+<h3 id="64-delete-clear-selected">6.4 Delete / Clear Selected<a class="headerlink" href="#64-delete-clear-selected" title="Permanent link">&para;</a></h3>
+<p>Tap the <strong>🗑</strong> (delete) button to clear all selected channels. A confirmation dialog
+appears showing the count. Clearing sets those slots to empty (all bytes zeroed).</p>
+<blockquote>
+<p>Empty slots appear as <code>(empty)</code> in the channel list and can be reused by importing
+CHIRP CSV data or by editing them manually.</p>
+</blockquote>
+<hr />
+<h3 id="65-move-to-slot">6.5 Move to Slot<a class="headerlink" href="#65-move-to-slot" title="Permanent link">&para;</a></h3>
+<p>Tap the <strong>⤓</strong> (arrow-to-underline) button while channels are selected to jump the
+entire selection to any slot in one action — no need to tap Move Up / Down dozens
+of times.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>┌────────────────────────────────────────────────────┐
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>│  Move 3 Channel(s) to Slot                         │
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>├────────────────────────────────────────────────────┤
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>│                                                    │
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>│  Move selected channels starting at slot:          │
+<a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>│                                                    │
+<a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>│  ┌──────────────────────────────────────────────┐  │
+<a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>│  │  Ch 10 – WX1                              ▼  │  │
+<a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>│  └──────────────────────────────────────────────┘  │
+<a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>│                                                    │
+<a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a>│  3 channel(s) will occupy slot(s) 10–12            │
+<a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>│                                                    │
+<a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a>│          [ Cancel ]          [ Move ]              │
+<a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>└────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>How it works:</strong></p>
+<ol>
+<li>Long-press to enter multi-select mode, then tap all channels you want to move.</li>
+<li>Tap <strong>⤓</strong> — the dialog opens with the Spinner pre-set to the first selected slot.</li>
+<li>Scroll the Spinner to choose the target <strong>starting slot</strong> (1–198).</li>
+<li>The hint line updates live: <em>"N channel(s) will occupy slot(s) X–Y"</em>.</li>
+<li>Tap <strong>Move</strong> — the selected channels are removed from their current positions and
+   inserted starting at the chosen slot. All remaining channels shift to fill the gaps.</li>
+</ol>
+<p><strong>Selection after move:</strong></p>
+<p>The moved channels remain selected (highlighted) in their new positions so you can
+immediately continue editing or move them again.</p>
+<p><strong>Edge cases:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Situation</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target slot is inside the current selection range</td>
+<td>Computed from non-selected channels only — result is predictable</td>
+</tr>
+<tr>
+<td>All channels selected</td>
+<td>Early exit with a toast — nothing to move relative to</td>
+</tr>
+<tr>
+<td>Target slot &gt; available slots after removals</td>
+<td>Channels land at the end of the list</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="66-export-as-chirp-csv">6.6 Export as CHIRP CSV<a class="headerlink" href="#66-export-as-chirp-csv" title="Permanent link">&para;</a></h3>
+<p>Tap the <strong>↑□</strong> (upload arrow) button while channels are selected to export the selection to a CHIRP-compatible CSV file and share it.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>┌──────────────────────────────────────────────────────┐
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>│  Export CHIRP CSV                                    │
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>│  12 channel(s) will be exported.                     │
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>│  File name:                                          │
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>│  ┌────────────────────────────────────────────────┐  │
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>│  │  chirp_export_20260313_104500                  │  │
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>│  └────────────────────────────────────────────────┘  │
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>│          [ Cancel ]      [ Export &amp; Share ]           │
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>└──────────────────────────────────────────────────────┘
+</code></pre></div>
+<ol>
+<li>Long-press to enter multi-select mode and select the channels you want to export.</li>
+<li>Use <strong>Channel Search</strong> (§7) to quickly select a whole group.</li>
+<li>Tap the <strong>↑□</strong> icon in the selection bar.</li>
+<li>Edit the file name if desired (default is <code>chirp_export_&lt;timestamp&gt;</code>).</li>
+<li>Tap <strong>Export &amp; Share</strong> — the Android share sheet opens so you can send the file via email, cloud storage, AirDrop, etc.</li>
+</ol>
+<p>The exported CSV:
+- Is numbered sequentially from <code>Location 0</code> regardless of original slot numbers.
+- Preserves frequency, name, duplex/offset, tone (CTCSS/DCS), mode, bandwidth, and power.
+- Can be imported directly back into the app (<strong>⋮ → Import CHIRP CSV</strong>) or into the desktop CHIRP software.
+- Empty slots in the selection are automatically skipped.</p>
+<blockquote>
+<p><strong>Typical use case:</strong> Select all channels in group H–GMRS using Search → Select All, then export to share your repeater list with another user.</p>
+</blockquote>
+<hr />
+<h2 id="7-channel-search">7. Channel Search<a class="headerlink" href="#7-channel-search" title="Permanent link">&para;</a></h2>
+<p>Tap the <strong>🔍</strong> (magnifying glass) icon in the top toolbar to open the search bar.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>┌──────────────────────────────────────────────────────┐
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>│  TD-H3 Channel Editor                          🔍 ⋮  │
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>│  [ Search by name, group or frequency… ] [Select All] [✕] │
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>│  → Ch 31  Towson WRJY6     462.6000 MHz              │
+<a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>│  → Ch 32  Baltimore WR     462.6750 MHz              │
+<a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>│  → Ch 35  Lanham WQMM8     462.5500 MHz              │
+<a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>│  …                                                   │
+<a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>└──────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>How it works:</strong>
+- Type any part of a <strong>channel name</strong>, <strong>group label</strong>, or <strong>RX frequency</strong> — the list filters live as you type (case-insensitive).
+- Matching is on name OR frequency OR any of the channel's group labels:
+  - Typing <code>GMRS</code> shows channels assigned to groups whose label contains "GMRS".
+  - Typing <code>boat</code> shows channels with "Boat" in the name or assigned to a group labeled "Boat".
+  - Typing <code>462.5</code> shows all channels whose RX frequency starts with 462.5 MHz (e.g. 462.5000, 462.5125, 462.5625, …).
+  - Typing <code>462</code> shows every channel in the 462 MHz band.
+- Empty slots are always hidden while a search query is active.
+- Tap <strong>✕</strong> to clear the search and restore the full channel list.
+- Tap the 🔍 icon again to close the search bar.</p>
+<p><strong>Select All Matches:</strong>
+Once you have results, tap <strong>Select All</strong> to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
+- Tap <strong>Export CSV</strong> (↑□) to export the whole matched set as a CHIRP CSV.
+- Tap <strong>Set TX Power</strong> (📡) to change power for the whole group at once.
+- Tap <strong>Set Groups</strong> (🏷) to bulk-assign groups to all matches.
+- Tap any card to deselect individually, or tap <strong>Done</strong> to exit selection mode.</p>
+<blockquote>
+<p><strong>Example workflow — share all GMRS repeaters:</strong>
+1. Tap 🔍, type <code>GMRS</code>.
+2. Tap <strong>Select All</strong> — all channels in your GMRS group are selected.
+3. Tap <strong>↑□</strong> → name the file → <strong>Export &amp; Share</strong>.</p>
+</blockquote>
+<hr />
+<h2 id="8-overflow-menu-features">8. Overflow Menu Features<a class="headerlink" href="#8-overflow-menu-features" title="Permanent link">&para;</a></h2>
+<p>Tap the <strong>⋮</strong> (three-dot) menu in the top-right toolbar to access advanced features.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>┌────────────────────────────────────────┐
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>│ ⋮                                      │
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>│  Import CHIRP CSV from File…           │
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>│  Import CHIRP CSV from Clipboard…      │
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>│  Sort Channels by Group…               │
+<a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>│  Edit Group Labels…                    │
+<a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>│  Save EEPROM dump…                     │
+<a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>│  Import EEPROM dump…                   │
+<a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>│  Edit Band Plan…                       │
+<a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a>│  Edit Scan Presets…                    │
+<a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>│  Radio Settings…                       │
+<a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>│  Tune Settings…                        │
+<a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a>│  XTAL 671 Calculator…                  │
+<a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>│  ✓ Protect Tune Settings               │
+<a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a>└────────────────────────────────────────┘
+</code></pre></div>
+<blockquote>
+<p><strong>XTAL 671 Calculator</strong> is always accessible — no EEPROM required.
+<strong>Import EEPROM dump</strong> is always accessible regardless of connection state.
+<strong>Protect Tune Settings</strong> is a checkable toggle — accessible any time; state persists across app restarts.
+All other items require an EEPROM to be loaded first.</p>
+</blockquote>
+<hr />
+<h3 id="81-import-chirp-csv">8.1 Import CHIRP CSV<a class="headerlink" href="#81-import-chirp-csv" title="Permanent link">&para;</a></h3>
+<p>Import a frequency list exported by the CHIRP radio programming software.</p>
+<p>Two input methods are supported:</p>
+<ul>
+<li><strong>⋮ → Import CHIRP CSV from File…</strong> — opens the system file picker to select a <code>.csv</code> file.</li>
+<li><strong>⋮ → Import CHIRP CSV from Clipboard…</strong> — reads a CHIRP CSV copied directly to the clipboard.</li>
+</ul>
+<h4 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Export your channel list from CHIRP as a CSV file (<code>File → Export</code>).</li>
+<li>Transfer the CSV to your Android device (email, cloud storage, USB, etc.),
+   <strong>or</strong> copy the CSV text to the clipboard on a device where CHIRP is running.</li>
+<li>In the app, tap <strong>⋮ → Import CHIRP CSV from File…</strong> and pick the file,
+   <strong>or</strong> tap <strong>⋮ → Import CHIRP CSV from Clipboard…</strong> to import from the clipboard.</li>
+<li>The <strong>CHIRP Import</strong> screen opens:</li>
+</ol>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>┌──────────────────────────────────────────────────────┐
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>│ ← Import CHIRP CSV                                   │
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>│  24 channel(s) in CSV · 31 empty slot(s) available   │
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>│  ✓ All 24 channels will be imported                  │
+<a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>│  Assign Groups to All Imported Channels              │
+<a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>│                                                      │
+<a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>│  Group 1  [ A — GMRS ▼]  Group 2  [ None     ▼]    │
+<a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>│  Group 3  [ None     ▼]  Group 4  [ None     ▼]    │
+<a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a>│  TX Power (All Imported Channels)                    │
+<a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a>│  [ From CSV                        ▼]               │
+<a id="__codelineno-15-14" name="__codelineno-15-14" href="#__codelineno-15-14"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-15" name="__codelineno-15-15" href="#__codelineno-15-15"></a>│  Starting Channel                                    │
+<a id="__codelineno-15-16" name="__codelineno-15-16" href="#__codelineno-15-16"></a>│  [ Ch 1 ▼ ]                                         │
+<a id="__codelineno-15-17" name="__codelineno-15-17" href="#__codelineno-15-17"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-18" name="__codelineno-15-18" href="#__codelineno-15-18"></a>│  Channel Preview                                     │
+<a id="__codelineno-15-19" name="__codelineno-15-19" href="#__codelineno-15-19"></a>│  → Ch 1  │ GMRS 1   │ 462.5625 MHz  │ T: 100.0 Hz  │
+<a id="__codelineno-15-20" name="__codelineno-15-20" href="#__codelineno-15-20"></a>│  → Ch 2  │ GMRS 2   │ 462.5875 MHz                 │
+<a id="__codelineno-15-21" name="__codelineno-15-21" href="#__codelineno-15-21"></a>│  → Ch 3  │ WX1      │ 162.4000 MHz  (CSV #43)      │
+<a id="__codelineno-15-22" name="__codelineno-15-22" href="#__codelineno-15-22"></a>│  …                                                  │
+<a id="__codelineno-15-23" name="__codelineno-15-23" href="#__codelineno-15-23"></a>├──────────────────────────────────────────────────────┤
+<a id="__codelineno-15-24" name="__codelineno-15-24" href="#__codelineno-15-24"></a>│  [ Cancel ]                     [ Import ]           │
+<a id="__codelineno-15-25" name="__codelineno-15-25" href="#__codelineno-15-25"></a>└──────────────────────────────────────────────────────┘
+</code></pre></div>
+<ol>
+<li>Optionally assign all imported channels to up to 4 groups using the <strong>Group</strong> spinners.</li>
+<li>Use the <strong>TX Power</strong> spinner to set a uniform power level for every imported channel:</li>
+<li><strong>From CSV</strong> <em>(default)</em> — keeps whatever power value the CSV row contained.</li>
+<li><strong>N/T</strong> — no transmit (useful for receive-only or monitor channels).</li>
+<li><strong>1–255</strong> — raw power byte; see the <a href="#power-calibration">Power Calibration table</a>
+     in §5 for approximate watt equivalents.</li>
+<li>Use the <strong>Starting Channel</strong> spinner to choose which empty slot the first imported
+   channel lands in. The preview updates live — the <code>→ Ch N</code> labels shift to reflect
+   your selection. Only positions where all channels fit without overwriting occupied
+   slots are listed.</li>
+<li>Tap <strong>Import</strong> to write channels into the selected slot range.</li>
+<li>Tap <strong>Save to Radio</strong> on the main screen to upload.</li>
+</ol>
+<blockquote>
+<p>⚠ Imported channels fill <strong>empty slots only</strong> — existing channels are never overwritten.
+If there are more CSV entries than empty slots, a warning is shown and excess entries
+are skipped. The Starting Channel spinner is hidden in this case.</p>
+</blockquote>
+<h4 id="tone-tsql-handling">Tone / TSQL Handling<a class="headerlink" href="#tone-tsql-handling" title="Permanent link">&para;</a></h4>
+<p>The importer follows the CHIRP column spec:</p>
+<table>
+<thead>
+<tr>
+<th>Tone column</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Tone</code></td>
+<td>TX CTCSS only (<code>rToneFreq</code>); RX squelch is carrier-triggered</td>
+</tr>
+<tr>
+<td><code>TSQL</code></td>
+<td>TX + RX CTCSS using <code>cToneFreq</code>; radio opens only when it hears the tone back</td>
+</tr>
+<tr>
+<td><code>DTCS</code></td>
+<td>TX + RX DCS using <code>DtcsCode</code> + <code>DtcsPolarity</code></td>
+</tr>
+<tr>
+<td><em>(blank)</em></td>
+<td>No tone — <strong>unless</strong> <code>rToneFreq</code> ≠ 88.5 Hz (CHIRP's "no-tone" sentinel), in which case the frequency is imported as TX Tone encode-only</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>💡 <strong>RepeaterBook / database exports</strong> commonly leave the Tone column blank while
+still populating <code>rToneFreq</code> with the repeater's access tone. The blank-column fallback
+above ensures that tone is captured as a TX encode rather than silently discarded.
+If you do <em>not</em> want the tone imported, zero out the <code>rToneFreq</code> column (or set it
+to <code>88.5</code>) before importing.</p>
+</blockquote>
+<hr />
+<h3 id="82-sort-channels-by-group">8.2 Sort Channels by Group<a class="headerlink" href="#82-sort-channels-by-group" title="Permanent link">&para;</a></h3>
+<p>Automatically reorganize all channels so that each group's channels are contiguous in
+the channel list (useful for radios that scan group-by-group).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>┌────────────────────────────────────────────────────┐
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>│ ← Sort Channels by Group                          │
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>├────────────────────────────────────────────────────┤
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>│  Drag groups into your preferred order.            │
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>│  Channels will be reorganized so each group&#39;s      │
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>│  channels appear together.                         │
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>│                                                    │
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>│  48 grouped across 5 group(s) · 12 ungrouped       │
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>│  · 138 empty slots                                 │
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>│                                                    │
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>│  ≡  A  GMRS           (24 ch)                     │
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>│  ≡  B  MURS            (5 ch)                     │
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>│  ≡  C  Weather         (7 ch)                     │
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>│  ≡  D  Local          (12 ch)                     │
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>│  ≡  E  Simplex         (3 ch)  ← drag handle (≡)  │
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>│  ≡  F  (no label)      (0 ch)                     │
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>│  …                                                 │
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>│                                                    │
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>│  Ungrouped channels will be placed after           │
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>│  all group blocks. Empty slots always moved last.  │
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>│                                                    │
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>│  [ Cancel ]              [ Sort ]                  │
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>└────────────────────────────────────────────────────┘
+</code></pre></div>
+<h4 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Drag group rows by their <strong>≡</strong> handle to set priority order.</li>
+<li>Groups higher in the list get lower channel numbers after sorting.</li>
+<li>Tap <strong>Sort</strong> — a confirmation dialog shows the final order before committing.</li>
+<li>The sort is <strong>stable</strong>: channels within the same group keep their relative order.</li>
+<li>Channels with multiple group assignments are sorted under their
+   <strong>highest-priority group</strong> (the one earliest in your drag order).</li>
+<li>Ungrouped channels are appended after all group blocks; empty slots go last.</li>
+<li>Tap <strong>Save to Radio</strong> afterward.</li>
+</ol>
+<blockquote>
+<p><strong>Example sort order:</strong> A (GMRS) → B (MURS) → C (Weather) → Ungrouped → Empty
+Result: channels 1–24 = GMRS, 25–29 = MURS, 30–36 = Weather, 37–48 = ungrouped.</p>
+</blockquote>
+<hr />
+<h3 id="83-edit-group-labels">8.3 Edit Group Labels<a class="headerlink" href="#83-edit-group-labels" title="Permanent link">&para;</a></h3>
+<p>Assign human-readable names to the 15 group letters (A–O). Labels are stored in the
+EEPROM at offset <code>0x1C90</code> (6 bytes each, max 5 characters + null).</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>┌──────────────────────────────────────┐
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>│ ← Edit Group Labels                 │
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>├──────────────────────────────────────┤
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>│  A  │ [ GMRS        ]               │
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>│  B  │ [ MURS        ]               │
+<a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>│  C  │ [ Weather     ]               │
+<a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>│  D  │ [ Local       ]               │
+<a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>│  E  │ [ Simplex     ]               │
+<a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>│  F  │ [             ]               │
+<a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>│  G  │ [             ]               │
+<a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>│  H  │ [             ]               │
+<a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a>│  I  │ [             ]               │
+<a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a>│  J  │ [             ]               │
+<a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a>│  K  │ [             ]               │
+<a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a>│  L  │ [             ]               │
+<a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a>│  M  │ [             ]               │
+<a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a>│  N  │ [             ]               │
+<a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a>│  O  │ [             ]               │
+<a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a>├──────────────────────────────────────┤
+<a id="__codelineno-17-20" name="__codelineno-17-20" href="#__codelineno-17-20"></a>│  [ Cancel ]           [ Save ]      │
+<a id="__codelineno-17-21" name="__codelineno-17-21" href="#__codelineno-17-21"></a>└──────────────────────────────────────┘
+</code></pre></div>
+<ul>
+<li>Max <strong>5 characters</strong> per label (enforced by the text field).</li>
+<li>Labels appear throughout the app (channel editor group spinners, bulk group dialog,
+  CHIRP import group spinners, sort screen).</li>
+<li>Tap <strong>Save</strong> — labels are written into the in-memory EEPROM and take effect in the
+  app immediately. Upload to radio with <strong>Save to Radio</strong>.</li>
+</ul>
+<hr />
+<h3 id="84-save-import-eeprom-dump">8.4 Save / Import EEPROM Dump<a class="headerlink" href="#84-save-import-eeprom-dump" title="Permanent link">&para;</a></h3>
+<h4 id="save-eeprom-dump">Save EEPROM dump<a class="headerlink" href="#save-eeprom-dump" title="Permanent link">&para;</a></h4>
+<p>Saves the currently loaded EEPROM as a raw <code>.bin</code> file to your device storage.</p>
+<ul>
+<li>The file is named <code>nicfw25_YYYYMMDD_HHmmss.bin</code>.</li>
+<li>Use this as a backup before making changes, or to share an EEPROM snapshot.</li>
+</ul>
+<h4 id="import-eeprom-dump">Import EEPROM dump<a class="headerlink" href="#import-eeprom-dump" title="Permanent link">&para;</a></h4>
+<p>Loads a previously saved <code>.bin</code> file as the active EEPROM (bypasses Bluetooth).</p>
+<ul>
+<li>The file must be exactly 8192 bytes (8 KB).</li>
+<li>After import, the channel list refreshes as if you had loaded from the radio.</li>
+<li>Use <strong>Save to Radio</strong> to push the loaded dump to a connected radio.</li>
+</ul>
+<blockquote>
+<p><strong>Workflow example:</strong> Clone one radio's configuration to another:
+1. Connect Radio A → <strong>Load from Radio</strong> → <strong>Save EEPROM dump</strong>.
+2. Connect Radio B → <strong>Import EEPROM dump</strong> → <strong>Save to Radio</strong>.</p>
+</blockquote>
+<hr />
+<h3 id="85-edit-band-plan">8.5 Edit Band Plan<a class="headerlink" href="#85-edit-band-plan" title="Permanent link">&para;</a></h3>
+<p>Define up to 20 frequency band entries that control which frequencies are available
+for TX on the radio. nicFW 2.5 stores the Band Plan at EEPROM offset <code>0x1A00</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>┌────────────────────────────────────────────────────────────┐
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>│ ← Edit Band Plan                                          │
+<a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>├────────────────────────────────────────────────────────────┤
+<a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>│  Band plan controls which frequencies allow TX.           │
+<a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>│  The radio&#39;s Band Plan overrides per-channel power.       │
+<a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a>├────────────────────────────────────────────────────────────┤
+<a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>│  #1  │  136.000 – 174.000 MHz  │ TX ✓  FM  Wide  100      │
+<a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>│  #2  │  400.000 – 480.000 MHz  │ TX ✓  FM  Wide  100      │
+<a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>│  #3  │  108.000 – 136.000 MHz  │ TX ✗  AM  Narrow  0      │
+<a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a>│  #4  │  151.820 – 154.600 MHz  │ TX ✓  FM  Narrow  50     │  ← MURS
+<a id="__codelineno-18-11" name="__codelineno-18-11" href="#__codelineno-18-11"></a>│  …                                                         │
+<a id="__codelineno-18-12" name="__codelineno-18-12" href="#__codelineno-18-12"></a>│  #20 │  (empty)                                            │
+<a id="__codelineno-18-13" name="__codelineno-18-13" href="#__codelineno-18-13"></a>├────────────────────────────────────────────────────────────┤
+<a id="__codelineno-18-14" name="__codelineno-18-14" href="#__codelineno-18-14"></a>│  [ Cancel ]                     [ Save ]                   │
+<a id="__codelineno-18-15" name="__codelineno-18-15" href="#__codelineno-18-15"></a>└────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Tap any row to edit that band plan entry:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>┌────────────────────────────────────────┐
+<a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>│ ← Band Plan Entry #4                  │
+<a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>├────────────────────────────────────────┤
+<a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a>│  Start Freq (MHz)  [ 151.8200       ] │
+<a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>│  End Freq (MHz)    [ 154.6000       ] │
+<a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>│  Max Power         [ 50             ] │
+<a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>│  TX Allowed        [ ✓ Yes         ] │
+<a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>│  Modulation        [ FM  ▼         ] │
+<a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>│  Bandwidth         [ Narrow ▼      ] │
+<a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>│                                        │
+<a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a>│  [ Clear Entry ]                       │
+<a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>│  [ Cancel ]          [ Save Entry ]    │
+<a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>└────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Band Plan Field Reference:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start / End Freq</td>
+<td>Frequency range in MHz</td>
+</tr>
+<tr>
+<td>Max Power</td>
+<td>Raw power cap (0–255); 0 = Ignore (no cap applied)</td>
+</tr>
+<tr>
+<td>TX Allowed</td>
+<td>When off, the radio treats this range as RX-only</td>
+</tr>
+<tr>
+<td>Modulation</td>
+<td>Ignore / FM / AM / USB / Auto / Enforce variants</td>
+</tr>
+<tr>
+<td>Bandwidth</td>
+<td>Ignore / Wide / Narrow / FM Tuner</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>The radio applies Band Plan entries in order — the first matching entry wins.
+A catch-all entry (wide range, TX off) placed last covers all unlicensed frequencies.</p>
+</blockquote>
+<hr />
+<h3 id="86-edit-scan-presets">8.6 Edit Scan Presets<a class="headerlink" href="#86-edit-scan-presets" title="Permanent link">&para;</a></h3>
+<p>Configure up to 20 scan presets stored at EEPROM offset <code>0x1B00</code>. Each preset defines
+a frequency range for the radio's spectrum scanner.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>┌─────────────────────────────────────────────────────────────────┐
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>│ ← Edit Scan Presets                                            │
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>├─────────────────────────────────────────────────────────────────┤
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>│  Scan presets define frequency ranges for the built-in        │
+<a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>│  spectrum scanner. Up to 20 slots available.                  │
+<a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>├─────────────────────────────────────────────────────────────────┤
+<a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a>│  #1  │ 108.00000 – 137.00000 MHz  &quot;Air Band&quot;                  │
+<a id="__codelineno-20-8" name="__codelineno-20-8" href="#__codelineno-20-8"></a>│      │  Step: 25.00 kHz  Resume: 10  Persist: 0  AM  Ultra: 7 │
+<a id="__codelineno-20-9" name="__codelineno-20-9" href="#__codelineno-20-9"></a>│  #2  │ 137.00000 – 144.00000 MHz  &quot;Satellite&quot;                 │
+<a id="__codelineno-20-10" name="__codelineno-20-10" href="#__codelineno-20-10"></a>│      │  Step: 25.00 kHz  Resume: 5   Persist: 0  FM  Ultra: 7 │
+<a id="__codelineno-20-11" name="__codelineno-20-11" href="#__codelineno-20-11"></a>│  …                                                             │
+<a id="__codelineno-20-12" name="__codelineno-20-12" href="#__codelineno-20-12"></a>│  #13 │ 462.55000 – 462.75000 MHz  &quot;GMRS&quot;                      │
+<a id="__codelineno-20-13" name="__codelineno-20-13" href="#__codelineno-20-13"></a>│      │  Step: 12.50 kHz  Resume: 0  Persist: 0  FM  Ultra: 7  │
+<a id="__codelineno-20-14" name="__codelineno-20-14" href="#__codelineno-20-14"></a>│  …                                                             │
+<a id="__codelineno-20-15" name="__codelineno-20-15" href="#__codelineno-20-15"></a>│  #20 │ Empty — Tap to configure this slot                     │
+<a id="__codelineno-20-16" name="__codelineno-20-16" href="#__codelineno-20-16"></a>├─────────────────────────────────────────────────────────────────┤
+<a id="__codelineno-20-17" name="__codelineno-20-17" href="#__codelineno-20-17"></a>│  [ Cancel ]                              [ Save ]              │
+<a id="__codelineno-20-18" name="__codelineno-20-18" href="#__codelineno-20-18"></a>└─────────────────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Tap any row to edit that scan preset slot:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>┌────────────────────────────────────────────────┐
+<a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>│ ← Scan Preset #1                              │
+<a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>├────────────────────────────────────────────────┤
+<a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>│  Start Freq (MHz)  [ 108.0000             ]   │
+<a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>│  End Freq (MHz)    [ 137.0000             ]   │
+<a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a>│  Step (kHz)        [ 25.00               ]   │
+<a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>│  Scan Resume       [ 10                  ]   │
+<a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>│  Scan Persist      [ 0                   ]   │
+<a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a>│  Modulation        [ AM ▼]                   │
+<a id="__codelineno-21-10" name="__codelineno-21-10" href="#__codelineno-21-10"></a>│  Ultrascan Speed   [ 7 ▼]                    │
+<a id="__codelineno-21-11" name="__codelineno-21-11" href="#__codelineno-21-11"></a>│  Label (8 chars)   [ Air Band            ]   │
+<a id="__codelineno-21-12" name="__codelineno-21-12" href="#__codelineno-21-12"></a>│                                               │
+<a id="__codelineno-21-13" name="__codelineno-21-13" href="#__codelineno-21-13"></a>│  [ Clear Slot ]                               │
+<a id="__codelineno-21-14" name="__codelineno-21-14" href="#__codelineno-21-14"></a>│  [ Cancel ]         [ Save Entry ]            │
+<a id="__codelineno-21-15" name="__codelineno-21-15" href="#__codelineno-21-15"></a>└────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Scan Preset Field Reference:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start / End Freq</td>
+<td>MHz — defines the scan range</td>
+</tr>
+<tr>
+<td>Step</td>
+<td>Scan step in kHz (e.g., 25.00 = standard FM, 12.50 = GMRS)</td>
+</tr>
+<tr>
+<td>Scan Resume</td>
+<td>Dwell count after signal lost before resuming scan</td>
+</tr>
+<tr>
+<td>Scan Persist</td>
+<td>Hold count when signal found</td>
+</tr>
+<tr>
+<td>Modulation</td>
+<td>FM / AM / USB / Auto (encoding matches EEPROM, not channel list)</td>
+</tr>
+<tr>
+<td>Ultrascan Speed</td>
+<td>0–7 (0 = slowest, 7 = fastest)</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>Up to 8 ASCII characters, displayed on the radio screen</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Empty slot detection:</strong> A slot is empty when <code>startFreq == 0</code>. Tapping
+<strong>Clear Slot</strong> zeros the entry. The EEPROM block has no magic header — each slot
+stands alone.</p>
+</blockquote>
+<hr />
+<hr />
+<h3 id="87-radio-settings">8.7 Radio Settings<a class="headerlink" href="#87-radio-settings" title="Permanent link">&para;</a></h3>
+<p>View and edit the nicFW Settings block stored at EEPROM offset <code>0x1900</code>.
+Access via <strong>⋮ → Radio Settings…</strong> (requires EEPROM to be loaded).</p>
+<p>Tap <strong>Save Settings</strong> to write all changes to the in-memory EEPROM, then tap
+<strong>Save to Radio</strong> from the main screen to upload to the device.</p>
+<blockquote>
+<p>Fields marked <strong>⚠</strong> use EEPROM offsets or encodings that are not fully
+confirmed — treat them with extra caution.</p>
+</blockquote>
+<p>The editor is divided into ten sections:</p>
+<hr />
+<h4 id="squelch-audio">Squelch &amp; Audio<a class="headerlink" href="#squelch-audio" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Squelch</strong></td>
+<td>0–9 (spinner)</td>
+<td>2</td>
+<td>Squelch threshold level</td>
+</tr>
+<tr>
+<td><strong>Sq Noise Level</strong></td>
+<td>0–255</td>
+<td>0</td>
+<td>Raw noise floor threshold</td>
+</tr>
+<tr>
+<td><strong>Noise Ceiling</strong></td>
+<td>0–255</td>
+<td>0</td>
+<td>Upper noise limit for squelch detection</td>
+</tr>
+<tr>
+<td><strong>Sq Tail Elim</strong></td>
+<td>Off / On variants</td>
+<td>Off</td>
+<td>Squelch tail elimination mode</td>
+</tr>
+<tr>
+<td><strong>Mic Gain</strong></td>
+<td>0–31</td>
+<td>25</td>
+<td>Microphone preamp gain</td>
+</tr>
+<tr>
+<td><strong>Noise Gate</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Enables the TX noise gate</td>
+</tr>
+<tr>
+<td><strong>RF Gain</strong></td>
+<td>AGC / 1–42</td>
+<td>AGC</td>
+<td>Receiver RF gain. AGC = automatic; 1–42 = fixed (lower = less gain)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="display">Display<a class="headerlink" href="#display" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LCD Brightness</strong></td>
+<td>0–35</td>
+<td>28</td>
+<td>Backlight level</td>
+</tr>
+<tr>
+<td><strong>LCD Timeout (s)</strong></td>
+<td>0–255 (0 = Off)</td>
+<td>Off</td>
+<td>Screen off delay in seconds</td>
+</tr>
+<tr>
+<td><strong>Heartbeat</strong></td>
+<td>0–30 (0 = Off)</td>
+<td>Off</td>
+<td>Idle animation speed</td>
+</tr>
+<tr>
+<td><strong>Dim Brightness</strong></td>
+<td>0–14 (0 = Off)</td>
+<td>Off</td>
+<td>Reduced brightness level after timeout</td>
+</tr>
+<tr>
+<td><strong>LCD Gamma</strong></td>
+<td>0–255</td>
+<td>0</td>
+<td>Display gamma correction</td>
+</tr>
+<tr>
+<td><strong>LCD Inverted</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Inverts the display colors</td>
+</tr>
+<tr>
+<td><strong>S-Bar Style</strong></td>
+<td>Spinner</td>
+<td>Segment</td>
+<td>Signal bar display style</td>
+</tr>
+<tr>
+<td><strong>S-Bar Persistent</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Keep signal bar visible when idle</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="tx-settings">TX Settings<a class="headerlink" href="#tx-settings" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>TX Mod Meter</strong></td>
+<td>Off / On</td>
+<td>On</td>
+<td>Shows TX modulation level on screen during transmit</td>
+</tr>
+<tr>
+<td><strong>TX Timeout (s)</strong></td>
+<td>0–255 (0 = Off)</td>
+<td>120</td>
+<td>Maximum continuous TX time before automatic cutoff</td>
+</tr>
+<tr>
+<td><strong>TX Sub Tone Deviation</strong></td>
+<td>0–127</td>
+<td>64</td>
+<td>Sub-audible tone deviation level for CTCSS/DCS</td>
+</tr>
+<tr>
+<td><strong>PTT Mode</strong></td>
+<td>Spinner</td>
+<td>Dual</td>
+<td>PTT button behavior (Dual = toggle + hold)</td>
+</tr>
+<tr>
+<td><strong>TX Filter Trans ⚠</strong></td>
+<td>0–65535</td>
+<td>280.0</td>
+<td>TX filter transition frequency (offset unconfirmed)</td>
+</tr>
+<tr>
+<td><strong>TX Current</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Show transmit current on display</td>
+</tr>
+<tr>
+<td><strong>Repeater Tone (Hz)</strong></td>
+<td>0–65535</td>
+<td>1750</td>
+<td>1750 Hz burst tone for European repeater access</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="rx-tuning">RX &amp; Tuning<a class="headerlink" href="#rx-tuning" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step</strong></td>
+<td>Spinner</td>
+<td>5.0 kHz</td>
+<td>VFO tuning step</td>
+</tr>
+<tr>
+<td><strong>AF Filters</strong></td>
+<td>Spinner</td>
+<td>All</td>
+<td>Audio filter combination</td>
+</tr>
+<tr>
+<td><strong>IF Freq</strong></td>
+<td>Spinner</td>
+<td>8.46 kHz</td>
+<td>Intermediate frequency</td>
+</tr>
+<tr>
+<td><strong>RFi Comp</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>RF interference compensation</td>
+</tr>
+<tr>
+<td><strong>AGC 0–3</strong></td>
+<td>0–63 each</td>
+<td>24 / 32 / 37 / 40</td>
+<td>AGC threshold levels (fine tuning)</td>
+</tr>
+<tr>
+<td><strong>AM AGC Fix</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Corrects AM mode AGC behavior; recommended On when using AM channels</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="scan">Scan<a class="headerlink" href="#scan" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Dual Watch</strong></td>
+<td>Off / On</td>
+<td>On</td>
+<td>Monitors two channels simultaneously</td>
+</tr>
+<tr>
+<td><strong>Scan Resume (s)</strong></td>
+<td>0–30</td>
+<td>10</td>
+<td>Seconds before scan resumes after losing a signal</td>
+</tr>
+<tr>
+<td><strong>Scan Range (MHz)</strong></td>
+<td>decimal</td>
+<td>1.00</td>
+<td>Frequency window scanned around current channel</td>
+</tr>
+<tr>
+<td><strong>Scan Persist (s)</strong></td>
+<td>decimal (0 = Off)</td>
+<td>Off</td>
+<td>Hold time when a signal is found</td>
+</tr>
+<tr>
+<td><strong>Scan Update (×0.1 s)</strong></td>
+<td>0–255</td>
+<td>0</td>
+<td>Display update interval during scan</td>
+</tr>
+<tr>
+<td><strong>Ultrascan</strong></td>
+<td>0–7 (0 = Off)</td>
+<td>7</td>
+<td>Spectrum scan speed (7 = fastest)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="vox">VOX<a class="headerlink" href="#vox" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VOX Level</strong></td>
+<td>0–15 (0 = Off)</td>
+<td>Off</td>
+<td>Voice-activated TX sensitivity</td>
+</tr>
+<tr>
+<td><strong>VOX Tail (s)</strong></td>
+<td>decimal</td>
+<td>2.0</td>
+<td>Seconds TX stays open after voice stops</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="tones-keys">Tones &amp; Keys<a class="headerlink" href="#tones-keys" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tone Monitor</strong></td>
+<td>Spinner</td>
+<td>On</td>
+<td>Sub-audible tone monitor behavior</td>
+</tr>
+<tr>
+<td><strong>Key Tones</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>Button press beep style</td>
+</tr>
+<tr>
+<td><strong>Sub-Tone Deviation</strong></td>
+<td>0–255</td>
+<td>74</td>
+<td>Global sub-tone deviation level</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="dtmf">DTMF<a class="headerlink" href="#dtmf" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>DTMF Volume</strong></td>
+<td>0–255</td>
+<td>80</td>
+<td>Received DTMF audio level</td>
+</tr>
+<tr>
+<td><strong>DTMF Speed</strong></td>
+<td>0–15</td>
+<td>11</td>
+<td>DTMF tone transmit speed</td>
+</tr>
+<tr>
+<td><strong>DTMF Decode</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>DTMF decode / squelch mode</td>
+</tr>
+<tr>
+<td><strong>DTMF Seq End Pause (s)</strong></td>
+<td>decimal</td>
+<td>1.0</td>
+<td>Gap between DTMF sequence transmissions</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="system">System<a class="headerlink" href="#system" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Battery Style</strong></td>
+<td>Spinner</td>
+<td>Percent</td>
+<td>Battery indicator format</td>
+</tr>
+<tr>
+<td><strong>Bluetooth</strong></td>
+<td>Off / On</td>
+<td>On</td>
+<td>Enable/disable the radio's Bluetooth module</td>
+</tr>
+<tr>
+<td><strong>Power Save</strong></td>
+<td>Off / 1–20</td>
+<td>Off</td>
+<td>Battery saving sleep interval. Higher = longer sleep cycles</td>
+</tr>
+<tr>
+<td><strong>DW Start Delay (s)</strong></td>
+<td>0–15</td>
+<td>5</td>
+<td>Dual Watch activation delay after squelch closes</td>
+</tr>
+<tr>
+<td><strong>DW VFO Lock</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Lock VFO during Dual Watch mode</td>
+</tr>
+<tr>
+<td><strong>AllStar Link</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>AllStar VoIP repeater link mode</td>
+</tr>
+<tr>
+<td><strong>Disable FM Tuner</strong></td>
+<td>Off / On</td>
+<td>Off</td>
+<td>Hides the FM broadcast band from the tuner</td>
+</tr>
+<tr>
+<td><strong>Scrambler IF</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>Scrambler intermediate frequency; Off = disabled, 2600–3500 Hz in 100 Hz steps</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="security">Security<a class="headerlink" href="#security" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Range</th>
+<th>Default</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>PIN</strong></td>
+<td>0–9999</td>
+<td>1234</td>
+<td>Radio power-on or key-lock PIN</td>
+</tr>
+<tr>
+<td><strong>PIN Action</strong></td>
+<td>Spinner</td>
+<td>Off</td>
+<td>When PIN is triggered (power-on / key-lock / off)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="88-tune-settings">8.8 Tune Settings<a class="headerlink" href="#88-tune-settings" title="Permanent link">&para;</a></h3>
+<p>View and edit three per-radio calibration values stored at EEPROM offset <code>0x1DFB</code>.
+Access via <strong>⋮ → Tune Settings…</strong> (requires EEPROM to be loaded).</p>
+<blockquote>
+<p>⚠ <strong>These values are calibrated for your specific radio unit.</strong>
+If you cloned another radio's EEPROM, recalibrate XTAL 671 and verify the power
+caps for the target unit before saving to that radio.</p>
+</blockquote>
+<h4 id="screen-layout">Screen Layout<a class="headerlink" href="#screen-layout" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>┌────────────────────────────────────────────────────────┐
+<a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>│ ← Tune Settings                                        │
+<a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>├────────────────────────────────────────────────────────┤
+<a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>│ ╔══════════════════════════════════════════════════════╗ │
+<a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>│ ║ ⚠  These settings are per-radio calibration values. ║ │
+<a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>│ ║ If you cloned another radio&#39;s EEPROM, recalibrate   ║ │
+<a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>│ ║ XTAL 671 and verify power caps for this unit.       ║ │
+<a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>│ ╚══════════════════════════════════════════════════════╝ │
+<a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>│                                                        │
+<a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>│  VHF Power Setting Cap                                 │
+<a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>│  ┌──────────────────────────────────────────────────┐  │
+<a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>│  │         128                                      │  │
+<a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a>│  │  ─────────────────────────────────────────────   │  │
+<a id="__codelineno-22-14" name="__codelineno-22-14" href="#__codelineno-22-14"></a>│  │  ▶    130 (≈ 5.0W)    ◀         ← scroll wheel  │  │
+<a id="__codelineno-22-15" name="__codelineno-22-15" href="#__codelineno-22-15"></a>│  │  ─────────────────────────────────────────────   │  │
+<a id="__codelineno-22-16" name="__codelineno-22-16" href="#__codelineno-22-16"></a>│  │         132                                      │  │
+<a id="__codelineno-22-17" name="__codelineno-22-17" href="#__codelineno-22-17"></a>│  └──────────────────────────────────────────────────┘  │
+<a id="__codelineno-22-18" name="__codelineno-22-18" href="#__codelineno-22-18"></a>│  Max TX power on VHF (&lt;300 MHz). Radio silently clamps. │
+<a id="__codelineno-22-19" name="__codelineno-22-19" href="#__codelineno-22-19"></a>│                                                        │
+<a id="__codelineno-22-20" name="__codelineno-22-20" href="#__codelineno-22-20"></a>│  UHF Power Setting Cap                                 │
+<a id="__codelineno-22-21" name="__codelineno-22-21" href="#__codelineno-22-21"></a>│  (same scroll wheel format)                            │
+<a id="__codelineno-22-22" name="__codelineno-22-22" href="#__codelineno-22-22"></a>│  Max TX power on UHF (≥300 MHz). Radio silently clamps. │
+<a id="__codelineno-22-23" name="__codelineno-22-23" href="#__codelineno-22-23"></a>│                                                        │
+<a id="__codelineno-22-24" name="__codelineno-22-24" href="#__codelineno-22-24"></a>│  XTAL 671 Correction                                   │
+<a id="__codelineno-22-25" name="__codelineno-22-25" href="#__codelineno-22-25"></a>│  ┌──────────────────────────────────────────────────┐  │
+<a id="__codelineno-22-26" name="__codelineno-22-26" href="#__codelineno-22-26"></a>│  │         +28                                      │  │
+<a id="__codelineno-22-27" name="__codelineno-22-27" href="#__codelineno-22-27"></a>│  │  ─────────────────────────────────────────────   │  │
+<a id="__codelineno-22-28" name="__codelineno-22-28" href="#__codelineno-22-28"></a>│  │  ▶       +29          ◀         ← scroll wheel  │  │
+<a id="__codelineno-22-29" name="__codelineno-22-29" href="#__codelineno-22-29"></a>│  │  ─────────────────────────────────────────────   │  │
+<a id="__codelineno-22-30" name="__codelineno-22-30" href="#__codelineno-22-30"></a>│  │         +30                                      │  │
+<a id="__codelineno-22-31" name="__codelineno-22-31" href="#__codelineno-22-31"></a>│  └──────────────────────────────────────────────────┘  │
+<a id="__codelineno-22-32" name="__codelineno-22-32" href="#__codelineno-22-32"></a>│  Crystal oscillator frequency correction (−128…+127).  │
+<a id="__codelineno-22-33" name="__codelineno-22-33" href="#__codelineno-22-33"></a>│                                                        │
+<a id="__codelineno-22-34" name="__codelineno-22-34" href="#__codelineno-22-34"></a>│  [ Cancel ]             [ Save Tune Settings ]         │
+<a id="__codelineno-22-35" name="__codelineno-22-35" href="#__codelineno-22-35"></a>└────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h4 id="field-reference_1">Field Reference<a class="headerlink" href="#field-reference_1" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>EEPROM Offset</th>
+<th>Range</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>VHF Power Setting Cap</strong></td>
+<td><code>0x1DFF</code></td>
+<td>0–255 (raw byte)</td>
+<td>Maximum TX power for VHF frequencies (&lt;300 MHz). Channels whose stored power exceeds this value are clamped by the radio at transmit time.</td>
+</tr>
+<tr>
+<td><strong>UHF Power Setting Cap</strong></td>
+<td><code>0x1DFD</code></td>
+<td>0–255 (raw byte)</td>
+<td>Same cap for UHF frequencies (≥300 MHz).</td>
+</tr>
+<tr>
+<td><strong>XTAL 671 Correction</strong></td>
+<td><code>0x1DFB</code></td>
+<td>−128…+127 (signed)</td>
+<td>Crystal oscillator correction applied by nicFW. Use the <a href="#89-xtal-671-calculator">XTAL 671 Calculator</a> to compute the correct value for your unit.</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>The live watt estimate displayed next to each cap picker (e.g., "≈ 5.0W") uses the
+same interpolation table as the channel list power column.</p>
+</blockquote>
+<h4 id="how-power-caps-work">How Power Caps Work<a class="headerlink" href="#how-power-caps-work" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>Per-channel power byte (stored in EEPROM)
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>        │
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>        ▼
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>  if value &gt; cap  ──►  radio transmits at cap value
+<a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>  if value ≤ cap  ──►  radio transmits at stored value
+</code></pre></div>
+<ul>
+<li><strong>The stored EEPROM byte is never modified</strong> — only the transmitted power is clamped.</li>
+<li>When a channel's stored power exceeds the cap, the app shows:</li>
+<li>A <code>⚠</code> suffix in the channel list power column (e.g., <code>5.0W ⚠</code>)</li>
+<li>A non-blocking advisory below the Power spinner in the channel editor</li>
+<li>A non-blocking advisory below the wheel in the bulk TX power picker</li>
+<li><strong>Raising the cap later</strong> automatically un-clamps all affected channels without
+  requiring any per-channel edits.</li>
+</ul>
+<h4 id="channel-list-indicators">Channel List Indicators<a class="headerlink" href="#channel-list-indicators" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Power display</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>5.0W</code></td>
+<td>Normal — within cap and TX allowed</td>
+</tr>
+<tr>
+<td><code>5.0W ⚠</code></td>
+<td>Stored power exceeds VHF/UHF cap; radio will clamp at TX time</td>
+</tr>
+<tr>
+<td><code>5.0W (BP)</code></td>
+<td>Band Plan marks this frequency as TX-restricted</td>
+</tr>
+<tr>
+<td><code>5.0W (BP) ⚠</code></td>
+<td>Both Band Plan TX-restricted AND power exceeds cap</td>
+</tr>
+<tr>
+<td><code>N/T</code></td>
+<td>No-transmit (power = 0 or Band Plan TX off)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h4 id="protect-tune-settings">Protect Tune Settings<a class="headerlink" href="#protect-tune-settings" title="Permanent link">&para;</a></h4>
+<p>A checkable toggle in the overflow menu (<strong>⋮ → Protect Tune Settings</strong>) that locks
+the per-radio calibration values and enables a safe multi-radio write workflow.</p>
+<p>The same toggle is also available inside the Tune Settings screen itself as a switch
+at the top of the page.</p>
+<p><strong>When protection is OFF (default):</strong>
+- Tune Settings fields (XTAL, VHF cap, UHF cap) are fully editable.
+- <strong>Save to Radio</strong> uploads the EEPROM as-is — calibration bytes are whatever is
+  in the current template.</p>
+<p><strong>When protection is ON:</strong>
+- The XTAL, VHF cap, and UHF cap pickers are greyed out and non-editable.
+- The <strong>Save Tune Settings</strong> button is disabled.
+- <strong>Save to Radio</strong> performs a two-phase protected write:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>Phase 1 — Pre-read target radio
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>  Progress: &quot;Reading target radio calibration…&quot;
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>  Downloads the connected radio&#39;s full EEPROM
+<a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a>  Extracts the 5 calibration bytes (0x1DFB–0x1DFF)
+<a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+<a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a>Phase 2 — Patched upload
+<a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a>  Progress: &quot;Writing…&quot;
+<a id="__codelineno-24-8" name="__codelineno-24-8" href="#__codelineno-24-8"></a>  Uploads a copy of the template EEPROM with those 5 bytes
+<a id="__codelineno-24-9" name="__codelineno-24-9" href="#__codelineno-24-9"></a>  substituted from the target radio&#39;s own calibration
+<a id="__codelineno-24-10" name="__codelineno-24-10" href="#__codelineno-24-10"></a>  Template in memory is never modified
+</code></pre></div>
+<h4 id="multi-radio-template-workflow">Multi-Radio Template Workflow<a class="headerlink" href="#multi-radio-template-workflow" title="Permanent link">&para;</a></h4>
+<p>The typical use case for Protect Tune Settings is writing the same channel/settings
+configuration to a collection of radios while preserving each radio's factory
+calibration:</p>
+<ol>
+<li>Connect <strong>Radio 1</strong> → <strong>Load from Radio</strong>.</li>
+<li>Edit channels, settings, and band plan as desired. Do <strong>not</strong> edit Tune Settings.</li>
+<li>Enable <strong>Protect Tune Settings</strong> (✓ appears in the menu).</li>
+<li>Disconnect Radio 1, connect <strong>Radio 2</strong>.</li>
+<li>Tap <strong>Save to Radio</strong> → confirm dialog shows 🔒 protection note.</li>
+<li>Progress shows "Reading target radio calibration…" then "Writing…".</li>
+<li>Radio 2 receives the updated channels/settings but <strong>keeps its own XTAL
+   and power caps</strong>.</li>
+<li>Repeat steps 4–7 for Radio 3, 4, … — each radio keeps its own calibration.</li>
+</ol>
+<blockquote>
+<p><strong>Template file workflow:</strong> Save an EEPROM dump (<strong>⋮ → Save EEPROM dump…</strong>) while
+protection is enabled. Load that <code>.bin</code> file later and apply it to any number of
+radios — each will retain its own calibration on write.</p>
+<p><strong>CHIRP note:</strong> The Protect Tune Settings feature is <strong>Android-only</strong>.
+The CHIRP driver does not implement a pre-read, so it always writes whatever
+calibration bytes are in the loaded image. Use the Android app for multi-radio
+template workflows.</p>
+</blockquote>
+<h4 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Tap <strong>⋮ → Tune Settings…</strong></li>
+<li>Scroll the <strong>VHF Power Setting Cap</strong> picker to your desired ceiling raw value.</li>
+<li>Example: <code>130</code> ≈ 5.0 W (matches the field default seen in the NICFW Programmer).</li>
+<li>Set <code>255</code> to disable the cap (allow full power on all channels).</li>
+<li>Repeat for <strong>UHF Power Setting Cap</strong>.</li>
+<li>Adjust <strong>XTAL 671</strong> if needed — use the
+   <a href="#89-xtal-671-calculator">XTAL 671 Calculator</a> to derive the correct value first.</li>
+<li>Tap <strong>Save Tune Settings</strong> → values are written to the in-memory EEPROM.</li>
+<li>Tap <strong>Save to Radio</strong> on the main screen to upload.</li>
+</ol>
+<blockquote>
+<p>After saving Tune Settings and returning to the channel list, scroll the list to
+verify that <code>⚠</code> indicators appear or disappear as expected.</p>
+</blockquote>
+<hr />
+<h3 id="89-xtal-671-calculator">8.9 XTAL 671 Calculator<a class="headerlink" href="#89-xtal-671-calculator" title="Permanent link">&para;</a></h3>
+<p>A standalone frequency calibration tool — no EEPROM or radio connection required.
+It computes the <strong>nicFW XTAL 671 correction value</strong> needed to compensate for crystal
+oscillator error in the TD-H3.</p>
+<blockquote>
+<p><strong>Available any time</strong> from the overflow menu, even before loading from the radio.</p>
+</blockquote>
+<h4 id="prerequisite-reset-xtal-to-0-first">⚠ Prerequisite — Reset XTAL to 0 First<a class="headerlink" href="#prerequisite-reset-xtal-to-0-first" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p><strong>Before measuring the actual RX frequency you must set the radio's XTAL 671
+value to 0.</strong> A non-zero XTAL setting shifts the radio's receive frequency,
+which will corrupt the measurement and produce a wrong correction value.</p>
+</blockquote>
+<p>Steps:
+1. On the radio, open Settings → XTAL 671 and set it to <strong>0</strong>.
+2. Tune the radio to the target frequency.
+3. Measure the actual received frequency with a calibrated reference (SDR, spectrum
+   analyzer, or frequency counter).
+4. Enter that measured frequency in the calculator.</p>
+<h4 id="calculator-screen">Calculator Screen<a class="headerlink" href="#calculator-screen" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>┌─────────────────────────────────────────────────────────┐
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>│ ← XTAL 671 Calculator                                  │
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>├─────────────────────────────────────────────────────────┤
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>│ ╔═════════════════════════════════════════════════════╗ │
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a>│ ║ ⚠  Before calibrating                              ║ │
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a>│ ║ Set the radio&#39;s XTAL 671 value to 0 before         ║ │
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a>│ ║ measuring the actual RX frequency. A non-zero      ║ │
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>│ ║ XTAL setting will skew the measurement and         ║ │
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a>│ ║ produce an incorrect correction value.             ║ │
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a>│ ╚═════════════════════════════════════════════════════╝ │
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a>│                                                         │
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a>│  Target Frequency (MHz)                                 │
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a>│  ┌───────────────────────────────────────────────────┐  │
+<a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a>│  │  462.7250                                         │  │
+<a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a>│  └───────────────────────────────────────────────────┘  │
+<a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a>│  Expected / license frequency — e.g. 462.7250 GMRS22   │
+<a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a>│                                                         │
+<a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a>│  Actual RX Frequency (MHz)                              │
+<a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a>│  ┌───────────────────────────────────────────────────┐  │
+<a id="__codelineno-25-20" name="__codelineno-25-20" href="#__codelineno-25-20"></a>│  │  462.7252                                         │  │
+<a id="__codelineno-25-21" name="__codelineno-25-21" href="#__codelineno-25-21"></a>│  └───────────────────────────────────────────────────┘  │
+<a id="__codelineno-25-22" name="__codelineno-25-22" href="#__codelineno-25-22"></a>│  Frequency measured by a calibrated reference receiver  │
+<a id="__codelineno-25-23" name="__codelineno-25-23" href="#__codelineno-25-23"></a>│                                                         │
+<a id="__codelineno-25-24" name="__codelineno-25-24" href="#__codelineno-25-24"></a>│  Common targets:                                        │
+<a id="__codelineno-25-25" name="__codelineno-25-25" href="#__codelineno-25-25"></a>│  [GMRS22 462.725] [GMRS1 462.5625] [MURS1 151.820]     │
+<a id="__codelineno-25-26" name="__codelineno-25-26" href="#__codelineno-25-26"></a>│  [WX1 162.400]                                          │
+<a id="__codelineno-25-27" name="__codelineno-25-27" href="#__codelineno-25-27"></a>│                                                         │
+<a id="__codelineno-25-28" name="__codelineno-25-28" href="#__codelineno-25-28"></a>│ ┌───────────────────────────────────────────────────┐   │
+<a id="__codelineno-25-29" name="__codelineno-25-29" href="#__codelineno-25-29"></a>│ │        XTAL 671 Correction Value                  │   │
+<a id="__codelineno-25-30" name="__codelineno-25-30" href="#__codelineno-25-30"></a>│ │                                                   │   │
+<a id="__codelineno-25-31" name="__codelineno-25-31" href="#__codelineno-25-31"></a>│ │                    29                             │   │
+<a id="__codelineno-25-32" name="__codelineno-25-32" href="#__codelineno-25-32"></a>│ │                                                   │   │
+<a id="__codelineno-25-33" name="__codelineno-25-33" href="#__codelineno-25-33"></a>│ │  Δ = +0.200 kHz  (462.7252 − 462.725 MHz)        │   │
+<a id="__codelineno-25-34" name="__codelineno-25-34" href="#__codelineno-25-34"></a>│ └───────────────────────────────────────────────────┘   │
+<a id="__codelineno-25-35" name="__codelineno-25-35" href="#__codelineno-25-35"></a>│                                                         │
+<a id="__codelineno-25-36" name="__codelineno-25-36" href="#__codelineno-25-36"></a>│  ▲ Radio receives HIGH                                  │
+<a id="__codelineno-25-37" name="__codelineno-25-37" href="#__codelineno-25-37"></a>│  Set XTAL 671 to +29                                    │
+<a id="__codelineno-25-38" name="__codelineno-25-38" href="#__codelineno-25-38"></a>│  ℹ Measurement must be taken with XTAL 671 set to 0    │
+<a id="__codelineno-25-39" name="__codelineno-25-39" href="#__codelineno-25-39"></a>│                                                         │
+<a id="__codelineno-25-40" name="__codelineno-25-40" href="#__codelineno-25-40"></a>│  [ Copy Value to Clipboard ]                            │
+<a id="__codelineno-25-41" name="__codelineno-25-41" href="#__codelineno-25-41"></a>│                                                         │
+<a id="__codelineno-25-42" name="__codelineno-25-42" href="#__codelineno-25-42"></a>│  Formula:                                               │
+<a id="__codelineno-25-43" name="__codelineno-25-43" href="#__codelineno-25-43"></a>│  ROUND(((Actual − Target) × 100000) ÷ Target            │
+<a id="__codelineno-25-44" name="__codelineno-25-44" href="#__codelineno-25-44"></a>│        × 671.08864, 0)                                  │
+<a id="__codelineno-25-45" name="__codelineno-25-45" href="#__codelineno-25-45"></a>└─────────────────────────────────────────────────────────┘
+</code></pre></div>
+<h4 id="how-to-use">How to Use<a class="headerlink" href="#how-to-use" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Tap <strong>⋮ → XTAL 671 Calculator…</strong> from the main screen (available at any time).</li>
+<li>Tap a <strong>preset chip</strong> to fill the target frequency, or type it manually.</li>
+<li>Enter the <strong>Actual RX Frequency</strong> you measured with your reference device.</li>
+<li>The <strong>correction value</strong> updates live as you type.</li>
+<li>Tap <strong>Copy Value to Clipboard</strong> then enter it in the radio's XTAL 671 setting.</li>
+</ol>
+<h4 id="formula">Formula<a class="headerlink" href="#formula" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>XTAL671 = ROUND( ((Actual − Target) × 100000) ÷ Target × 671.08864, 0 )
+</code></pre></div>
+<p>This matches the Google Sheets reference formula:
+<code>=ROUND(((D2-C2)*100000)/C2 * 671.08864, 0)</code>
+where C2 = Target Freq (MHz), D2 = Actual RX Freq (MHz).</p>
+<h4 id="interpreting-the-result">Interpreting the Result<a class="headerlink" href="#interpreting-the-result" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Result</th>
+<th>Meaning</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Positive</strong> (e.g. +29)</td>
+<td>Radio receives HIGH — oscillator running fast</td>
+<td>Set XTAL 671 to +29</td>
+</tr>
+<tr>
+<td><strong>Negative</strong> (e.g. −35)</td>
+<td>Radio receives LOW — oscillator running slow</td>
+<td>Set XTAL 671 to −35</td>
+</tr>
+<tr>
+<td><strong>Zero</strong></td>
+<td>Within calibration tolerance</td>
+<td>No change needed</td>
+</tr>
+</tbody>
+</table>
+<h4 id="verification-example-from-reference-spreadsheet">Verification Example (from reference spreadsheet)<a class="headerlink" href="#verification-example-from-reference-spreadsheet" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Radio</th>
+<th>Target (MHz)</th>
+<th>Actual RX (MHz)</th>
+<th>XTAL 671</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>xxx579</td>
+<td>462.725</td>
+<td>462.7252</td>
+<td><strong>29</strong></td>
+</tr>
+<tr>
+<td>xxx591</td>
+<td>462.725</td>
+<td>462.72524</td>
+<td><strong>35</strong></td>
+</tr>
+<tr>
+<td>xxx866</td>
+<td>462.725</td>
+<td>462.7252</td>
+<td><strong>29</strong></td>
+</tr>
+<tr>
+<td>xxx869</td>
+<td>462.725</td>
+<td>462.72528</td>
+<td><strong>41</strong></td>
+</tr>
+<tr>
+<td>xxx589</td>
+<td>462.725</td>
+<td>462.72532</td>
+<td><strong>46</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Each radio has a unique crystal tolerance; calculate and set individually for
+each unit.</p>
+</blockquote>
+<h4 id="preset-frequencies">Preset Frequencies<a class="headerlink" href="#preset-frequencies" title="Permanent link">&para;</a></h4>
+<table>
+<thead>
+<tr>
+<th>Chip</th>
+<th>Frequency</th>
+<th>Band</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GMRS22 462.725</td>
+<td>462.7250 MHz</td>
+<td>GMRS channel 22 (most common reference)</td>
+</tr>
+<tr>
+<td>GMRS1 462.5625</td>
+<td>462.5625 MHz</td>
+<td>GMRS channel 1</td>
+</tr>
+<tr>
+<td>MURS1 151.820</td>
+<td>151.8200 MHz</td>
+<td>MURS channel 1</td>
+</tr>
+<tr>
+<td>WX1 162.400</td>
+<td>162.4000 MHz</td>
+<td>NOAA Weather channel 1</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="9-chirp-adapter-python-driver">9. CHIRP Adapter (Python Driver)<a class="headerlink" href="#9-chirp-adapter-python-driver" title="Permanent link">&para;</a></h2>
+<p>The repository also includes a CHIRP radio driver:
+<strong><code>tidradio_h3_nicfw25.py</code></strong></p>
+<p>This driver lets you use <strong>CHIRP</strong> (the desktop radio programming software) to program
+the TD-H3 over a USB serial or Bluetooth serial connection.</p>
+<h3 id="connection">Connection<a class="headerlink" href="#connection" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Open CHIRP.</li>
+<li>Select <code>Radio → Download from Radio</code>.</li>
+<li>Choose <strong>TIDRadio TD-H3 (nicFW 2.5)</strong> from the radio list.</li>
+<li>Select the correct COM port / serial device.</li>
+<li>Click OK — CHIRP reads the full EEPROM via the same 0x45/0x30/0x46 protocol.</li>
+</ol>
+<h3 id="chirp-tab-overview">CHIRP Tab Overview<a class="headerlink" href="#chirp-tab-overview" title="Permanent link">&para;</a></h3>
+<p>The driver exposes three extra setting tabs alongside the standard channel grid:</p>
+<h4 id="band-plan-tab">Band Plan Tab<a class="headerlink" href="#band-plan-tab" title="Permanent link">&para;</a></h4>
+<p>Mirrors the Android <strong>Edit Band Plan</strong> screen. Each of the 20 band plan entries
+is shown as a CHIRP settings group with fields for start/end frequency, max power,
+TX allowed, modulation, and bandwidth.</p>
+<h4 id="scan-presets-tab">Scan Presets Tab<a class="headerlink" href="#scan-presets-tab" title="Permanent link">&para;</a></h4>
+<p>Mirrors the Android <strong>Edit Scan Presets</strong> screen. All 20 scan preset slots
+are editable with the same fields: start/end frequency, step, resume, persist,
+modulation, ultrascan speed, and label.</p>
+<h4 id="group-labels-tab">Group Labels Tab<a class="headerlink" href="#group-labels-tab" title="Permanent link">&para;</a></h4>
+<p>Mirrors the Android <strong>Edit Group Labels</strong> screen. Displays 15 text fields (A–O)
+for assigning human-readable names to channel groups.</p>
+<h3 id="supported-channel-fields">Supported Channel Fields<a class="headerlink" href="#supported-channel-fields" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>CHIRP Field</th>
+<th>EEPROM Field</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Frequency</td>
+<td>freqRxHz</td>
+</tr>
+<tr>
+<td>Offset</td>
+<td>offsetHz (duplex mode)</td>
+</tr>
+<tr>
+<td>Duplex</td>
+<td>duplex (+/−/split/none)</td>
+</tr>
+<tr>
+<td>Name</td>
+<td>name (12 chars)</td>
+</tr>
+<tr>
+<td>Power</td>
+<td>power (raw 0–255, mapped to Low/Medium/High/Turbo)</td>
+</tr>
+<tr>
+<td>Mode</td>
+<td>mode (FM/AM/USB)</td>
+</tr>
+<tr>
+<td>Tone Mode</td>
+<td>txToneMode (Tone/DTCS/none)</td>
+</tr>
+<tr>
+<td>CTCSS / DCS</td>
+<td>txToneVal + txTonePolarity</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="10-tips-troubleshooting">10. Tips &amp; Troubleshooting<a class="headerlink" href="#10-tips-troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="general-workflow">General Workflow<a class="headerlink" href="#general-workflow" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>Load from Radio
+<a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>      │
+<a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>      ▼
+<a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>  Edit channels / Band Plan / Scan Presets / Groups
+<a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>      │
+<a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>      ▼
+<a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>  [Save EEPROM dump]  ← optional backup before upload
+<a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>      │
+<a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>      ▼
+<a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>Save to Radio
+</code></pre></div>
+<p>Always back up your EEPROM dump before making major changes.</p>
+<hr />
+<h3 id="common-issues">Common Issues<a class="headerlink" href="#common-issues" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Resolution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Connect button grayed out</strong></td>
+<td>Not connected — tap Connect first</td>
+</tr>
+<tr>
+<td><strong>Load / Save buttons grayed out</strong></td>
+<td>No Bluetooth connection established</td>
+</tr>
+<tr>
+<td><strong>"Frequency out of range" on save</strong></td>
+<td>Frequency is outside Band Plan entries; verify band plan or use a supported frequency</td>
+</tr>
+<tr>
+<td><strong>"No empty slots" on CHIRP import</strong></td>
+<td>All 198 channels are used; clear some channels first</td>
+</tr>
+<tr>
+<td><strong>Channel list shows nothing after load</strong></td>
+<td>EEPROM read may have failed; try disconnecting and reconnecting, then load again</td>
+</tr>
+<tr>
+<td><strong>Scan Preset entry shows 1.0 MHz</strong></td>
+<td>Slot is empty (<code>startFreq == 0</code>); this is a display artifact in some tools — empty slots are handled correctly by nicFW</td>
+</tr>
+<tr>
+<td><strong>Channel list shows <code>⚠</code> next to power</strong></td>
+<td>Stored channel power exceeds the VHF or UHF cap in Tune Settings. Lower the channel power OR raise the cap in <strong>⋮ → Tune Settings…</strong></td>
+</tr>
+<tr>
+<td><strong>BLE scan finds no devices</strong></td>
+<td>Ensure the radio is powered on and not already connected to another device; on Android 12+ grant Nearby Devices permission</td>
+</tr>
+<tr>
+<td><strong>Classic BT connection fails</strong></td>
+<td>Pair the radio in Android Bluetooth settings first, then retry</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="power-estimate-reference">Power Estimate Reference<a class="headerlink" href="#power-estimate-reference" title="Permanent link">&para;</a></h3>
+<p>Use this quick table when setting power in bulk:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>Target   Raw Value (approx.)
+<a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>────────────────────────────
+<a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a> N/T          0  (N/T)
+<a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a> 0.5 W        29
+<a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a> 1.0 W        44
+<a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a> 2.0 W        58
+<a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a> 3.0 W        86
+<a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a> 5.0 W       130
+<a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a> Max          255
+</code></pre></div>
+<hr />
+<h3 id="group-design-tips">Group Design Tips<a class="headerlink" href="#group-design-tips" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Use <strong>Group A–D</strong> for operational categories (e.g., GMRS, MURS, Weather, Simplex).</li>
+<li>Assign channels to <strong>multiple groups</strong> when they logically belong to more than one
+  category (e.g., a GMRS repeater might be in Group A <em>and</em> Group D for local repeaters).</li>
+<li>After organizing groups, run <strong>Sort Channels by Group</strong> to pack related channels into
+  contiguous slot numbers for cleaner scanning.</li>
+<li>Use <strong>Bulk Group Edit</strong> (🏷 in multi-select mode) to assign a group to dozens of
+  channels at once instead of editing each one individually.</li>
+</ul>
+<hr />
+<h3 id="keyboard-navigation">Keyboard / Navigation<a class="headerlink" href="#keyboard-navigation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>How</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Enter multi-select</td>
+<td>Long-press a channel row</td>
+</tr>
+<tr>
+<td>Exit multi-select</td>
+<td>Tap Done in the action bar</td>
+</tr>
+<tr>
+<td>Scroll channel list</td>
+<td>Swipe up/down on the list</td>
+</tr>
+<tr>
+<td>Reorder a channel</td>
+<td>Drag the ≡ handle (outside multi-select mode)</td>
+</tr>
+<tr>
+<td>Go back from any editor</td>
+<td>← toolbar back arrow or Android back gesture</td>
+</tr>
+<tr>
+<td>Open context help for a field</td>
+<td>Tap the <strong>?</strong> (lightbulb) icon next to the field label</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="11-context-help">11. Context Help<a class="headerlink" href="#11-context-help" title="Permanent link">&para;</a></h2>
+<p>Every setting in the <strong>Radio Settings</strong>, <strong>Channel Editor</strong>, and <strong>Tune Settings</strong>
+screens has a built-in help button: a small <strong>?</strong> (lightbulb) icon next to the
+field label.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>┌────────────────────────────────────────────────────┐
+<a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>│  Squelch Level                              [?]    │
+<a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>│  ┌──────────────────────────────────────────────┐  │
+<a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>│  │  5                                        ▼  │  │
+<a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>│  └──────────────────────────────────────────────┘  │
+<a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>└────────────────────────────────────────────────────┘
+</code></pre></div>
+<p>Tapping <strong>?</strong> opens an AlertDialog with:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>┌────────────────────────────────────────────────────┐
+<a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>│  Squelch Level                                     │
+<a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>├────────────────────────────────────────────────────┤
+<a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>│  Range: 0–9  |  Default: 5                         │
+<a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>│                                                    │
+<a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>│  Controls the squelch threshold. Lower values open │
+<a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a>│  squelch at weaker signals. 0 = squelch always     │
+<a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a>│  open (carrier squelch disabled).                  │
+<a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a>│                                                    │
+<a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a>│  Note: Applies to the currently selected channel   │
+<a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>│  memory bank.                                      │
+<a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a>│                            [ OK ]                  │
+<a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a>└────────────────────────────────────────────────────┘
+</code></pre></div>
+<p><strong>Dialog fields:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Title</strong></td>
+<td>Setting name</td>
+</tr>
+<tr>
+<td><strong>Range</strong></td>
+<td>Valid value range or options</td>
+</tr>
+<tr>
+<td><strong>Default</strong></td>
+<td>Factory default value</td>
+</tr>
+<tr>
+<td><strong>Description</strong></td>
+<td>Plain-language explanation of what the setting does</td>
+</tr>
+<tr>
+<td><strong>Note</strong></td>
+<td>Additional context, caveats, or interactions with other settings (when applicable)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Where context help is available:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Screen</th>
+<th>Help available on</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Channel Editor</td>
+<td>All fields: Frequency, Duplex, Name, Power, Mode, Bandwidth, Busy Lock, TX Tone, RX Tone, Groups</td>
+</tr>
+<tr>
+<td>Radio Settings</td>
+<td>All 56 settings across all 10 sections</td>
+</tr>
+<tr>
+<td>Tune Settings</td>
+<td>VHF Power Cap, UHF Power Cap, XTAL 671 Correction</td>
+</tr>
+</tbody>
+</table>
+<p>Help content is sourced from the nicFW V2.5 manual and stored in
+<code>docs/help_reference/help_content.yaml</code> in the repository.</p>
+<hr />
+<p><em>End of User Guide</em></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "toc.integrate", "search.highlight", "search.share", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
