@@ -59,7 +59,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - Home: userguide.md
+  - User Guide: index.md
 
 plugins:
   - search
