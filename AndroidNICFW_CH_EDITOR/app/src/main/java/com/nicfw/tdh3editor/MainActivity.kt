@@ -847,9 +847,11 @@ class MainActivity : AppCompatActivity() {
      *
      * Algorithm:
      *  1. Split channels into [movingChannels] (selected) and [stayingChannels] (non-selected).
-     *  2. [insertIdx] = count of staying channels whose slot# is strictly < targetSlot.
+     *  2. [insertIdx] = (targetSlot - 1) clamped to stayingChannels.size so the block always
+     *     fits within 1–198 even if the user picks a slot near the end.
      *  3. Splice: staying[0..insertIdx-1] + moving + staying[insertIdx..].
      *  4. Renumber 1–198 and commit via [applyChannelReorder].
+     *  After the reorder the first moving channel lands at slot insertIdx + 1.
      */
     private fun moveSelectedToPosition() {
         val eep = eeprom ?: return
@@ -871,8 +873,8 @@ class MainActivity : AppCompatActivity() {
             else "Ch ${ch.number} – ${ch.name.ifBlank { "…" }}"
         }
 
-        // Default: slot just before the first selected channel (no-op position)
-        val defaultIndex = (selected.min() - 2).coerceAtLeast(0)
+        // Default: first selected slot (no-op — "start at X" where X is already where they are)
+        val defaultIndex = (selected.min() - 1).coerceAtLeast(0)
 
         val dialogView = layoutInflater.inflate(R.layout.dialog_move_to_slot, null)
         val spinner   = dialogView.findViewById<android.widget.Spinner>(R.id.spinnerTargetSlot)
@@ -886,11 +888,10 @@ class MainActivity : AppCompatActivity() {
         spinner.setSelection(defaultIndex)
 
         fun refreshHint(pos: Int) {
-            val insertIdx = stayingChannels.count { it.number < pos + 1 }
-            hintText.text = if (insertIdx == 0)
-                "${selected.size} channel(s) will become slot(s) 1–${selected.size}"
-            else
-                "${selected.size} channel(s) will move after Ch ${stayingChannels[insertIdx - 1].number}"
+            val insertIdx = (pos).coerceAtMost(stayingChannels.size)
+            val landingSlot = insertIdx + 1
+            val endSlot     = insertIdx + selected.size
+            hintText.text   = "${selected.size} channel(s) will occupy slot(s) $landingSlot–$endSlot"
         }
         refreshHint(defaultIndex)
 
@@ -910,7 +911,7 @@ class MainActivity : AppCompatActivity() {
                 val movingChannels = channels
                     .filter { it.number in selected }
                     .sortedBy { it.number }
-                val insertIdx = stayingChannels.count { it.number < targetSlot }
+                val insertIdx = (targetSlot - 1).coerceAtMost(stayingChannels.size)
 
                 val newOrder: MutableList<Channel> = mutableListOf<Channel>().apply {
                     addAll(stayingChannels.subList(0, insertIdx))
@@ -924,7 +925,7 @@ class MainActivity : AppCompatActivity() {
 
                 Toast.makeText(
                     this,
-                    "Moved ${selected.size} channel(s) to slot ${insertIdx + 1}",
+                    "Moved ${selected.size} channel(s) starting at slot ${insertIdx + 1}",
                     Toast.LENGTH_SHORT
                 ).show()
             }

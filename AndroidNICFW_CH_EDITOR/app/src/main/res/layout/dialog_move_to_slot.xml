@@ -11,7 +11,7 @@
         android:id="@+id/labelMoveToSlot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Insert selected channels before slot:"
+        android:text="Move selected channels starting at slot:"
         android:textStyle="bold"
         android:textSize="14sp"
         android:layout_marginBottom="8dp" />
