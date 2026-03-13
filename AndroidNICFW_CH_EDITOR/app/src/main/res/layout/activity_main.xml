@@ -104,7 +104,7 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
-                android:hint="Search by name or group…"
+                android:hint="Search by name, group or frequency…"
                 android:inputType="text"
                 android:singleLine="true"
                 android:imeOptions="actionSearch"

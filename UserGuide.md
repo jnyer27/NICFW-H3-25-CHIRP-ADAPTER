@@ -499,7 +499,7 @@ Tap the **🔍** (magnifying glass) icon in the top toolbar to open the search b
 ┌──────────────────────────────────────────────────────┐
 │  TD-H3 Channel Editor                          🔍 ⋮  │
 ├──────────────────────────────────────────────────────┤
-│  [ Search by name or group…     ] [ Select All ] [✕] │
+│  [ Search by name, group or frequency… ] [Select All] [✕] │
 ├──────────────────────────────────────────────────────┤
 │  → Ch 31  Towson WRJY6     462.6000 MHz              │
 │  → Ch 32  Baltimore WR     462.6750 MHz              │
@@ -509,8 +509,12 @@ Tap the **🔍** (magnifying glass) icon in the top toolbar to open the search b
 ```
 
 **How it works:**
-- Type any part of a **channel name** or **group label** — the list filters live as you type (case-insensitive).
-- Matching is on name OR any of the channel's group labels (e.g., typing `GMRS` shows channels assigned to groups whose label contains "GMRS"; typing `boat` shows channels with "Boat" in the name or assigned to a group labeled "Boat").
+- Type any part of a **channel name**, **group label**, or **RX frequency** — the list filters live as you type (case-insensitive).
+- Matching is on name OR frequency OR any of the channel's group labels:
+  - Typing `GMRS` shows channels assigned to groups whose label contains "GMRS".
+  - Typing `boat` shows channels with "Boat" in the name or assigned to a group labeled "Boat".
+  - Typing `462.5` shows all channels whose RX frequency starts with 462.5 MHz (e.g. 462.5000, 462.5125, 462.5625, …).
+  - Typing `462` shows every channel in the 462 MHz band.
 - Empty slots are always hidden while a search query is active.
 - Tap **✕** to clear the search and restore the full channel list.
 - Tap the 🔍 icon again to close the search bar.
