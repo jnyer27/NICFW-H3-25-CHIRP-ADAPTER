@@ -14,3 +14,7 @@
 
 # Claude session data
 .claude/
+
+# Release signing keystores
+*.jks
+*.keystore
