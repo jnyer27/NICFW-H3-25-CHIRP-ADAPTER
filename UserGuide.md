@@ -19,19 +19,21 @@
    - [Set Channel Groups (Bulk)](#63-set-channel-groups-bulk)
    - [Delete / Clear Selected](#64-delete--clear-selected)
    - [Move to Slot](#65-move-to-slot)
-7. [Overflow Menu Features](#7-overflow-menu-features)
-   - [Import CHIRP CSV](#71-import-chirp-csv)
-   - [Sort Channels by Group](#72-sort-channels-by-group)
-   - [Edit Group Labels](#73-edit-group-labels)
-   - [Save / Import EEPROM Dump](#74-save--import-eeprom-dump)
-   - [Edit Band Plan](#75-edit-band-plan)
-   - [Edit Scan Presets](#76-edit-scan-presets)
-   - [Radio Settings](#77-radio-settings)
-   - [Tune Settings](#78-tune-settings)
-   - [XTAL 671 Calculator](#79-xtal-671-calculator)
-8. [CHIRP Adapter (Python Driver)](#8-chirp-adapter-python-driver)
-9. [Tips & Troubleshooting](#9-tips--troubleshooting)
-10. [Context Help](#10-context-help)
+   - [Export as CHIRP CSV](#66-export-as-chirp-csv)
+7. [Channel Search](#7-channel-search)
+8. [Overflow Menu Features](#8-overflow-menu-features)
+   - [Import CHIRP CSV](#81-import-chirp-csv)
+   - [Sort Channels by Group](#82-sort-channels-by-group)
+   - [Edit Group Labels](#83-edit-group-labels)
+   - [Save / Import EEPROM Dump](#84-save--import-eeprom-dump)
+   - [Edit Band Plan](#85-edit-band-plan)
+   - [Edit Scan Presets](#86-edit-scan-presets)
+   - [Radio Settings](#87-radio-settings)
+   - [Tune Settings](#88-tune-settings)
+   - [XTAL 671 Calculator](#89-xtal-671-calculator)
+9. [CHIRP Adapter (Python Driver)](#9-chirp-adapter-python-driver)
+10. [Tips & Troubleshooting](#10-tips--troubleshooting)
+11. [Context Help](#11-context-help)
 
 ---
 
@@ -163,7 +165,7 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 | `#` | Channel slot number (1–198, fixed) |
 | Name | Up to 12-character label |
 | Freq | RX frequency in MHz (TX offset shown on edit screen) |
-| Power | Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: `(BP)` = Band Plan restricts TX on this frequency; `⚠` = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see [Tune Settings §7.8](#78-tune-settings)) |
+| Power | Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: `(BP)` = Band Plan restricts TX on this frequency; `⚠` = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see [Tune Settings §8.8](#88-tune-settings)) |
 | Groups | Active group assignments (up to 4 letters) |
 | BW | Bandwidth: `W` = Wide, `N` = Narrow |
 
@@ -236,7 +238,7 @@ The power spinner stores a raw byte (0–255). Approximate watt equivalents:
 
 ### Power Cap Advisory
 
-If **Tune Settings** has a VHF or UHF power cap configured (see [§7.8](#78-tune-settings)),
+If **Tune Settings** has a VHF or UHF power cap configured (see [§8.8](#88-tune-settings)),
 a non-blocking warning appears immediately below the Power spinner when the selected value
 exceeds the applicable cap:
 
@@ -297,6 +299,7 @@ appears at the bottom of the screen:
 | **Move to Slot** | ⤓ | Opens a slot picker — moves the selected block to any slot (1–198) in one step |
 | **Set TX Power** | 📡 | Opens a power picker — applies chosen power to all selected channels |
 | **Set Groups** | 🏷 | Opens a group editor — assigns groups to all selected channels |
+| **Export CSV** | ↑□ | Names and exports selected channels as a CHIRP-compatible CSV file |
 | **Delete** | 🗑 | Clears (empties) all selected channel slots |
 | **Done** | text | Exits multi-select mode, returns to normal browsing |
 
@@ -353,7 +356,7 @@ N/T ─── 29 ─────── 58 ──────────── 1
 #### Power Cap Advisory
 
 If the selected channels include VHF or UHF frequencies and a power cap is set in
-**Tune Settings** (see [§7.8](#78-tune-settings)), an advisory appears **below the scroll
+**Tune Settings** (see [§8.8](#88-tune-settings)), an advisory appears **below the scroll
 wheel** when the chosen value exceeds the applicable cap:
 
 ```
@@ -456,7 +459,78 @@ immediately continue editing or move them again.
 
 ---
 
-## 7. Overflow Menu Features
+### 6.6 Export as CHIRP CSV
+
+Tap the **↑□** (upload arrow) button while channels are selected to export the selection to a CHIRP-compatible CSV file and share it.
+
+```
+┌──────────────────────────────────────────────────────┐
+│  Export CHIRP CSV                                    │
+│  12 channel(s) will be exported.                     │
+│  File name:                                          │
+│  ┌────────────────────────────────────────────────┐  │
+│  │  chirp_export_20260313_104500                  │  │
+│  └────────────────────────────────────────────────┘  │
+│          [ Cancel ]      [ Export & Share ]           │
+└──────────────────────────────────────────────────────┘
+```
+
+1. Long-press to enter multi-select mode and select the channels you want to export.
+   - Use **Channel Search** (§7) to quickly select a whole group.
+2. Tap the **↑□** icon in the selection bar.
+3. Edit the file name if desired (default is `chirp_export_<timestamp>`).
+4. Tap **Export & Share** — the Android share sheet opens so you can send the file via email, cloud storage, AirDrop, etc.
+
+The exported CSV:
+- Is numbered sequentially from `Location 0` regardless of original slot numbers.
+- Preserves frequency, name, duplex/offset, tone (CTCSS/DCS), mode, bandwidth, and power.
+- Can be imported directly back into the app (**⋮ → Import CHIRP CSV**) or into the desktop CHIRP software.
+- Empty slots in the selection are automatically skipped.
+
+> **Typical use case:** Select all channels in group H–GMRS using Search → Select All, then export to share your repeater list with another user.
+
+---
+
+## 7. Channel Search
+
+Tap the **🔍** (magnifying glass) icon in the top toolbar to open the search bar.
+
+```
+┌──────────────────────────────────────────────────────┐
+│  TD-H3 Channel Editor                          🔍 ⋮  │
+├──────────────────────────────────────────────────────┤
+│  [ Search by name or group…     ] [ Select All ] [✕] │
+├──────────────────────────────────────────────────────┤
+│  → Ch 31  Towson WRJY6     462.6000 MHz              │
+│  → Ch 32  Baltimore WR     462.6750 MHz              │
+│  → Ch 35  Lanham WQMM8     462.5500 MHz              │
+│  …                                                   │
+└──────────────────────────────────────────────────────┘
+```
+
+**How it works:**
+- Type any part of a **channel name** or **group label** — the list filters live as you type (case-insensitive).
+- Matching is on name OR any of the channel's group labels (e.g., typing `GMRS` shows channels assigned to groups whose label contains "GMRS"; typing `boat` shows channels with "Boat" in the name or assigned to a group labeled "Boat").
+- Empty slots are always hidden while a search query is active.
+- Tap **✕** to clear the search and restore the full channel list.
+- Tap the 🔍 icon again to close the search bar.
+
+**Select All Matches:**
+Once you have results, tap **Select All** to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
+- Tap **Export CSV** (↑□) to export the whole matched set as a CHIRP CSV.
+- Tap **Set TX Power** (📡) to change power for the whole group at once.
+- Tap **Set Groups** (🏷) to bulk-assign groups to all matches.
+- Tap any card to deselect individually, or tap **Done** to exit selection mode.
+
+> **Example workflow — share all GMRS repeaters:**
+> 1. Tap 🔍, type `GMRS`.
+> 2. Tap **Select All** — all channels in your GMRS group are selected.
+> 3. Tap **↑□** → name the file → **Export & Share**.
+
+---
+
+## 8. Overflow Menu Features
+
 
 Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced features.
 
@@ -485,7 +559,7 @@ Tap the **⋮** (three-dot) menu in the top-right toolbar to access advanced fea
 
 ---
 
-### 7.1 Import CHIRP CSV
+### 8.1 Import CHIRP CSV
 
 Import a frequency list exported by the CHIRP radio programming software.
 
@@ -567,7 +641,7 @@ The importer follows the CHIRP column spec:
 
 ---
 
-### 7.2 Sort Channels by Group
+### 8.2 Sort Channels by Group
 
 Automatically reorganize all channels so that each group's channels are contiguous in
 the channel list (useful for radios that scan group-by-group).
@@ -614,7 +688,7 @@ the channel list (useful for radios that scan group-by-group).
 
 ---
 
-### 7.3 Edit Group Labels
+### 8.3 Edit Group Labels
 
 Assign human-readable names to the 15 group letters (A–O). Labels are stored in the
 EEPROM at offset `0x1C90` (6 bytes each, max 5 characters + null).
@@ -651,7 +725,7 @@ EEPROM at offset `0x1C90` (6 bytes each, max 5 characters + null).
 
 ---
 
-### 7.4 Save / Import EEPROM Dump
+### 8.4 Save / Import EEPROM Dump
 
 #### Save EEPROM dump
 
@@ -674,7 +748,7 @@ Loads a previously saved `.bin` file as the active EEPROM (bypasses Bluetooth).
 
 ---
 
-### 7.5 Edit Band Plan
+### 8.5 Edit Band Plan
 
 Define up to 20 frequency band entries that control which frequencies are available
 for TX on the radio. nicFW 2.5 stores the Band Plan at EEPROM offset `0x1A00`.
@@ -730,7 +804,7 @@ Tap any row to edit that band plan entry:
 
 ---
 
-### 7.6 Edit Scan Presets
+### 8.6 Edit Scan Presets
 
 Configure up to 20 scan presets stored at EEPROM offset `0x1B00`. Each preset defines
 a frequency range for the radio's spectrum scanner.
@@ -797,7 +871,7 @@ Tap any row to edit that scan preset slot:
 
 ---
 
-### 7.7 Radio Settings
+### 8.7 Radio Settings
 
 View and edit the nicFW Settings block stored at EEPROM offset `0x1900`.
 Access via **⋮ → Radio Settings…** (requires EEPROM to be loaded).
@@ -935,7 +1009,7 @@ The editor is divided into ten sections:
 
 ---
 
-### 7.8 Tune Settings
+### 8.8 Tune Settings
 
 View and edit three per-radio calibration values stored at EEPROM offset `0x1DFB`.
 Access via **⋮ → Tune Settings…** (requires EEPROM to be loaded).
@@ -1099,7 +1173,7 @@ calibration:
 
 ---
 
-### 7.9 XTAL 671 Calculator
+### 8.9 XTAL 671 Calculator
 
 A standalone frequency calibration tool — no EEPROM or radio connection required.
 It computes the **nicFW XTAL 671 correction value** needed to compensate for crystal
@@ -1220,7 +1294,7 @@ where C2 = Target Freq (MHz), D2 = Actual RX Freq (MHz).
 
 ---
 
-## 8. CHIRP Adapter (Python Driver)
+## 9. CHIRP Adapter (Python Driver)
 
 The repository also includes a CHIRP radio driver:
 **`tidradio_h3_nicfw25.py`**
@@ -1272,7 +1346,7 @@ for assigning human-readable names to channel groups.
 
 ---
 
-## 9. Tips & Troubleshooting
+## 10. Tips & Troubleshooting
 
 ### General Workflow
 
@@ -1352,7 +1426,7 @@ Target   Raw Value (approx.)
 
 ---
 
-## 10. Context Help
+## 11. Context Help
 
 Every setting in the **Radio Settings**, **Channel Editor**, and **Tune Settings**
 screens has a built-in help button: a small **?** (lightbulb) icon next to the

@@ -86,6 +86,48 @@
             android:paddingTop="4dp"
             android:text="@string/cloning" />
 
+        <!--
+            Search bar — hidden by default, shown when the toolbar search icon is tapped.
+            Filters the channel list by name or group label as the user types.
+        -->
+        <LinearLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="4dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/searchEditText"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:hint="Search by name or group…"
+                android:inputType="text"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:paddingHorizontal="8dp"
+                android:textSize="14sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSelectAllMatches"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select All"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClearSearch"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✕" />
+
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerChannels"
             android:layout_width="match_parent"
@@ -160,6 +202,14 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_group_label"
                 android:contentDescription="Set channel groups for selected channels" />
+
+            <ImageButton
+                android:id="@+id/btnExportCsv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_export_csv"
+                android:contentDescription="Export selected channels as CHIRP CSV" />
 
             <ImageButton
                 android:id="@+id/btnClearSelected"

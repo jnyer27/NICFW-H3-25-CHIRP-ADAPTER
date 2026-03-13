@@ -42,7 +42,8 @@ Download EEPROM to import so you can test app without a radio: https://drive.goo
   XTAL correction value from a measured vs. expected frequency
 - **EEPROM dump save / import** — export raw `.bin` for backup or cross-radio cloning;
   import a `.bin` file directly without a Bluetooth connection
-- **Multi-select channel operations** — move up/down, move to slot (jump to any position), bulk power, bulk group assign, delete
+- **Multi-select channel operations** — move up/down, move to slot (jump to any position), bulk power, bulk group assign, delete, **export selected channels as CHIRP CSV**
+- **Channel search** — toolbar 🔍 icon filters the list live by channel name or group label; **Select All** bulk-selects all visible matches in one tap (great for selecting an entire group)
 - **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV (file or clipboard);
   import screen includes group assignment, a **TX Power override spinner** (per-channel CSV value
   or uniform N/T–255), starting-channel picker, and live channel preview; tone parser handles
