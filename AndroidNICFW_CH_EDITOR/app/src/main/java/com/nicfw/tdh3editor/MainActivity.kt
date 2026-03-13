@@ -341,6 +341,7 @@ class MainActivity : AppCompatActivity() {
     private fun setupSelectionBar() {
         binding.btnMoveUp.setOnClickListener        { moveSelectedUp() }
         binding.btnMoveDown.setOnClickListener      { moveSelectedDown() }
+        binding.btnMoveTo.setOnClickListener        { moveSelectedToPosition() }
         binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
         binding.btnSetGroups.setOnClickListener     { setGroupsSelected() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
@@ -838,6 +839,97 @@ class MainActivity : AppCompatActivity() {
         val newSelected = channels.indices.filter { sel[it] }.map { it + 1 }.toSet()
 
         applyChannelReorder(eep, channels, newSelected)
+    }
+
+    /**
+     * Shows a Spinner dialog for the user to choose a target slot, then moves every
+     * selected channel to that position as a contiguous block, preserving relative order.
+     *
+     * Algorithm:
+     *  1. Split channels into [movingChannels] (selected) and [stayingChannels] (non-selected).
+     *  2. [insertIdx] = count of staying channels whose slot# is strictly < targetSlot.
+     *  3. Splice: staying[0..insertIdx-1] + moving + staying[insertIdx..].
+     *  4. Renumber 1–198 and commit via [applyChannelReorder].
+     */
+    private fun moveSelectedToPosition() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val channels = EepromParser.parseAllChannels(eep)
+        val stayingChannels = channels.filter { it.number !in selected }
+
+        if (stayingChannels.isEmpty()) {
+            Toast.makeText(this, "All channels selected — nothing to move relative to",
+                Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Spinner labels: "Ch N" for empty slots, "Ch N – Name" for named channels
+        val slotLabels: List<String> = channels.map { ch ->
+            if (ch.empty) "Ch ${ch.number}"
+            else "Ch ${ch.number} – ${ch.name.ifBlank { "…" }}"
+        }
+
+        // Default: slot just before the first selected channel (no-op position)
+        val defaultIndex = (selected.min() - 2).coerceAtLeast(0)
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_move_to_slot, null)
+        val spinner   = dialogView.findViewById<android.widget.Spinner>(R.id.spinnerTargetSlot)
+        val hintText  = dialogView.findViewById<android.widget.TextView>(R.id.textMoveToHint)
+
+        spinner.adapter = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_dropdown_item,
+            slotLabels
+        )
+        spinner.setSelection(defaultIndex)
+
+        fun refreshHint(pos: Int) {
+            val insertIdx = stayingChannels.count { it.number < pos + 1 }
+            hintText.text = if (insertIdx == 0)
+                "${selected.size} channel(s) will become slot(s) 1–${selected.size}"
+            else
+                "${selected.size} channel(s) will move after Ch ${stayingChannels[insertIdx - 1].number}"
+        }
+        refreshHint(defaultIndex)
+
+        spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                p: android.widget.AdapterView<*>?, v: android.view.View?,
+                pos: Int, id: Long
+            ) { refreshHint(pos) }
+            override fun onNothingSelected(p: android.widget.AdapterView<*>?) = Unit
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Move ${selected.size} Channel(s) to Slot")
+            .setView(dialogView)
+            .setPositiveButton("Move") { _, _ ->
+                val targetSlot = spinner.selectedItemPosition + 1
+                val movingChannels = channels
+                    .filter { it.number in selected }
+                    .sortedBy { it.number }
+                val insertIdx = stayingChannels.count { it.number < targetSlot }
+
+                val newOrder: MutableList<Channel> = mutableListOf<Channel>().apply {
+                    addAll(stayingChannels.subList(0, insertIdx))
+                    addAll(movingChannels)
+                    addAll(stayingChannels.subList(insertIdx, stayingChannels.size))
+                }
+                newOrder.forEachIndexed { idx, ch -> newOrder[idx] = ch.copy(number = idx + 1) }
+
+                val newSelected = (1..movingChannels.size).map { insertIdx + it }.toSet()
+                applyChannelReorder(eep, newOrder, newSelected)
+
+                Toast.makeText(
+                    this,
+                    "Moved ${selected.size} channel(s) to slot ${insertIdx + 1}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     /** Writes reordered channels back to the EEPROM, updates state, and refreshes the list. */

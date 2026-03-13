@@ -138,6 +138,14 @@
                 android:contentDescription="Move down" />
 
             <ImageButton
+                android:id="@+id/btnMoveTo"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_move_to_slot"
+                android:contentDescription="Move selected channels to slot" />
+
+            <ImageButton
                 android:id="@+id/btnSetTxPower"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
