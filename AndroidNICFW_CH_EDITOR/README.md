@@ -43,7 +43,10 @@ Download EEPROM to import so you can test app without a radio: https://drive.goo
 - **EEPROM dump save / import** — export raw `.bin` for backup or cross-radio cloning;
   import a `.bin` file directly without a Bluetooth connection
 - **Multi-select channel operations** — move up/down, move to slot (jump to any position), bulk power, bulk group assign, delete
-- **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV file
+- **CHIRP CSV import** — fill empty channel slots from a CHIRP-exported CSV (file or clipboard);
+  import screen includes group assignment, a **TX Power override spinner** (per-channel CSV value
+  or uniform N/T–255), starting-channel picker, and live channel preview; tone parser handles
+  blank-mode RepeaterBook exports by falling back to TX-encode-only when `rToneFreq` ≠ 88.5 Hz
 - **Context help** — every setting in the Radio Settings, Channel Edit, and Tune Settings
   screens has a lightbulb (?) button that opens an AlertDialog with the setting title,
   value range, factory default, description, and any relevant notes; content is sourced

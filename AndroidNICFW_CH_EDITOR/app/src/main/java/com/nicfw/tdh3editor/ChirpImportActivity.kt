@@ -117,6 +117,9 @@ class ChirpImportActivity : AppCompatActivity() {
         // ── Group spinners ────────────────────────────────────────────────────
         setupGroupSpinners()
 
+        // ── TX Power spinner ──────────────────────────────────────────────────
+        setupPowerSpinner()
+
         // ── Starting channel spinner ──────────────────────────────────────────
         setupStartSlotSpinner()
 
@@ -127,6 +130,21 @@ class ChirpImportActivity : AppCompatActivity() {
         binding.btnImportCancel.setOnClickListener { finish() }
         binding.btnImportConfirm.isEnabled = canImport > 0
         binding.btnImportConfirm.setOnClickListener { doImport(eep) }
+    }
+
+    // ── TX Power spinner ──────────────────────────────────────────────────────
+
+    /**
+     * "From CSV" (position 0) preserves the power value parsed from each CSV row.
+     * Any other position selects a value from [EepromConstants.POWERLEVEL_LIST] and
+     * overrides the power on every imported channel uniformly.
+     */
+    private fun setupPowerSpinner() {
+        val items = listOf("From CSV") + EepromConstants.POWERLEVEL_LIST
+        binding.spinnerImportPower.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
+        // Default to "From CSV" (index 0)
+        binding.spinnerImportPower.setSelection(0)
     }
 
     // ── Group spinners ────────────────────────────────────────────────────────
@@ -250,6 +268,12 @@ class ChirpImportActivity : AppCompatActivity() {
         val g3 = groupAt(binding.spinnerImportGroup3)
         val g4 = groupAt(binding.spinnerImportGroup4)
 
+        // Position 0 = "From CSV" (no override); positions 1+ map to POWERLEVEL_LIST index 0+
+        val powerPos = binding.spinnerImportPower.selectedItemPosition
+        val powerOverride: String? = if (powerPos > 0)
+            EepromConstants.POWERLEVEL_LIST.getOrNull(powerPos - 1)
+        else null
+
         for (i in 0 until canImport) {
             val slot = slots[i]
             val ch   = entries[i].channel.copy(
@@ -258,6 +282,7 @@ class ChirpImportActivity : AppCompatActivity() {
                 group2 = g2,
                 group3 = g3,
                 group4 = g4,
+                power  = powerOverride ?: entries[i].channel.power,
             )
             EepromParser.writeChannel(eep, ch)
         }
