@@ -124,6 +124,20 @@
 
             </LinearLayout>
 
+            <!-- ── TX Power override ────────────────────────────────────────── -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TX Power (All Imported Channels)"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp" />
+            <Spinner
+                android:id="@+id/spinnerImportPower"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
+
             <!-- ── Starting channel ─────────────────────────────────────────── -->
             <TextView
                 android:id="@+id/labelStartSlot"

@@ -515,6 +515,9 @@ Two input methods are supported:
 │  Group 1  [ A — GMRS ▼]  Group 2  [ None     ▼]    │
 │  Group 3  [ None     ▼]  Group 4  [ None     ▼]    │
 ├──────────────────────────────────────────────────────┤
+│  TX Power (All Imported Channels)                    │
+│  [ From CSV                        ▼]               │
+├──────────────────────────────────────────────────────┤
 │  Starting Channel                                    │
 │  [ Ch 1 ▼ ]                                         │
 ├──────────────────────────────────────────────────────┤
@@ -529,16 +532,38 @@ Two input methods are supported:
 ```
 
 5. Optionally assign all imported channels to up to 4 groups using the **Group** spinners.
-6. Use the **Starting Channel** spinner to choose which empty slot the first imported
+6. Use the **TX Power** spinner to set a uniform power level for every imported channel:
+   - **From CSV** *(default)* — keeps whatever power value the CSV row contained.
+   - **N/T** — no transmit (useful for receive-only or monitor channels).
+   - **1–255** — raw power byte; see the [Power Calibration table](#power-calibration)
+     in §5 for approximate watt equivalents.
+7. Use the **Starting Channel** spinner to choose which empty slot the first imported
    channel lands in. The preview updates live — the `→ Ch N` labels shift to reflect
    your selection. Only positions where all channels fit without overwriting occupied
    slots are listed.
-7. Tap **Import** to write channels into the selected slot range.
-8. Tap **Save to Radio** on the main screen to upload.
+8. Tap **Import** to write channels into the selected slot range.
+9. Tap **Save to Radio** on the main screen to upload.
 
 > ⚠ Imported channels fill **empty slots only** — existing channels are never overwritten.
 > If there are more CSV entries than empty slots, a warning is shown and excess entries
 > are skipped. The Starting Channel spinner is hidden in this case.
+
+#### Tone / TSQL Handling
+
+The importer follows the CHIRP column spec:
+
+| Tone column | Behaviour |
+|---|---|
+| `Tone` | TX CTCSS only (`rToneFreq`); RX squelch is carrier-triggered |
+| `TSQL` | TX + RX CTCSS using `cToneFreq`; radio opens only when it hears the tone back |
+| `DTCS` | TX + RX DCS using `DtcsCode` + `DtcsPolarity` |
+| *(blank)* | No tone — **unless** `rToneFreq` ≠ 88.5 Hz (CHIRP's "no-tone" sentinel), in which case the frequency is imported as TX Tone encode-only |
+
+> 💡 **RepeaterBook / database exports** commonly leave the Tone column blank while
+> still populating `rToneFreq` with the repeater's access tone. The blank-column fallback
+> above ensures that tone is captured as a TX encode rather than silently discarded.
+> If you do *not* want the tone imported, zero out the `rToneFreq` column (or set it
+> to `88.5`) before importing.
 
 ---
 

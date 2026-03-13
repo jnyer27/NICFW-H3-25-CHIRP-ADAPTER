@@ -8,10 +8,13 @@ package com.nicfw.tdh3editor.radio
  *   Location, Name, Frequency, Duplex, Offset, Tone, rToneFreq, cToneFreq,
  *   DtcsCode, DtcsPolarity, Mode, Power
  *
- * Tone mode mapping:
- *   ""     → no TX or RX tone
- *   "Tone" → TX CTCSS only (rToneFreq)
- *   "TSQL" → TX + RX CTCSS (cToneFreq for both)
+ * Tone mode mapping (per CHIRP spec):
+ *   ""     → no TX or RX tone; EXCEPT when rToneFreq ≠ 88.5 (CHIRP's "no-tone"
+ *            sentinel), in which case the tone is applied as TX Tone encode-only.
+ *            This handles exports where the Tone mode column is blank but a valid
+ *            encode frequency was included (e.g. some RepeaterBook CSV variants).
+ *   "Tone" → TX CTCSS only (rToneFreq); RX squelch open
+ *   "TSQL" → TX + RX CTCSS (cToneFreq for both); same tone on both sides
  *   "DTCS" → TX + RX DCS  (DtcsCode as integer label, DtcsPolarity "NN"/"NR"/"RN"/"RR")
  *   Other  → no tone (best-effort fallback)
  *
@@ -98,13 +101,17 @@ object ChirpCsvImporter {
             var rxToneVal:  Double? = null
             var rxPol:      String? = null
 
+            // CHIRP exports 88.5 as the default/placeholder when no real tone is set.
+            // Any real CTCSS frequency will differ from this value.
+            val chirpNoToneSentinel = 88.5
+
             when (toneMode) {
                 "TONE" -> {
-                    // TX CTCSS only; no RX squelch
+                    // TX CTCSS only; RX squelch open (carrier-triggered)
                     txToneMode = "Tone"; txToneVal = rToneFreq
                 }
                 "TSQL" -> {
-                    // TX + RX CTCSS (carrier-operated squelch, both use cToneFreq)
+                    // TX + RX CTCSS; both sides use cToneFreq (ToneSql column)
                     txToneMode = "Tone"; txToneVal = cToneFreq
                     rxToneMode = "Tone"; rxToneVal = cToneFreq
                 }
@@ -113,7 +120,18 @@ object ChirpCsvImporter {
                     txToneMode = "DTCS"; txToneVal = dtcsCode.toDouble(); txPol = txDtcsPol
                     rxToneMode = "DTCS"; rxToneVal = dtcsCode.toDouble(); rxPol = rxDtcsPol
                 }
-                // "Cross", "" and anything else → no tone
+                "" -> {
+                    // Blank Tone mode (None): per spec no tone is transmitted and RX
+                    // squelch is carrier-triggered.  However, some database exports
+                    // (e.g. certain RepeaterBook variants) leave the mode column empty
+                    // while still populating rToneFreq with a real access tone.  If
+                    // rToneFreq is not the CHIRP no-tone sentinel, treat it as TX Tone
+                    // encode-only so the frequency is not silently discarded.
+                    if (rToneFreq != chirpNoToneSentinel) {
+                        txToneMode = "Tone"; txToneVal = rToneFreq
+                    }
+                }
+                // "Cross" and any other mode → no tone (best-effort fallback)
             }
 
             // ── Power (Issue #4) ──────────────────────────────────────────────
