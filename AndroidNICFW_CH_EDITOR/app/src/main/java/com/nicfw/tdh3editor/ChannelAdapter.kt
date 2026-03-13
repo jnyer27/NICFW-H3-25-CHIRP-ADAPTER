@@ -90,6 +90,20 @@ class ChannelAdapter(
     }
 
     /**
+     * Selects all non-empty channels in [currentList] and enters selection mode.
+     * Used by the search bar's "Select All" button to bulk-select all visible matches.
+     */
+    fun selectAllVisible() {
+        val targets = currentList.filter { !it.empty }
+        if (targets.isEmpty()) return
+        isSelectionMode = true
+        selectedNumbers.clear()
+        selectedNumbers.addAll(targets.map { it.number })
+        notifyDataSetChanged()
+        onSelectionChanged(selectedNumbers.size)
+    }
+
+    /**
      * Replaces the selection set (called after move operations so the same
      * logical channels remain highlighted at their new slot positions).
      */

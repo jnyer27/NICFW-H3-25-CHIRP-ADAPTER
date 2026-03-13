@@ -30,7 +30,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nicfw.tdh3editor.bluetooth.BleManager
 import com.nicfw.tdh3editor.bluetooth.BtSerialManager
 import com.nicfw.tdh3editor.databinding.ActivityMainBinding
+import android.text.Editable
+import android.text.TextWatcher
 import com.nicfw.tdh3editor.radio.Channel
+import com.nicfw.tdh3editor.radio.ChirpCsvExporter
 import com.nicfw.tdh3editor.radio.ChirpCsvImporter
 import com.nicfw.tdh3editor.radio.EepromConstants
 import com.nicfw.tdh3editor.radio.EepromParser
@@ -61,6 +64,9 @@ class MainActivity : AppCompatActivity() {
 
     private var eeprom: ByteArray? = null
     private var channelList: List<Channel> = emptyList()
+
+    /** Current search query (empty = no filter). */
+    private var searchQuery: String = ""
 
     /**
      * Working copy of the channel list used by [ItemTouchHelper] during drag-to-reorder.
@@ -278,6 +284,7 @@ class MainActivity : AppCompatActivity() {
 
         setupTouchHelper()
         setupSelectionBar()
+        setupSearch()
 
         requestBluetoothPermissions()
 
@@ -344,11 +351,139 @@ class MainActivity : AppCompatActivity() {
         binding.btnMoveTo.setOnClickListener        { moveSelectedToPosition() }
         binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
         binding.btnSetGroups.setOnClickListener     { setGroupsSelected() }
+        binding.btnExportCsv.setOnClickListener     { exportSelectedChannels() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
         binding.btnSelectionDone.setOnClickListener {
             adapter.exitSelectionMode()
             // onSelectionChanged(0) will be called → hides the bar
         }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Search / filter
+    // ─────────────────────────────────────────────────────────────────────────
+
+    private fun setupSearch() {
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s?.toString() ?: ""
+                binding.btnSelectAllMatches.visibility =
+                    if (searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
+                applyFilter()
+            }
+        })
+        binding.btnClearSearch.setOnClickListener {
+            searchQuery = ""
+            binding.searchEditText.setText("")
+            binding.searchBar.visibility = View.GONE
+            binding.btnSelectAllMatches.visibility = View.GONE
+            applyFilter()
+        }
+        binding.btnSelectAllMatches.setOnClickListener {
+            if (channelList.isNotEmpty()) adapter.selectAllVisible()
+        }
+    }
+
+    /** Toggles the search bar open/closed and resets the query when closing. */
+    private fun toggleSearchBar() {
+        if (binding.searchBar.visibility == View.VISIBLE) {
+            searchQuery = ""
+            binding.searchEditText.setText("")
+            binding.searchBar.visibility = View.GONE
+            binding.btnSelectAllMatches.visibility = View.GONE
+            applyFilter()
+        } else {
+            binding.searchBar.visibility = View.VISIBLE
+            binding.searchEditText.requestFocus()
+        }
+    }
+
+    /**
+     * Submits the filtered (or full) channel list to the adapter based on [searchQuery].
+     * Matches are case-insensitive on channel name OR any resolved group label.
+     */
+    private fun applyFilter() {
+        if (searchQuery.isBlank()) {
+            adapter.submitList(channelList.toList())
+            return
+        }
+        val q = searchQuery.trim().lowercase()
+        val labels = EepromHolder.groupLabels
+        val filtered = channelList.filter { ch ->
+            if (ch.empty) return@filter false
+            if (ch.name.lowercase().contains(q)) return@filter true
+            // Match group letter directly OR its resolved label
+            listOf(ch.group1, ch.group2, ch.group3, ch.group4).any { letter ->
+                if (letter == "None") return@any false
+                if (letter.lowercase().contains(q)) return@any true
+                val idx   = EepromConstants.GROUP_LETTERS.indexOf(letter)
+                val label = labels.getOrNull(idx)?.trim() ?: ""
+                label.lowercase().contains(q)
+            }
+        }
+        adapter.submitList(filtered)
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // CHIRP CSV export
+    // ─────────────────────────────────────────────────────────────────────────
+
+    /**
+     * Asks the user to name the export file, then generates a CHIRP-compatible CSV
+     * from all selected non-empty channels and triggers the Android share sheet.
+     */
+    private fun exportSelectedChannels() {
+        val selected = adapter.selectedChannelNumbers
+        val channels = channelList
+            .filter { it.number in selected && !it.empty }
+            .sortedBy { it.number }
+
+        if (channels.isEmpty()) {
+            Toast.makeText(this, "No non-empty channels selected", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val ts = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
+        val defaultName = "chirp_export_$ts"
+
+        val input = android.widget.EditText(this).apply {
+            setText(defaultName)
+            selectAll()
+            val px = (16 * resources.displayMetrics.density).toInt()
+            setPadding(px, px / 2, px, px / 2)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Export CHIRP CSV")
+            .setMessage("${channels.size} channel(s) will be exported.\nFile name:")
+            .setView(input)
+            .setPositiveButton("Export & Share") { _, _ ->
+                val raw  = input.text.toString().trim().ifEmpty { defaultName }
+                val name = raw.replace(Regex("[^a-zA-Z0-9_\\-.()]"), "_")
+                doExportCsv(channels, name)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun doExportCsv(channels: List<Channel>, fileName: String) {
+        val csv  = ChirpCsvExporter.export(channels)
+        val dir  = getExternalFilesDir(null) ?: filesDir
+        val file = File(dir, "$fileName.csv")
+        file.writeText(csv)
+
+        val uri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
+        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+            type = "text/csv"
+            putExtra(Intent.EXTRA_STREAM, uri)
+            putExtra(Intent.EXTRA_SUBJECT, "CHIRP CSV — $fileName")
+            putExtra(Intent.EXTRA_TEXT,
+                "CHIRP CSV export: $fileName.csv (${channels.size} channels)")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        startActivity(Intent.createChooser(shareIntent, "Share CHIRP CSV"))
     }
 
     /**
@@ -396,6 +531,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_search -> {
+                toggleSearchBar()
+                true
+            }
             R.id.action_import_chirp -> {
                 // Open system file picker — accept CSV and plain-text MIME types
                 csvPickerLauncher.launch(arrayOf("text/csv", "text/comma-separated-values", "text/plain", "*/*"))
@@ -1309,7 +1448,7 @@ class MainActivity : AppCompatActivity() {
         if (data.size < Protocol.EEPROM_SIZE) return
         channelList  = EepromParser.parseAllChannels(data)
         dragWorkList = channelList.toMutableList()
-        adapter.submitList(channelList)
+        applyFilter()   // respects current searchQuery; submits full list when blank
     }
 
     private fun showSaveConfirm() {
