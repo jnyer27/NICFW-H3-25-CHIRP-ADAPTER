@@ -402,7 +402,8 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * Submits the filtered (or full) channel list to the adapter based on [searchQuery].
-     * Matches are case-insensitive on channel name OR any resolved group label.
+     * Matches are case-insensitive on channel name, RX frequency (MHz), or any resolved
+     * group label.
      */
     private fun applyFilter() {
         if (searchQuery.isBlank()) {
@@ -414,6 +415,8 @@ class MainActivity : AppCompatActivity() {
         val filtered = channelList.filter { ch ->
             if (ch.empty) return@filter false
             if (ch.name.lowercase().contains(q)) return@filter true
+            // Match RX frequency displayed as MHz string (e.g. "462.5625")
+            if (ch.displayFreq().contains(q)) return@filter true
             // Match group letter directly OR its resolved label
             listOf(ch.group1, ch.group2, ch.group3, ch.group4).any { letter ->
                 if (letter == "None") return@any false
