@@ -125,9 +125,10 @@ class ChannelAdapter(
         private val channelToneGroup: LinearLayout = card.findViewById(R.id.channelToneGroup)
         private val channelTxTone:    TextView     = card.findViewById(R.id.channelTxTone)
         private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
-        private val channelDuplex:    TextView     = card.findViewById(R.id.channelDuplex)
-        private val channelPower:     TextView     = card.findViewById(R.id.channelPower)
-        private val channelDragHandle: ImageView   = card.findViewById(R.id.channelDragHandle)
+        private val channelDuplex:     TextView     = card.findViewById(R.id.channelDuplex)
+        private val channelPower:      TextView     = card.findViewById(R.id.channelPower)
+        private val channelBandwidth:  TextView     = card.findViewById(R.id.channelBandwidth)
+        private val channelDragHandle: ImageView    = card.findViewById(R.id.channelDragHandle)
 
         @Suppress("ClickableViewAccessibility")
         fun bind(channel: Channel) {
@@ -139,6 +140,7 @@ class ChannelAdapter(
                 channelGroups.text = ""; channelGroups.visibility = View.GONE
                 channelDuplex.text = ""
                 channelPower.text  = ""
+                channelBandwidth.visibility = View.GONE
                 channelTxTone.text = ""; channelRxTone.text = ""
                 channelToneGroup.visibility = View.GONE
             } else {
@@ -176,6 +178,9 @@ class ChannelAdapter(
                     else ->
                         wattsText
                 }
+
+                channelBandwidth.text       = if (channel.bandwidth == "Narrow") "N" else "W"
+                channelBandwidth.visibility = View.VISIBLE
 
                 val groups = buildGroupsDisplay(channel)
                 channelGroups.text       = groups
