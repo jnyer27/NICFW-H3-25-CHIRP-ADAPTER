@@ -1,0 +1,76 @@
+/*
+ * PDF-specific overrides for mkdocs-exporter / Playwright rendering.
+ * Applied only during PDF generation via the exporter plugin's extra_css.
+ */
+
+/* ── Force all links to render as visible dark text ── */
+a,
+a:visited,
+a:link {
+  color: #1a237e !important;   /* deep indigo — matches Material primary */
+  text-decoration: none !important;
+}
+
+/* ── Table of Contents (in-page numbered list) ── */
+/* Markdown TOC renders as an ordered list inside the article */
+.md-typeset ol li a,
+.md-typeset ul li a {
+  color: #1a237e !important;
+}
+
+/* ── Right-sidebar / integrated TOC nav links ── */
+.md-nav__link,
+.md-nav__link--active,
+.md-nav__item a {
+  color: #212121 !important;
+}
+
+/* ── Make sure nav title text is visible ── */
+.md-nav__title {
+  color: #212121 !important;
+}
+
+/* ── Hide interactive UI chrome that looks wrong in PDF ── */
+.md-header,
+.md-tabs,
+.md-footer,
+.md-search,
+[data-md-component="skip"],
+[data-md-component="announce"],
+.md-top {
+  display: none !important;
+}
+
+/* ── Sidebar: keep left nav visible for context, style cleanly ── */
+.md-sidebar {
+  color: #212121 !important;
+}
+
+/* ── Tables: ensure borders and text are visible ── */
+.md-typeset table:not([class]) th {
+  background-color: #3f51b5 !important;
+  color: #ffffff !important;
+}
+
+.md-typeset table:not([class]) td {
+  color: #212121 !important;
+  border-color: #ccc !important;
+}
+
+/* ── Code blocks: ensure text is black on light background ── */
+.md-typeset pre,
+.md-typeset code {
+  color: #212121 !important;
+  background-color: #f5f5f5 !important;
+}
+
+/* ── Admonition text ── */
+.md-typeset .admonition,
+.md-typeset details {
+  color: #212121 !important;
+}
+
+/* ── Page breaks between major sections ── */
+.md-typeset h2 {
+  page-break-before: auto;
+}
