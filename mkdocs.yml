@@ -63,6 +63,19 @@ nav:
 
 plugins:
   - search
+  - exporter:
+      formats:
+        pdf:
+          enabled: true
+          concurrency: 1
+          covers:
+            front: docs/pdf-cover.html
+          browser:
+            headless: true
+          aggregator:
+            enabled: true
+            output: user-guide.pdf
+            covers: front
 
 extra:
   social:
