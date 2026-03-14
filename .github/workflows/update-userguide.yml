@@ -1,0 +1,118 @@
+name: Update User Guide
+
+# ── Triggers ──────────────────────────────────────────────────────────────────
+# Runs whenever UserGuide.md or the MkDocs source/config changes on main.
+# Can also be triggered manually from the Actions tab.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'UserGuide.md'
+      - 'docs/**'
+      - 'mkdocs.yml'
+  workflow_dispatch:   # manual trigger
+
+# ── Permissions ───────────────────────────────────────────────────────────────
+permissions:
+  contents: write    # needed to upload/replace release assets + push gh-pages
+
+jobs:
+  build-and-publish:
+    name: Build PDF & deploy docs
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history needed for gh-deploy
+
+      # ── 2. Python ────────────────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      # ── 3. Install dependencies ───────────────────────────────────────────────
+      - name: Install MkDocs + exporter
+        run: |
+          pip install \
+            mkdocs \
+            mkdocs-material \
+            mkdocs-exporter
+
+      - name: Install Playwright Chromium
+        run: python -m playwright install --with-deps chromium
+
+      # ── 4. Build site + PDF ───────────────────────────────────────────────────
+      - name: Build MkDocs site (generates site/user-guide.pdf)
+        run: python -m mkdocs build
+
+      - name: Verify PDF was generated
+        run: |
+          ls -lh site/user-guide.pdf
+          echo "PDF_SIZE=$(du -k site/user-guide.pdf | cut -f1) KB" >> $GITHUB_STEP_SUMMARY
+
+      # ── 5. Deploy updated GitHub Pages ────────────────────────────────────────
+      - name: Deploy to GitHub Pages
+        run: python -m mkdocs gh-deploy --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 6. Update latest release asset ───────────────────────────────────────
+      - name: Get latest release tag
+        id: latest_release
+        run: |
+          TAG=$(gh release list --limit 1 --json tagName --jq '.[0].tagName')
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "Latest release: $TAG"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Stage PDF with release-versioned filename
+        run: |
+          TAG=${{ steps.latest_release.outputs.tag }}
+          FILENAME="nicfw-td-h3-editor-${TAG}-userguide.pdf"
+          cp site/user-guide.pdf "$FILENAME"
+          echo "RELEASE_PDF=$FILENAME" >> $GITHUB_ENV
+
+      - name: Remove old userguide PDF from release (if present)
+        run: |
+          TAG=${{ steps.latest_release.outputs.tag }}
+          # List assets and delete any *-userguide.pdf
+          ASSETS=$(gh release view "$TAG" --json assets --jq '.assets[].name')
+          for asset in $ASSETS; do
+            if [[ "$asset" == *userguide*.pdf ]]; then
+              echo "Deleting old asset: $asset"
+              gh release delete-asset "$TAG" "$asset" --yes
+            fi
+          done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload updated PDF to release
+        run: |
+          TAG=${{ steps.latest_release.outputs.tag }}
+          gh release upload "$TAG" "${{ env.RELEASE_PDF }}#User Guide (PDF)"
+          echo "✅ Uploaded ${{ env.RELEASE_PDF }} to release $TAG" >> $GITHUB_STEP_SUMMARY
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 7. Commit updated PDF back to main ───────────────────────────────────
+      - name: Commit updated UserGuide.pdf to repo
+        run: |
+          cp site/user-guide.pdf UserGuide.pdf
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add UserGuide.pdf
+          # Only commit if the PDF actually changed
+          if git diff --staged --quiet; then
+            echo "PDF unchanged, skipping commit"
+          else
+            git commit -m "chore(docs): auto-update UserGuide.pdf [skip ci]"
+            git push origin main
+            echo "✅ UserGuide.pdf committed to main" >> $GITHUB_STEP_SUMMARY
+          fi
