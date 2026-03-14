@@ -76,6 +76,8 @@ plugins:
             enabled: true
             output: user-guide.pdf
             covers: front
+          stylesheets:
+            - docs/stylesheets/pdf.css
 
 extra:
   social:
