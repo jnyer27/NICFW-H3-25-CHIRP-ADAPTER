@@ -39,6 +39,9 @@ theme:
   icon:
     repo: fontawesome/brands/github
 
+extra_css:
+  - stylesheets/print.css
+
 markdown_extensions:
   - admonition
   - pymdownx.details
