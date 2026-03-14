@@ -15,17 +15,9 @@
       flex-direction: column;
       justify-content: center;
       align-items: flex-start;
+      /* Left accent bar via border — stays at the true page edge */
+      border-left: 8px solid #222;
       padding: 72px 64px;
-    }
-
-    /* Dark left accent bar */
-    .accent {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 8px;
-      height: 100vh;
-      background: #222;
     }
 
     .badge {
@@ -67,7 +59,7 @@
     .footer {
       position: absolute;
       bottom: 40px;
-      left: 64px;
+      left: 72px;     /* aligned with body padding */
       font-size: 10px;
       color: #aaa;
       letter-spacing: 1.5px;
@@ -76,7 +68,6 @@
   </style>
 </head>
 <body>
-  <div class="accent"></div>
   <div class="badge">User Guide</div>
   <h1>NICFW TD-H3 25<br>Channel Editor</h1>
   <h2>Android App &mdash; Complete User Guide</h2>
