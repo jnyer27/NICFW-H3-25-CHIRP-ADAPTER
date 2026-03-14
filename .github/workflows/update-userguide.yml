@@ -98,18 +98,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # ── 7. Commit updated PDF back to main ───────────────────────────────────
-      - name: Commit updated UserGuide.pdf to repo
+      # ── 7. Summary ────────────────────────────────────────────────────────────
+      # UserGuide.pdf is NOT committed back to main by CI — the release asset
+      # and GitHub Pages are the canonical outputs. Committing a binary PDF from
+      # CI races with developer pushes and causes merge conflicts on every run.
+      - name: Summarise
         run: |
-          cp site/user-guide.pdf UserGuide.pdf
-          git config user.name  "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add UserGuide.pdf
-          # Only commit if the PDF actually changed
-          if git diff --staged --quiet; then
-            echo "PDF unchanged, skipping commit"
-          else
-            git commit -m "chore(docs): auto-update UserGuide.pdf [skip ci]"
-            git push origin main
-            echo "✅ UserGuide.pdf committed to main" >> $GITHUB_STEP_SUMMARY
-          fi
+          echo "### User Guide updated" >> $GITHUB_STEP_SUMMARY
+          echo "- PDF uploaded to release ${{ steps.latest_release.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- GitHub Pages redeployed" >> $GITHUB_STEP_SUMMARY
