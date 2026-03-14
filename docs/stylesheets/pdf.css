@@ -83,12 +83,22 @@ body,
   padding-left: 1.4em !important;
 }
 
-/* ── Links — show as plain dark text, no underline clutter ───────────────── */
+/* ── Links — blue + underlined so they look clickable in the PDF ──────────── */
+/*    Chromium converts <a href="#anchor"> to PDF internal GoTo links,        */
+/*    so TOC entries navigate directly to their section when clicked.          */
 .md-typeset a,
 .md-typeset a:visited {
-  color: #000 !important;
+  color: #0055cc !important;
   text-decoration: underline !important;
-  text-decoration-color: #666 !important;
+  text-decoration-color: #0055cc !important;
+}
+
+/* TOC list: slightly larger link text and tighter spacing */
+.md-typeset ol li a,
+.md-typeset ul li a {
+  color: #0055cc !important;
+  text-decoration: underline !important;
+  font-weight: 500 !important;
 }
 
 /* ── Horizontal rules ─────────────────────────────────────────────────────── */
