@@ -35,14 +35,11 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
+          cache-dependency-path: 'requirements-docs.txt'
 
       # ── 3. Install dependencies ───────────────────────────────────────────────
       - name: Install MkDocs + exporter
-        run: |
-          pip install \
-            mkdocs \
-            mkdocs-material \
-            mkdocs-exporter
+        run: pip install -r requirements-docs.txt
 
       - name: Install Playwright Chromium
         run: python -m playwright install --with-deps chromium
