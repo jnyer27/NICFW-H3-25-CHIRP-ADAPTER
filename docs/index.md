@@ -1068,7 +1068,7 @@ Access via **⋮ → Tune Settings…** (requires EEPROM to be loaded).
 |---|---|---|---|
 | **VHF Power Setting Cap** | `0x1DFF` | 0–255 (raw byte) | Maximum TX power for VHF frequencies (<300 MHz). Channels whose stored power exceeds this value are clamped by the radio at transmit time. |
 | **UHF Power Setting Cap** | `0x1DFD` | 0–255 (raw byte) | Same cap for UHF frequencies (≥300 MHz). |
-| **XTAL 671 Correction** | `0x1DFB` | −128…+127 (signed) | Crystal oscillator correction applied by nicFW. Use the [XTAL 671 Calculator](#89-xtal-671-calculator) to compute the correct value for your unit. |
+| **XTAL 671 Correction** | `0x1DFB` | −128…+127 (signed) | Crystal oscillator correction applied by nicFW. Use the [XTAL 671 Calculator](#79-xtal-671-calculator) to compute the correct value for your unit. |
 
 > The live watt estimate displayed next to each cap picker (e.g., "≈ 5.0W") uses the
 > same interpolation table as the channel list power column.
@@ -1168,7 +1168,7 @@ calibration:
    - Set `255` to disable the cap (allow full power on all channels).
 3. Repeat for **UHF Power Setting Cap**.
 4. Adjust **XTAL 671** if needed — use the
-   [XTAL 671 Calculator](#89-xtal-671-calculator) to derive the correct value first.
+   [XTAL 671 Calculator](#79-xtal-671-calculator) to derive the correct value first.
 5. Tap **Save Tune Settings** → values are written to the in-memory EEPROM.
 6. Tap **Save to Radio** on the main screen to upload.
 
