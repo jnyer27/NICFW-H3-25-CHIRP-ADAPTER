@@ -19,3 +19,7 @@
 *.jks
 *.keystore
 site/
+
+# MkDocs generated file — single source of truth is UserGuide.md
+docs/index.md
+docs/__pycache__/

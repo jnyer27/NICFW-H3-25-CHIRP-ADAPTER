@@ -9,6 +9,9 @@ repo_url: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER
 docs_dir: docs
 site_dir: site
 
+hooks:
+  - docs/hooks.py
+
 theme:
   name: material
   palette:
