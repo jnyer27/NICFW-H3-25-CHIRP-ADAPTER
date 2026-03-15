@@ -14,7 +14,7 @@ Download EEPROM to import so you can test app without a radio: https://drive.goo
 
 - **BLE scan & connect** — scans for the nicFW BLE service and connects automatically;
   no manual pairing step required in most cases
-- **Classic SPP fallback** — paired-device picker for older connection methods
+- **Classic SPP fallback** *(unconfirmed)* — paired-device picker; Classic SPP has not been confirmed to work with nicFW 2.5
 - **198-channel list** — shows frequency, name, active group labels, TX/RX tone,
   duplex offset, and bandwidth (W/N) at a glance
 - **Band plan TX indicator** — channels whose frequency is blocked for TX by the radio's
@@ -105,7 +105,10 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
 2. In the app tap **Connect → Scan for Radio (BLE)**.
 3. The app scans for the nicFW BLE service (`0000ff00-…`) and connects automatically.
 
-### Classic SPP (fallback)
+### Classic SPP (fallback) *(unconfirmed)*
+
+> **Note:** Classic SPP has not been confirmed to work with the TD-H3 and nicFW 2.5.
+> BLE is the recommended and verified connection method.
 
 1. Pair the TD-H3 in **Android Settings → Bluetooth**.
 2. In the app tap **Connect → Paired Devices (Classic BT)** and select the radio.
