@@ -3,6 +3,7 @@ name: Update User Guide
 # ── Triggers ──────────────────────────────────────────────────────────────────
 # 1. Every published GitHub Release — attaches User Guide PDF to THAT tag (so each
 #    version, e.g. v1.0.0 and android-editor-v1.1.0, gets a downloadable PDF).
+#    Also appends MkDocs / PDF links to release notes once (marker: nicfw-docs:userguide).
 # 2. Push to main when UserGuide.md / docs / mkdocs.yml change — redeploys Pages and
 #    backfills the PDF onto ALL published releases (keeps older tags like v1.0.0 in sync).
 # 3. workflow_dispatch — same as (2), for manual runs / one-off backfill.
@@ -99,6 +100,23 @@ jobs:
             gh release upload "$TAG" "$FILENAME#User Guide (PDF)"
             echo "  Uploaded $FILENAME"
             rm -f "$FILENAME"
+
+            # Append online user guide + PDF links to release notes (idempotent)
+            BODY=$(gh release view "$TAG" --json body | jq -r '.body // empty')
+            if [[ "$BODY" == *'<!-- nicfw-docs:userguide -->'* ]]; then
+              echo "  Release notes already include user guide links"
+            else
+              PDF_NAME="nicfw-td-h3-editor-${TAG}-userguide.pdf"
+              # Avoid YAML/bash heredoc indentation issues in GHA runners
+              FOOTER="$(printf '%s\n' '' '<!-- nicfw-docs:userguide -->' '### User guide' \
+                '- **Online (MkDocs):** https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/' \
+                "- **PDF (this release):** File **${PDF_NAME}** in Assets below" \
+                '- **PDF (live on GitHub Pages):** https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/user-guide.pdf')"
+              printf '%s%s' "$BODY" "$FOOTER" > "/tmp/release-notes-${TAG}.md"
+              gh release edit "$TAG" --notes-file "/tmp/release-notes-${TAG}.md"
+              echo "  Appended user guide links to release notes"
+            fi
+
             COUNT=$((COUNT + 1))
           done < /tmp/release-tags.txt
 

@@ -4,7 +4,7 @@
 > **Radio:** TIDRadio TD-H3 running **nicFW v2.5**
 > **Platform:** Android (min SDK 24 / Android 7.0)
 
-**Documentation:** Browse this guide on **[GitHub Pages](https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/)** or download the live PDF at **[user-guide.pdf](https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/user-guide.pdf)**. Every **[GitHub Release](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases)** also ships the same PDF as an attachment named `nicfw-td-h3-editor-<release-tag>-userguide.pdf` (CI runs on each published release and when this guide changes).
+**Documentation:** Browse this guide on **[GitHub Pages](https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/)** or download the live PDF at **[user-guide.pdf](https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/user-guide.pdf)**. Every **[GitHub Release](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases)** gets the same PDF as `nicfw-td-h3-editor-<release-tag>-userguide.pdf` plus a **User guide** section in the release notes (MkDocs URL + PDF links), maintained by the **Update User Guide** workflow when the guide is rebuilt or releases are backfilled.
 
 ---
 
