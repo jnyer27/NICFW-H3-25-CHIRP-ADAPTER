@@ -12,8 +12,9 @@ Download EEPROM to import so you can test app without a radio: https://drive.goo
 
 ## Features
 
-- **BLE scan & connect** — scans for the nicFW BLE service and connects automatically;
-  no manual pairing step required in most cases
+- **BLE scan & connect** — scans for known BLE UART services (nicFW `FF00`, Nordic UART,
+  HM-10-style `FFE0`, ISSC, etc.); connects with conservative MTU negotiation for flaky
+  adapters; see [CHANGELOG.md](CHANGELOG.md) for v1.1.0 BLE details
 - **Classic SPP fallback** — paired-device picker for older connection methods
 - **198-channel list** — shows frequency, name, active group labels, TX/RX tone,
   duplex offset, and bandwidth (W/N) at a glance
@@ -65,6 +66,16 @@ gradlew.bat assembleDebug        # Windows CMD / PowerShell
 
 APK output: `app/build/outputs/apk/debug/app-debug.apk`
 
+**Signed release APK** (keystore entries in `local.properties`; never commit secrets):
+
+```bash
+./gradlew assembleRelease    # Linux / macOS / Git Bash
+gradlew.bat assembleRelease  # Windows
+```
+
+Output: `app/build/outputs/apk/release/app-release.apk`  
+Release notes: [CHANGELOG.md](CHANGELOG.md). GitHub **Releases** may attach a renamed copy (e.g. `TD-H3-Editor-1.1.0-release.apk`).
+
 **Android Studio:** Open this folder as a project and click **Run**.
 
 Toolchain: Kotlin 2.0.21 · AGP 8.7.3 · Gradle 9.1 · minSdk 24 · targetSdk 35
@@ -103,7 +114,11 @@ Grant Bluetooth permissions when prompted after tapping **Connect**.
 
 1. Enable Bluetooth on the radio (nicFW settings menu).
 2. In the app tap **Connect → Scan for Radio (BLE)**.
-3. The app scans for the nicFW BLE service (`0000ff00-…`) and connects automatically.
+3. The app shows devices that **advertise** a supported BLE UART service (including nicFW
+   `0000ff00-…` and common dongle UUIDs). Tap your radio or adapter to connect.
+
+   If nothing appears, the device may not advertise a known UART UUID in its BLE payload —
+   try **Classic SPP** instead, or see [CHANGELOG.md](CHANGELOG.md) under v1.1.0.
 
 ### Classic SPP (fallback)
 
