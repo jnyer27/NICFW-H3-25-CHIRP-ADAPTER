@@ -82,6 +82,8 @@ plugins:
           stylesheets:
             - docs/stylesheets/pdf.css
 
+# `extra.version` is set at build time from AndroidNICFW_CH_EDITOR/app/build.gradle.kts
+# `versionName` (see docs/hooks.py). PDF cover uses the same value (pdf-cover.in.html).
 extra:
   social:
     - icon: fontawesome/brands/github

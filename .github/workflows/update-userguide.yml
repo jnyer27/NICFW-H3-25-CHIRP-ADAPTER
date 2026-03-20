@@ -77,7 +77,8 @@ jobs:
           if [[ "${{ github.event_name }}" == "release" ]]; then
             echo "${{ github.event.release.tag_name }}" > /tmp/release-tags.txt
           else
-            gh release list --limit 500 --json tagName --jq -r '.[].tagName' > /tmp/release-tags.txt
+            # Do not use `gh ... --jq -r` — gh parses `-r` as --repo, not jq raw output.
+            gh release list -L 500 --json tagName | jq -r '.[].tagName' > /tmp/release-tags.txt
           fi
 
           COUNT=0
@@ -88,7 +89,7 @@ jobs:
             FILENAME="nicfw-td-h3-editor-${TAG}-userguide.pdf"
             cp site/user-guide.pdf "$FILENAME"
 
-            gh release view "$TAG" --json assets --jq -r '.assets[].name' 2>/dev/null | while read -r asset; do
+            gh release view "$TAG" --json assets 2>/dev/null | jq -r '.assets[].name // empty' | while read -r asset; do
               [[ -z "$asset" ]] && continue
               [[ "$asset" == *userguide*.pdf ]] || continue
               echo "  Removing old asset: $asset"
