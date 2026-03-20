@@ -935,7 +935,7 @@
 
 <h1 id="td-h3-channel-editor-user-guide">TD-H3 Channel Editor — User Guide<a class="headerlink" href="#td-h3-channel-editor-user-guide" title="Permanent link">¶</a></h1>
 <blockquote>
-<p><strong>App:</strong> NICFW TD-H3 Channel Editor
+<p><strong>App:</strong> NICFW TD-H3 Channel Editor (<strong>Android v1.1.0</strong> — see <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0">release notes</a> and <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">app CHANGELOG</a>)
 <strong>Radio:</strong> TIDRadio TD-H3 running <strong>nicFW v2.5</strong>
 <strong>Platform:</strong> Android (min SDK 24 / Android 7.0)</p>
 </blockquote>
@@ -1012,13 +1012,22 @@ you tap <strong>Save to Radio</strong>. This lets you make multiple changes and 
 <a href="#__codelineno-1-10" id="__codelineno-1-10" name="__codelineno-1-10"></a>└──────────────────────────────────┘
 </code></pre></div>
 <h3 id="option-a-ble-recommended">Option A — BLE (Recommended)<a class="headerlink" href="#option-a-ble-recommended" title="Permanent link">¶</a></h3>
+<p><strong>As of app v1.1.0</strong>, BLE discovery is tuned for reliability and for common BLE‑UART bridges,
+not only the TD-H3’s built‑in radio.</p>
 <ul>
 <li>Tap <strong>Scan for Radio (BLE)</strong>.</li>
-<li>The app scans for nearby BLE devices. The TD-H3 broadcasts as <strong>TD-H3</strong> or similar.</li>
-<li>Tap the device name in the scan list to connect.</li>
+<li>The list shows devices whose <strong>advertising packet includes a known UART service UUID</strong>
+  (nicFW <code>0000ff00-…</code>, Nordic UART, HM‑10/TI <code>0000ffe0-…</code>, Microchip/ISSC, etc.). Your TD‑H3
+  usually appears as <strong>TD-H3</strong> or similar; third‑party serial dongles that advertise one of
+  those services also appear.</li>
+<li>Tap the device name to connect. The app negotiates a <strong>moderate BLE MTU</strong> (with a safe
+  <strong>20‑byte fallback</strong>) so cheap adapters are less likely to drop the link than with an
+  aggressive 512‑byte request; EEPROM traffic over the air is unchanged from older app
+  versions.</li>
 <li>Android 12+ requires the <strong>Nearby Devices</strong> permission; Android 11 and below requires
   <strong>Location</strong> permission. Grant when prompted.</li>
 </ul>
+<p>For a concise technical list of changes, see <strong><a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">AndroidNICFW_CH_EDITOR/CHANGELOG.md</a></strong> (section <strong>1.1.0</strong>).</p>
 <h3 id="option-b-classic-bluetooth-spp">Option B — Classic Bluetooth (SPP)<a class="headerlink" href="#option-b-classic-bluetooth-spp" title="Permanent link">¶</a></h3>
 <ul>
 <li>Pair the radio to your phone first via Android's system Bluetooth settings.</li>
@@ -1049,7 +1058,10 @@ you tap <strong>Save to Radio</strong>. This lets you make multiple changes and 
 </table>
 <blockquote>
 <p><strong>Tip:</strong> The BLE connection uses nicFW's remote-control protocol (0x4A enable /
-0x4B disable). If the radio firmware does not support remote mode, use Classic BT.</p>
+0x4B disable). If the radio firmware does not support remote mode, use Classic BT.
+If <strong>BLE scan is empty</strong> but the radio is on, the handset may not be advertising a
+recognized UART UUID — use <strong>Paired Devices (Classic BT)</strong> or confirm firmware/advertising
+(v1.1.0 scan filters; see CHANGELOG above).</p>
 </blockquote>
 <hr/>
 <h2 id="3-loading-saving-the-radio-memory">3. Loading &amp; Saving the Radio Memory<a class="headerlink" href="#3-loading-saving-the-radio-memory" title="Permanent link">¶</a></h2>
@@ -2936,7 +2948,11 @@ for assigning human-readable names to channel groups.</p>
 </tr>
 <tr>
 <td><strong>BLE scan finds no devices</strong></td>
-<td>Ensure the radio is powered on and not already connected to another device; on Android 12+ grant Nearby Devices permission</td>
+<td>Power on the radio; disconnect other phones; grant <strong>Nearby Devices</strong> (Android 12+) or <strong>Location</strong> (older). <strong>v1.1.0+:</strong> only devices that <strong>advertise</strong> a supported UART service UUID appear — if yours does not, use <strong>Classic BT</strong> or check nicFW BT advertising</td>
+</tr>
+<tr>
+<td><strong>BLE connects then misbehaves on a dongle</strong></td>
+<td><strong>v1.1.0+</strong> uses safer MTU/chunk sizing; update to the latest app build. If problems persist, try Classic SPP or another adapter</td>
 </tr>
 <tr>
 <td><strong>Classic BT connection fails</strong></td>
