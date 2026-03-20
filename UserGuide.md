@@ -1,6 +1,6 @@
 # TD-H3 Channel Editor — User Guide
 
-> **App:** NICFW TD-H3 Channel Editor
+> **App:** NICFW TD-H3 Channel Editor (**Android v1.1.0** — see [release notes](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0) and [app CHANGELOG](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md))
 > **Radio:** TIDRadio TD-H3 running **nicFW v2.5**
 > **Platform:** Android (min SDK 24 / Android 7.0)
 
@@ -91,11 +91,22 @@ Tap **[ Connect ]** on the main screen. A dialog appears with two options:
 
 ### Option A — BLE (Recommended)
 
+**As of app v1.1.0**, BLE discovery is tuned for reliability and for common BLE‑UART bridges,
+not only the TD-H3’s built‑in radio.
+
 - Tap **Scan for Radio (BLE)**.
-- The app scans for nearby BLE devices. The TD-H3 broadcasts as **TD-H3** or similar.
-- Tap the device name in the scan list to connect.
+- The list shows devices whose **advertising packet includes a known UART service UUID**
+  (nicFW `0000ff00-…`, Nordic UART, HM‑10/TI `0000ffe0-…`, Microchip/ISSC, etc.). Your TD‑H3
+  usually appears as **TD-H3** or similar; third‑party serial dongles that advertise one of
+  those services also appear.
+- Tap the device name to connect. The app negotiates a **moderate BLE MTU** (with a safe
+  **20‑byte fallback**) so cheap adapters are less likely to drop the link than with an
+  aggressive 512‑byte request; EEPROM traffic over the air is unchanged from older app
+  versions.
 - Android 12+ requires the **Nearby Devices** permission; Android 11 and below requires
   **Location** permission. Grant when prompted.
+
+For a concise technical list of changes, see **[AndroidNICFW_CH_EDITOR/CHANGELOG.md](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md)** (section **1.1.0**).
 
 ### Option B — Classic Bluetooth (SPP)
 
@@ -112,6 +123,9 @@ Tap **[ Connect ]** on the main screen. A dialog appears with two options:
 
 > **Tip:** The BLE connection uses nicFW's remote-control protocol (0x4A enable /
 > 0x4B disable). If the radio firmware does not support remote mode, use Classic BT.
+> If **BLE scan is empty** but the radio is on, the handset may not be advertising a
+> recognized UART UUID — use **Paired Devices (Classic BT)** or confirm firmware/advertising
+> (v1.1.0 scan filters; see CHANGELOG above).
 
 ---
 
@@ -1384,7 +1398,8 @@ Always back up your EEPROM dump before making major changes.
 | **Channel list shows nothing after load** | EEPROM read may have failed; try disconnecting and reconnecting, then load again |
 | **Scan Preset entry shows 1.0 MHz** | Slot is empty (`startFreq == 0`); this is a display artifact in some tools — empty slots are handled correctly by nicFW |
 | **Channel list shows `⚠` next to power** | Stored channel power exceeds the VHF or UHF cap in Tune Settings. Lower the channel power OR raise the cap in **⋮ → Tune Settings…** |
-| **BLE scan finds no devices** | Ensure the radio is powered on and not already connected to another device; on Android 12+ grant Nearby Devices permission |
+| **BLE scan finds no devices** | Power on the radio; disconnect other phones; grant **Nearby Devices** (Android 12+) or **Location** (older). **v1.1.0+:** only devices that **advertise** a supported UART service UUID appear — if yours does not, use **Classic BT** or check nicFW BT advertising |
+| **BLE connects then misbehaves on a dongle** | **v1.1.0+** uses safer MTU/chunk sizing; update to the latest app build. If problems persist, try Classic SPP or another adapter |
 | **Classic BT connection fails** | Pair the radio in Android Bluetooth settings first, then retry |
 
 ---
