@@ -77,7 +77,7 @@ jobs:
           if [[ "${{ github.event_name }}" == "release" ]]; then
             echo "${{ github.event.release.tag_name }}" > /tmp/release-tags.txt
           else
-            gh release list --json tagName --jq -r '.[].tagName' > /tmp/release-tags.txt
+            gh release list --limit 500 --json tagName --jq -r '.[].tagName' > /tmp/release-tags.txt
           fi
 
           COUNT=0
