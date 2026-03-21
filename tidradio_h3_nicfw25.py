@@ -365,47 +365,29 @@ def do_upload(radio):
 
 
 def _decode_tone(tone_word):
-    """Decode rxSubTone/txSubTone to (mode, value, polarity).
-
-    The radio stores DCS codes as raw binary (e.g. 0x55 = 85 decimal).
-    CHIRP represents DCS codes as octal-encoded integers where every digit
-    is 0-7 (e.g. D125N is stored as the integer 125, meaning octal 1-2-5).
-    Convert: raw binary 85 -> oct(85) = '0o125' -> CHIRP code 125.
-    """
+    """Decode rxSubTone/txSubTone to (mode, value, polarity)."""
     tone_word = int(tone_word) & 0xFFFF
     if 0 < tone_word <= 3000:
         return "Tone", tone_word / 10.0, None
     if tone_word & 0x8000:
-        dcs_raw = tone_word & 0x01FF
+        dcs_code = tone_word & 0x01FF
         polarity = "R" if (tone_word & 0x4000) else "N"
-        if 1 <= dcs_raw <= 511:
-            # Convert raw binary to CHIRP octal-encoded format
-            chirp_code = int(oct(dcs_raw)[2:])
-            return "DTCS", chirp_code, polarity
+        if 1 <= dcs_code <= 511:
+            return "DTCS", dcs_code, polarity
     return None, None, None
 
 
 def _encode_tone(mode, value, polarity=None):
-    """Encode (mode, value, polarity) to 16-bit tone word (big-endian stored by bitwise).
-
-    CHIRP DCS values are octal-encoded integers (e.g. 125 means octal 1-2-5).
-    Convert back to raw binary for the radio: int('125', 8) = 85 = 0x55.
-    """
+    """Encode (mode, value, polarity) to 16-bit tone word (big-endian stored by bitwise)."""
     if mode == "Tone" and value is not None:
         tone_word = int(round(value * 10.0))
         if 0 <= tone_word <= 3000:
             return tone_word
-    if mode == "DTCS" and value is not None:
-        try:
-            # CHIRP code is octal-encoded; convert to raw binary for radio storage
-            dcs_raw = int(str(int(value)), 8)
-        except ValueError:
-            return 0
-        if 1 <= dcs_raw <= 511:
-            tone_word = 0x8000 | dcs_raw
-            if polarity == "R" or polarity == "I":
-                tone_word |= 0x4000
-            return tone_word
+    if mode == "DTCS" and value is not None and 1 <= value <= 511:
+        tone_word = 0x8000 | value
+        if polarity == "R" or polarity == "I":
+            tone_word |= 0x4000
+        return tone_word
     return 0
 
 
@@ -843,222 +825,227 @@ class TH3NicFw25(chirp_common.CloneModeRadio):
                 return
             name = element.get_name()
             val = element.value.get_value() if hasattr(element.value, "get_value") else element.value
-            if name == "squelch":
-                s.squelch = int(val) & 0xFF
-            elif name == "dualWatch":
-                s.dualWatch = 1 if val else 0
-            elif name == "activeVfo":
-                s.activeVfo = ACTIVEVFO_LIST.index(val) if val in ACTIVEVFO_LIST else 0
-            elif name == "step":
-                idx = STEP_LIST.index(val) if val in STEP_LIST else 0
-                s.step = STEP_VALUES[idx]
-            elif name == "rxSplit":
-                s.rxSplit = int(val) & 0xFFFF
-            elif name == "txSplit":
-                s.txSplit = int(val) & 0xFFFF
-            elif name == "pttMode":
-                s.pttMode = int(val) & 0xFF
-            elif name == "txModMeter":
-                s.txModMeter = 1 if val else 0
-            elif name == "micGain":
-                s.micGain = int(val) & 0xFF
-            elif name == "txDeviation":
-                s.txDeviation = int(val) & 0xFF
-            elif name == "battStyle":
-                s.battStyle = BATTSTYLE_LIST.index(val) if val in BATTSTYLE_LIST else 0
-            elif name == "scanRange":
-                s.scanRange = int(val) & 0xFFFF
-            elif name == "scanPersist":
-                s.scanPersist = int(val) & 0xFFFF
-            elif name == "scanResume":
-                s.scanResume = int(val) & 0xFF
-            elif name == "ultraScan":
-                s.ultraScan = int(val) & 0xFF
-            elif name == "scanUpdate":
-                s.scanUpdate = int(val) & 0xFF
-            elif name == "toneMonitor":
-                s.toneMonitor = TONEMONITOR_LIST.index(val) if val in TONEMONITOR_LIST else 0
-            elif name == "lcdBrightness":
-                s.lcdBrightness = int(val) & 0xFF
-            elif name == "lcdTimeout":
-                s.lcdTimeout = int(val) & 0xFF
-            elif name == "breathe":
-                s.breathe = int(val) & 0xFF
-            elif name == "dimmer":
-                s.dimmer = int(val) & 0xFF
-            elif name == "lcdInverted":
-                s.lcdInverted = 1 if val else 0
-            elif name == "repeaterTone":
-                s.repeaterTone = int(val) & 0xFFFF
-            elif name == "dtmfDev":
-                s.dtmfDev = int(val) & 0xFF
-            elif name == "gamma":
-                s.gamma = int(val) & 0xFF
-            elif name == "sBarStyle":
-                s.sBarStyle = int(val) & 0xFF
-            elif name == "sqNoiseLev":
-                s.sqNoiseLev = int(val) & 0xFF
-            elif name == "sBarAlwaysOn":
-                s.sBarAlwaysOn = 1 if val else 0
-            elif name == "afFilters":
-                s.afFilters = min(AF_FILTERS_LIST.index(val), 255) if val in AF_FILTERS_LIST else 0
-            elif name == "ifFreq":
-                s.ifFreq = int(val) & 0xFF
-            elif name == "vfoState_group0":
-                s.vfoState_group0 = int(val) & 0x0F
-            elif name == "vfoState_lastGroup0":
-                s.vfoState_lastGroup0 = int(val) & 0x0F
-            elif name == "vfoState_mode0":
-                s.vfoState_mode0 = OP_MODE_LIST.index(val) if val in OP_MODE_LIST else 0
-            elif name and name.startswith("vfoState_groupModeChannels0_"):
-                try:
-                    i = int(name.split("_")[-1])
-                    if 0 <= i < 16:
-                        s.vfoState_groupModeChannels0[i] = min(max(int(val), 0), 197)
-                except (ValueError, IndexError):
-                    pass
-            elif name == "vfoState_group1":
-                s.vfoState_group1 = int(val) & 0x0F
-            elif name == "vfoState_lastGroup1":
-                s.vfoState_lastGroup1 = int(val) & 0x0F
-            elif name == "vfoState_mode1":
-                s.vfoState_mode1 = OP_MODE_LIST.index(val) if val in OP_MODE_LIST else 0
-            elif name and name.startswith("vfoState_groupModeChannels1_"):
-                try:
-                    i = int(name.split("_")[-1])
-                    if 0 <= i < 16:
-                        s.vfoState_groupModeChannels1[i] = min(max(int(val), 0), 197)
-                except (ValueError, IndexError):
-                    pass
-            elif name == "keyLock":
-                s.keyLock = 1 if val else 0
-            elif name == "bluetooth":
-                s.bluetooth = 1 if val else 0
-            elif name == "powerSave":
-                s.powerSave = 1 if val else 0
-            elif name == "keyTones":
-                s.keyTones = 1 if val else 0
-            elif name == "ste":
-                s.ste = int(val) & 0xFF
-            elif name == "rfGain":
-                s.rfGain = RFGAIN_LIST.index(val) if val in RFGAIN_LIST else 0
-            elif name == "lastFmtFreq":
-                s.lastFmtFreq = int(val) & 0xFFFFFFFF
-            elif name == "vox":
-                s.vox = VOX_LIST.index(val) if val in VOX_LIST else 0
-            elif name == "voxTail":
-                s.voxTail = int(val) & 0xFFFF
-            elif name == "txTimeout":
-                s.txTimeout = int(val) & 0xFF
-            elif name == "dtmfSpeed":
-                s.dtmfSpeed = int(val) & 0xFF
-            elif name == "noiseGate":
-                s.noiseGate = int(val) & 0xFF
-            elif name == "asl":
-                s.asl = int(val) & 0xFF
-            elif name == "disableFmt":
-                s.disableFmt = 1 if val else 0
-            elif name == "dualWatchDelay":
-                s.dualWatchDelay = int(val) & 0xFF
-            elif name == "subToneDeviation":
-                s.subToneDeviation = int(val) & 0xFF
-            elif name == "pin":
-                s.pin = int(val) & 0xFFFF
-            elif name == "pinAction":
-                s.pinAction = int(val) & 0xFF
-            elif name == "lockedVfo":
-                s.lockedVfo = int(val) & 0xFF
-            elif name == "vfoLockActive":
-                s.vfoLockActive = 1 if val else 0
-            elif name == "amAgcFix":
-                s.amAgcFix = 1 if val else 0
-            elif name and name.startswith("bandPlan_") and "_" in name[9:]:
-                parts = name.split("_")
-                if len(parts) >= 3:
-                    try:
-                        idx = int(parts[1])
-                        field = "_".join(parts[2:])
-                        if 0 <= idx < 20:
-                            bp = self._memobj.bandPlans[idx]
-                            if field == "startFreq":
-                                # val is MHz (float); store 10 Hz
-                                bp.startFreq = int(round(float(val) * 100000))
-                            elif field == "endFreq":
-                                bp.endFreq = int(round(float(val) * 100000))
-                            elif field == "maxPower":
-                                bp.maxPower = MAXPOWER_BP_LIST.index(val) if val in MAXPOWER_BP_LIST else 0
-                            elif field == "txAllowed":
-                                bp.txAllowed = 1 if val else 0  # 1 = TX allowed
-                            elif field == "wrap":
-                                bp.wrap = 1 if val else 0  # 1 = wrap enabled
-                            elif field == "modulation":
-                                # Raw value IS the list index — write directly.
-                                bp.modulation = MODULATION_BP_LIST.index(val) if val in MODULATION_BP_LIST else 0
-                            elif field == "bandwidth":
-                                # Raw value IS the list index — write directly.
-                                bp.bandwidth = BANDWIDTH_BP_LIST.index(val) if val in BANDWIDTH_BP_LIST else 0
-                    except (ValueError, IndexError, TypeError):
-                        pass
-            elif name and name.startswith("scanPreset_") and "_" in name[11:]:
-                parts = name.split("_")
-                if len(parts) >= 3:
-                    try:
-                        idx = int(parts[1])
-                        field = "_".join(parts[2:])
-                        if 0 <= idx < 20:
-                            sp = self._memobj.scanPresets[idx]
-                            if field == "startFreq":
-                                # val is MHz (float); store in 10 Hz units
-                                sp.startFreq = int(round(float(val) * 100000))
-                            elif field == "endFreq":
-                                # Compute range from current (already-updated) startFreq and this endFreq.
-                                # startFreq is processed first in the UI group, so sp.startFreq is current.
-                                start_hz = int(sp.startFreq) * 10
-                                end_hz = int(round(float(val) * 1e6))
-                                range_raw = max(0, (end_hz - start_hz) // 10000)
-                                sp.range = min(range_raw, 65535)
-                            elif field == "step":
-                                # val is kHz (float); store in 10 Hz units
-                                sp.step = int(round(float(val) * 100)) & 0xFFFF
-                            elif field == "resume":
-                                sp.resume = int(val) & 0xFF
-                            elif field == "persist":
-                                sp.persist = int(val) & 0xFF
-                            elif field == "modulation":
-                                sp.modulation = MODULATION_SP_LIST.index(val) if val in MODULATION_SP_LIST else 0
-                            elif field == "ultrascan":
-                                # Write only the lower 3 bits; upper 3 bits of the 6-bit field stay 0 (unused)
-                                sp.ultrascan = int(val) & 0x07
-                            elif field == "label":
-                                label_str = (str(val) or "")[:8].ljust(8)
-                                for j, c in enumerate(label_str):
-                                    sp.label[j] = ord(c) if ord(c) < 256 else 0x20
-                                sp.label[8] = 0  # null terminator
-                    except (ValueError, IndexError, TypeError):
-                        pass
-            elif name and name.startswith("groupLabel_"):
-                try:
-                    idx = int(name.split("_")[1])
-                    if 0 <= idx < 15:
-                        label_str = (str(val) or "")[:6].ljust(6)
-                        gl = self._memobj.groupLabels[idx]
-                        for j, c in enumerate(label_str):
-                            gl.label[j] = ord(c) if ord(c) < 256 else 0x20
-                except (ValueError, IndexError):
-                    pass
-            else:
-                cal = self._memobj.calibration
-                if name == "xtal671":
-                    v = int(val)
-                    cal.xtal671 = max(-128, min(127, v))
-                elif name == "maxPowerWattsUHF":
-                    cal.maxPowerWattsUHF = int(val) & 0xFF
-                elif name == "maxPowerSettingUHF":
-                    cal.maxPowerSettingUHF = int(val) & 0xFF
-                elif name == "maxPowerWattsVHF":
-                    cal.maxPowerWattsVHF = int(val) & 0xFF
-                elif name == "maxPowerSettingVHF":
-                    cal.maxPowerSettingVHF = int(val) & 0xFF
+            self._apply_one_setting(name, val)
 
         for el in ui:
             apply_el(el)
+
+    def _apply_one_setting(self, name, val):
+        """Apply a single (name, value) to memory struct. Used by set_settings and by apply_setting_to_settings."""
+        s = self._memobj.settings
+        if name == "squelch":
+            s.squelch = int(val) & 0xFF
+        elif name == "dualWatch":
+            s.dualWatch = 1 if val else 0
+        elif name == "activeVfo":
+            s.activeVfo = ACTIVEVFO_LIST.index(val) if val in ACTIVEVFO_LIST else 0
+        elif name == "step":
+            idx = STEP_LIST.index(val) if val in STEP_LIST else 0
+            s.step = STEP_VALUES[idx]
+        elif name == "rxSplit":
+            s.rxSplit = int(val) & 0xFFFF
+        elif name == "txSplit":
+            s.txSplit = int(val) & 0xFFFF
+        elif name == "pttMode":
+            s.pttMode = int(val) & 0xFF
+        elif name == "txModMeter":
+            s.txModMeter = 1 if val else 0
+        elif name == "micGain":
+            s.micGain = int(val) & 0xFF
+        elif name == "txDeviation":
+            s.txDeviation = int(val) & 0xFF
+        elif name == "battStyle":
+            s.battStyle = BATTSTYLE_LIST.index(val) if val in BATTSTYLE_LIST else 0
+        elif name == "scanRange":
+            s.scanRange = int(val) & 0xFFFF
+        elif name == "scanPersist":
+            s.scanPersist = int(val) & 0xFFFF
+        elif name == "scanResume":
+            s.scanResume = int(val) & 0xFF
+        elif name == "ultraScan":
+            s.ultraScan = int(val) & 0xFF
+        elif name == "scanUpdate":
+            s.scanUpdate = int(val) & 0xFF
+        elif name == "toneMonitor":
+            s.toneMonitor = TONEMONITOR_LIST.index(val) if val in TONEMONITOR_LIST else 0
+        elif name == "lcdBrightness":
+            s.lcdBrightness = int(val) & 0xFF
+        elif name == "lcdTimeout":
+            s.lcdTimeout = int(val) & 0xFF
+        elif name == "breathe":
+            s.breathe = int(val) & 0xFF
+        elif name == "dimmer":
+            s.dimmer = int(val) & 0xFF
+        elif name == "lcdInverted":
+            s.lcdInverted = 1 if val else 0
+        elif name == "repeaterTone":
+            s.repeaterTone = int(val) & 0xFFFF
+        elif name == "dtmfDev":
+            s.dtmfDev = int(val) & 0xFF
+        elif name == "gamma":
+            s.gamma = int(val) & 0xFF
+        elif name == "sBarStyle":
+            s.sBarStyle = int(val) & 0xFF
+        elif name == "sqNoiseLev":
+            s.sqNoiseLev = int(val) & 0xFF
+        elif name == "sBarAlwaysOn":
+            s.sBarAlwaysOn = 1 if val else 0
+        elif name == "afFilters":
+            s.afFilters = min(AF_FILTERS_LIST.index(val), 255) if val in AF_FILTERS_LIST else 0
+        elif name == "ifFreq":
+            s.ifFreq = int(val) & 0xFF
+        elif name == "vfoState_group0":
+            s.vfoState_group0 = int(val) & 0x0F
+        elif name == "vfoState_lastGroup0":
+            s.vfoState_lastGroup0 = int(val) & 0x0F
+        elif name == "vfoState_mode0":
+            s.vfoState_mode0 = OP_MODE_LIST.index(val) if val in OP_MODE_LIST else 0
+        elif name and name.startswith("vfoState_groupModeChannels0_"):
+            try:
+                i = int(name.split("_")[-1])
+                if 0 <= i < 16:
+                    s.vfoState_groupModeChannels0[i] = min(max(int(val), 0), 197)
+            except (ValueError, IndexError):
+                pass
+        elif name == "vfoState_group1":
+            s.vfoState_group1 = int(val) & 0x0F
+        elif name == "vfoState_lastGroup1":
+            s.vfoState_lastGroup1 = int(val) & 0x0F
+        elif name == "vfoState_mode1":
+            s.vfoState_mode1 = OP_MODE_LIST.index(val) if val in OP_MODE_LIST else 0
+        elif name and name.startswith("vfoState_groupModeChannels1_"):
+            try:
+                i = int(name.split("_")[-1])
+                if 0 <= i < 16:
+                    s.vfoState_groupModeChannels1[i] = min(max(int(val), 0), 197)
+            except (ValueError, IndexError):
+                pass
+        elif name == "keyLock":
+            s.keyLock = 1 if val else 0
+        elif name == "bluetooth":
+            s.bluetooth = 1 if val else 0
+        elif name == "powerSave":
+            s.powerSave = 1 if val else 0
+        elif name == "keyTones":
+            s.keyTones = 1 if val else 0
+        elif name == "ste":
+            s.ste = int(val) & 0xFF
+        elif name == "rfGain":
+            s.rfGain = RFGAIN_LIST.index(val) if val in RFGAIN_LIST else 0
+        elif name == "lastFmtFreq":
+            s.lastFmtFreq = int(val) & 0xFFFFFFFF
+        elif name == "vox":
+            s.vox = VOX_LIST.index(val) if val in VOX_LIST else 0
+        elif name == "voxTail":
+            s.voxTail = int(val) & 0xFFFF
+        elif name == "txTimeout":
+            s.txTimeout = int(val) & 0xFF
+        elif name == "dtmfSpeed":
+            s.dtmfSpeed = int(val) & 0xFF
+        elif name == "noiseGate":
+            s.noiseGate = int(val) & 0xFF
+        elif name == "asl":
+            s.asl = int(val) & 0xFF
+        elif name == "disableFmt":
+            s.disableFmt = 1 if val else 0
+        elif name == "dualWatchDelay":
+            s.dualWatchDelay = int(val) & 0xFF
+        elif name == "subToneDeviation":
+            s.subToneDeviation = int(val) & 0xFF
+        elif name == "pin":
+            s.pin = int(val) & 0xFFFF
+        elif name == "pinAction":
+            s.pinAction = int(val) & 0xFF
+        elif name == "lockedVfo":
+            s.lockedVfo = int(val) & 0xFF
+        elif name == "vfoLockActive":
+            s.vfoLockActive = 1 if val else 0
+        elif name == "amAgcFix":
+            s.amAgcFix = 1 if val else 0
+        elif name and name.startswith("bandPlan_") and "_" in name[9:]:
+            parts = name.split("_")
+            if len(parts) >= 3:
+                try:
+                    idx = int(parts[1])
+                    field = "_".join(parts[2:])
+                    if 0 <= idx < 20:
+                        bp = self._memobj.bandPlans[idx]
+                        if field == "startFreq":
+                            bp.startFreq = int(round(float(val) * 100000))
+                        elif field == "endFreq":
+                            bp.endFreq = int(round(float(val) * 100000))
+                        elif field == "maxPower":
+                            bp.maxPower = MAXPOWER_BP_LIST.index(val) if val in MAXPOWER_BP_LIST else 0
+                        elif field == "txAllowed":
+                            bp.txAllowed = 1 if val else 0
+                        elif field == "wrap":
+                            bp.wrap = 1 if val else 0
+                        elif field == "modulation":
+                            bp.modulation = MODULATION_BP_LIST.index(val) if val in MODULATION_BP_LIST else 0
+                        elif field == "bandwidth":
+                            bp.bandwidth = BANDWIDTH_BP_LIST.index(val) if val in BANDWIDTH_BP_LIST else 0
+                except (ValueError, IndexError, TypeError):
+                    pass
+        elif name and name.startswith("scanPreset_") and "_" in name[11:]:
+            parts = name.split("_")
+            if len(parts) >= 3:
+                try:
+                    idx = int(parts[1])
+                    field = "_".join(parts[2:])
+                    if 0 <= idx < 20:
+                        sp = self._memobj.scanPresets[idx]
+                        if field == "startFreq":
+                            sp.startFreq = int(round(float(val) * 100000))
+                        elif field == "endFreq":
+                            start_hz = int(sp.startFreq) * 10
+                            end_hz = int(round(float(val) * 1e6))
+                            range_raw = max(0, (end_hz - start_hz) // 10000)
+                            sp.range = min(range_raw, 65535)
+                        elif field == "step":
+                            sp.step = int(round(float(val) * 100)) & 0xFFFF
+                        elif field == "resume":
+                            sp.resume = int(val) & 0xFF
+                        elif field == "persist":
+                            sp.persist = int(val) & 0xFF
+                        elif field == "modulation":
+                            sp.modulation = MODULATION_SP_LIST.index(val) if val in MODULATION_SP_LIST else 0
+                        elif field == "ultrascan":
+                            sp.ultrascan = int(val) & 0x07
+                        elif field == "label":
+                            label_str = (str(val) or "")[:8].ljust(8)
+                            for j, c in enumerate(label_str):
+                                sp.label[j] = ord(c) if ord(c) < 256 else 0x20
+                            sp.label[8] = 0
+                except (ValueError, IndexError, TypeError):
+                    pass
+        elif name and name.startswith("groupLabel_"):
+            try:
+                idx = int(name.split("_")[1])
+                if 0 <= idx < 15:
+                    label_str = (str(val) or "")[:6].ljust(6)
+                    gl = self._memobj.groupLabels[idx]
+                    for j, c in enumerate(label_str):
+                        gl.label[j] = ord(c) if ord(c) < 256 else 0x20
+            except (ValueError, IndexError):
+                pass
+        else:
+            cal = self._memobj.calibration
+            if name == "xtal671":
+                v = int(val)
+                cal.xtal671 = max(-128, min(127, v))
+            elif name == "maxPowerWattsUHF":
+                cal.maxPowerWattsUHF = int(val) & 0xFF
+            elif name == "maxPowerSettingUHF":
+                cal.maxPowerSettingUHF = int(val) & 0xFF
+            elif name == "maxPowerWattsVHF":
+                cal.maxPowerWattsVHF = int(val) & 0xFF
+            elif name == "maxPowerSettingVHF":
+                cal.maxPowerSettingVHF = int(val) & 0xFF
+
+    def apply_setting(self, name, val):
+        """Apply a single (name, value) to the memory struct. Used when tree->struct does not persist (e.g. Android)."""
+        self._apply_one_setting(name, val)
+
+    def apply_setting_to_settings(self, name, val):
+        """Legacy alias for apply_setting; prefer apply_setting for new code."""
+        self.apply_setting(name, val)
