@@ -17,6 +17,7 @@ on:
       - 'UserGuide.md'
       - 'docs/**'
       - 'mkdocs.yml'
+      - 'requirements-docs.txt'
       - '.github/workflows/update-userguide.yml'
   workflow_dispatch:
 
