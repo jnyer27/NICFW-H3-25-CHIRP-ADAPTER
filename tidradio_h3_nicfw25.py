@@ -365,29 +365,47 @@ def do_upload(radio):
 
 
 def _decode_tone(tone_word):
-    """Decode rxSubTone/txSubTone to (mode, value, polarity)."""
+    """Decode rxSubTone/txSubTone to (mode, value, polarity).
+
+    The radio stores DCS codes as raw binary (e.g. 0x55 = 85 decimal).
+    CHIRP represents DCS codes as octal-encoded integers where every digit
+    is 0-7 (e.g. D125N is stored as the integer 125, meaning octal 1-2-5).
+    Convert: raw binary 85 -> oct(85) = '0o125' -> CHIRP code 125.
+    """
     tone_word = int(tone_word) & 0xFFFF
     if 0 < tone_word <= 3000:
         return "Tone", tone_word / 10.0, None
     if tone_word & 0x8000:
-        dcs_code = tone_word & 0x01FF
+        dcs_raw = tone_word & 0x01FF
         polarity = "R" if (tone_word & 0x4000) else "N"
-        if 1 <= dcs_code <= 511:
-            return "DTCS", dcs_code, polarity
+        if 1 <= dcs_raw <= 511:
+            # Convert raw binary to CHIRP octal-encoded format
+            chirp_code = int(oct(dcs_raw)[2:])
+            return "DTCS", chirp_code, polarity
     return None, None, None
 
 
 def _encode_tone(mode, value, polarity=None):
-    """Encode (mode, value, polarity) to 16-bit tone word (big-endian stored by bitwise)."""
+    """Encode (mode, value, polarity) to 16-bit tone word (big-endian stored by bitwise).
+
+    CHIRP DCS values are octal-encoded integers (e.g. 125 means octal 1-2-5).
+    Convert back to raw binary for the radio: int('125', 8) = 85 = 0x55.
+    """
     if mode == "Tone" and value is not None:
         tone_word = int(round(value * 10.0))
         if 0 <= tone_word <= 3000:
             return tone_word
-    if mode == "DTCS" and value is not None and 1 <= value <= 511:
-        tone_word = 0x8000 | value
-        if polarity == "R" or polarity == "I":
-            tone_word |= 0x4000
-        return tone_word
+    if mode == "DTCS" and value is not None:
+        try:
+            # CHIRP code is octal-encoded; convert to raw binary for radio storage
+            dcs_raw = int(str(int(value)), 8)
+        except ValueError:
+            return 0
+        if 1 <= dcs_raw <= 511:
+            tone_word = 0x8000 | dcs_raw
+            if polarity == "R" or polarity == "I":
+                tone_word |= 0x4000
+            return tone_word
     return 0
 
 
