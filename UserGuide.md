@@ -674,6 +674,18 @@ The importer follows the CHIRP column spec:
 > If you do *not* want the tone imported, zero out the `rToneFreq` column (or set it
 > to `88.5`) before importing.
 
+#### Search RepeaterBook (API)
+
+Use **⋮ → Search RepeaterBook…** to query [RepeaterBook](https://www.repeaterbook.com) over the approved JSON API (`export.php` / `exportROW.php`), pick repeaters from the results, then **Import selected** — the app opens the same **Import CHIRP CSV** screen as file/clipboard (groups, power, starting channel, preview).
+
+**Developer / build setup (do not commit secrets):** in the project’s `local.properties` (next to the Android module), add:
+
+- `REPEATERBOOK_APP_TOKEN=` — your RepeaterBook app token  
+- `REPEATERBOOK_CONTACT_EMAIL=` — contact email required in the API User-Agent  
+- `REPEATERBOOK_APP_URL=` *(optional)* — public project or support URL included in the User-Agent  
+
+Rebuild the app after changing these values. Data use is subject to [RepeaterBook API terms](https://www.repeaterbook.com/wiki/doku.php?id=api).
+
 ---
 
 ### 8.2 Sort Channels by Group

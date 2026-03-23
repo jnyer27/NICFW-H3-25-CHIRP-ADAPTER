@@ -47,4 +47,32 @@
     <string name="bulk_edit_state_on">on</string>
     <string name="bulk_edit_state_off">off</string>
     <string name="select_all_matches_cd">Select all visible matches</string>
+
+    <string name="action_search_repeaterbook">Search RepeaterBook…</string>
+    <string name="repeaterbook_title">Search RepeaterBook</string>
+    <string name="repeaterbook_search">Search</string>
+    <string name="repeaterbook_import_selected">Import selected</string>
+    <string name="repeaterbook_exit">Exit</string>
+    <string name="repeaterbook_region_na">North America (export.php)</string>
+    <string name="repeaterbook_region_row">Rest of world (exportROW.php)</string>
+    <string name="repeaterbook_country">Country</string>
+    <string name="repeaterbook_state_id">State ID (NA, e.g. FIPS)</string>
+    <string name="repeaterbook_region_row_hint">Region (ROW)</string>
+    <string name="repeaterbook_county">County</string>
+    <string name="repeaterbook_city">City</string>
+    <string name="repeaterbook_landmark">Landmark</string>
+    <string name="repeaterbook_callsign">Callsign</string>
+    <string name="repeaterbook_frequency">Frequency (MHz)</string>
+    <string name="repeaterbook_mode">Mode</string>
+    <string name="repeaterbook_emcomm">Emcomm</string>
+    <string name="repeaterbook_stype">Service type</string>
+    <string name="repeaterbook_filter_results">Filter results</string>
+    <string name="repeaterbook_no_results">No repeaters returned. Try broader filters.</string>
+    <string name="repeaterbook_need_eeprom">Load EEPROM from the radio before searching RepeaterBook.</string>
+    <string name="repeaterbook_configure_token">Add REPEATERBOOK_APP_TOKEN and REPEATERBOOK_CONTACT_EMAIL to local.properties (see UserGuide).</string>
+    <string name="repeaterbook_search_failed">Search failed: %1$s</string>
+    <string name="repeaterbook_select_one">Select at least one repeater to import.</string>
+    <string name="repeaterbook_menu_select_all">Select all</string>
+    <string name="repeaterbook_menu_clear">Clear selection</string>
+    <string name="repeaterbook_attribution_html"><![CDATA[Repeater data © <a href="https://www.repeaterbook.com">RepeaterBook.com</a> — used under their API terms.]]></string>
 </resources>

@@ -21,6 +21,8 @@
     <!-- External storage write — needed only on API 24-28 for saving EEPROM dumps -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="false"
         android:icon="@drawable/ic_launcher"
@@ -47,6 +49,10 @@
             android:theme="@style/Theme.NicFwChannelEditor" />
         <activity
             android:name=".ChirpImportActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NicFwChannelEditor" />
+        <activity
+            android:name=".RepeaterBookSearchActivity"
             android:exported="false"
             android:theme="@style/Theme.NicFwChannelEditor" />
         <activity

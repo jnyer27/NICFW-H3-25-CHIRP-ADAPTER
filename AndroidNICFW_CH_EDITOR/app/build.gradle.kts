@@ -12,6 +12,13 @@ val localProps = Properties().apply {
     if (f.exists()) f.inputStream().use { load(it) }
 }
 
+fun String?.forBuildConfig(): String =
+    (this ?: "").replace("\\", "\\\\").replace("\"", "\\\"")
+
+val repeaterBookToken = localProps.getProperty("REPEATERBOOK_APP_TOKEN", "").forBuildConfig()
+val repeaterBookEmail = localProps.getProperty("REPEATERBOOK_CONTACT_EMAIL", "").forBuildConfig()
+val repeaterBookUrl = localProps.getProperty("REPEATERBOOK_APP_URL", "").forBuildConfig()
+
 android {
     namespace = "com.nicfw.tdh3editor"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -22,6 +29,9 @@ android {
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 3
         versionName = "1.2.0"
+        buildConfigField("String", "REPEATERBOOK_APP_TOKEN", "\"$repeaterBookToken\"")
+        buildConfigField("String", "REPEATERBOOK_CONTACT_EMAIL", "\"$repeaterBookEmail\"")
+        buildConfigField("String", "REPEATERBOOK_APP_URL", "\"$repeaterBookUrl\"")
     }
 
     signingConfigs {
@@ -56,6 +66,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
@@ -66,6 +77,7 @@ kotlin {
 }
 
 dependencies {
+    testImplementation(libs.json)
     testImplementation(libs.junit)
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
@@ -76,4 +88,5 @@ dependencies {
     implementation(libs.coordinatorlayout)
     implementation(libs.recyclerview)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.okhttp)
 }
