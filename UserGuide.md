@@ -162,16 +162,22 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
-│ Ch 1      462.5625      GMRS 1                                          │
-│ [GRP:All][GRP:GMRS]     [PWR:1.0W][FM][Simplex][BW:N][TX:67.0Hz]       │
+│ LEFT COLUMN (fixed)          RIGHT COLUMN (flex)                         │
 ├──────────────────────────────────────────────────────────────────────────┤
-│ Ch 2      462.5875      GMRS 2                                          │
-│ [GRP:All][GRP:GMRS]     [PWR:5.0W][FM][+5MHz][BW:W][RX:D023N]          │
+│ Ch 1                         GMRS 1                                      │
+│ 462.5625                     [PWR:1.0W][FM][Simplex][BW:N][TX:67.0Hz]   │
+│ [GRP:All][GRP:GMRS]                                                      │
 ├──────────────────────────────────────────────────────────────────────────┤
-│ Ch 4      162.4000      WX1                                             │
-│ [GRP:WX]                [PWR:N/T][AUTO][Simplex][BW:W]                  │
+│ Ch 2                         GMRS 2                                      │
+│ 462.5875                     [PWR:5.0W][FM][+5MHz][BW:W][RX:D023N]      │
+│ [GRP:All][GRP:GMRS]                                                      │
 ├──────────────────────────────────────────────────────────────────────────┤
-│ Ch 5      (empty)       -                                               │
+│ Ch 4                         WX1                                         │
+│ 162.4000                     [PWR:N/T][AUTO][Simplex][BW:W]             │
+│ [GRP:WX]                                                                 │
+├──────────────────────────────────────────────────────────────────────────┤
+│ Ch 5                         -                                           │
+│ (empty)                                                                   │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -188,9 +194,10 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 
 | Column | Description |
 |---|---|
-| `#` | Channel slot number (1–198, fixed) |
-| Left column | `Ch #`, RX frequency, and Group chips |
-| Name | Up to 12-character label (larger text) |
+| `#` | Channel slot number (1–198, fixed), shown top-left of each row |
+| Frequency | RX frequency shown directly under channel number |
+| Groups | Group chips shown under frequency in the left column |
+| Name | Channel name shown on the right, top line, larger text |
 | Chips | Power (`PWR:`), Mode (`FM/AM/USB/AUTO`), Duplex (`Simplex`, `+xMHz`, `-xMHz`, `Split`), Bandwidth (`BW:W` / `BW:N`), and conditional Tone chips (`TX:` / `RX:`) |
 | Chip colors | Power: gray (`N/T/0`), yellow (`1–70`), red (`>70`); bandwidth: blue/orange; duplex and mode are color-coded by value |
 
