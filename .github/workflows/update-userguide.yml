@@ -9,7 +9,9 @@ name: Update User Guide
 # 3. workflow_dispatch — same as (2), for manual runs / one-off backfill.
 on:
   release:
-    types: [published]
+    # Run when a release is first published and whenever notes are edited,
+    # so User Guide links are always present even after manual note changes.
+    types: [published, edited]
   push:
     branches:
       - main
