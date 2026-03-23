@@ -1,6 +1,6 @@
 # TD-H3 Channel Editor — User Guide
 
-> **App:** NICFW TD-H3 Channel Editor (**Android v1.1.0** — see [release notes](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0) and [app CHANGELOG](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md))
+> **App:** NICFW TD-H3 Channel Editor (**Android v1.2.0** — see [release notes](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0) and [app CHANGELOG](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md))
 > **Radio:** TIDRadio TD-H3 running **nicFW v2.5**
 > **Platform:** Android (min SDK 24 / Android 7.0)
 
