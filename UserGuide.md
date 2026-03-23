@@ -163,13 +163,13 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ Ch 1      462.5625      GMRS 1                                          │
-│ [GRP:All][GRP:GMRS]     [PWR:1.0W][FM][Simplex][BW:N][TX:67.0Hz]       │
+│ [⬛ GRP:All][⬛ GRP:GMRS] [🟨 PWR:1.0W][🟦 FM][⬜ Simplex][🟧 BW:N][🟦 TX:67.0Hz] │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 2      462.5875      GMRS 2                                          │
-│ [GRP:All][GRP:GMRS]     [PWR:5.0W][FM][+5MHz][BW:W][RX:D023N]          │
+│ [⬛ GRP:All][⬛ GRP:GMRS] [🟥 PWR:5.0W][🟦 FM][🟦 +5MHz][🟦 BW:W][🟪 RX:D023N] │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 4      162.4000      WX1                                             │
-│ [GRP:WX]                [PWR:N/T][AUTO][Simplex][BW:W]                  │
+│ [⬛ GRP:WX]              [⬜ PWR:N/T][⬜ AUTO][⬜ Simplex][🟦 BW:W]        │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 5      (empty)       -                                               │
 └──────────────────────────────────────────────────────────────────────────┘
@@ -177,12 +177,12 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 
 **Chip color legend (visual intent):**
 
-- **Groups (`GRP:*`)** = dark gray chips with white text.
-- **Power (`PWR:*`)** = gray (`N/T` or `0`), yellow (`1–70`), red (`>70`).
+- **⬛ Groups (`GRP:*`)** = dark gray chips with white text.
+- **Power (`PWR:*`)** = **⬜ gray** (`N/T` or `0`), **🟨 yellow** (`1–70`), **🟥 red** (`>70`).
 - **Mode** = color-coded by mode (`FM`, `AM`, `USB`, `AUTO`).
 - **Duplex** = color-coded by mode (`Simplex`, `+xMHz`, `-xMHz`, `Split`).
-- **Bandwidth** = blue for `BW:W`, orange/amber for `BW:N`.
-- **Tone chips** = cyan for CTCSS (`TX:67.0Hz`), magenta/fuchsia for DCS (`RX:D023N`).
+- **Bandwidth** = **🟦 blue** for `BW:W`, **🟧 orange/amber** for `BW:N`.
+- **Tone chips** = **🟦 cyan/light-blue** for CTCSS (`TX:67.0Hz`), **🟪 magenta/fuchsia** for DCS (`RX:D023N`).
 
 **Column descriptions:**
 
