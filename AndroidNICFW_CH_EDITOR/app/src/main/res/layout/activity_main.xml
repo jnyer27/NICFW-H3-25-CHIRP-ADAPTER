@@ -204,6 +204,14 @@
                 android:contentDescription="Set channel groups for selected channels" />
 
             <ImageButton
+                android:id="@+id/btnBulkEdit"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_bulk_edit"
+                android:contentDescription="@string/bulk_edit_cd" />
+
+            <ImageButton
                 android:id="@+id/btnExportCsv"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
