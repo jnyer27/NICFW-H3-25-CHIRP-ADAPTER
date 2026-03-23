@@ -4,6 +4,8 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [1.2.0] — 2026-03-23
+
 ### BLE
 
 - **Setup failures** — Service discovery errors, missing UART service/characteristics, or a failed CCCD (notification enable) write now report failure to the caller and **disconnect + close GATT on the main thread**, instead of leaving a half-open connection or treating a bad descriptor write as success.
@@ -25,3 +27,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 - If your radio or adapter **does not include a UART service UUID in its advertisement**, it may no longer appear in the BLE scan list. In that case use **Classic SPP** (paired devices) or report the advertising data so a filter adjustment can be considered.
 
 [1.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0
+[1.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0
