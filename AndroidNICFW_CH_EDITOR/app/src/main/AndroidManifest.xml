@@ -4,7 +4,8 @@
     <!-- Classic Bluetooth (Android ≤ 11) -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <!-- BLE scanning requires location on Android 6–11 -->
+    <!-- BLE scanning requires location on Android 6–11 (lint: pair coarse + fine) -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
 
     <!-- Bluetooth (Android 12+) -->

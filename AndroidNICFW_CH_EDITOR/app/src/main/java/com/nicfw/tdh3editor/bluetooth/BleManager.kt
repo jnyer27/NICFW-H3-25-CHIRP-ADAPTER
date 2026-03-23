@@ -3,6 +3,7 @@ package com.nicfw.tdh3editor.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothStatusCodes
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
@@ -514,7 +515,7 @@ class BleRadioStream : RadioStream {
         writeType: Int
     ): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            g.writeCharacteristic(wc, data, writeType) == 0 // 0 = BluetoothStatusCodes.SUCCESS
+            g.writeCharacteristic(wc, data, writeType) == BluetoothStatusCodes.SUCCESS
         } else {
             wc.value = data
             wc.writeType = writeType
