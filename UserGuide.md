@@ -302,7 +302,7 @@ appears at the bottom of the screen:
 │ ✓ │ GMRS 3  │ 462.6125  │  1.0W │  A  │ N  ← selected │
 │  …                                                       │
 ├──────────────────────────────────────────────────────────┤
-│ 3 selected  │ ↑ │ ↓ │ ⤓ │ 📡 │ 🏷 │ 🗑 │ Done │
+│ 3 selected  │ ↑ │ ↓ │ ⤓ │ ✎ │ ↑□ │ 🗑 │ Done │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -313,8 +313,7 @@ appears at the bottom of the screen:
 | **Move Up** | ↑ | Shifts all selected channels one slot up (swaps with the channel above) |
 | **Move Down** | ↓ | Shifts all selected channels one slot down |
 | **Move to Slot** | ⤓ | Opens a slot picker — moves the selected block to any slot (1–198) in one step |
-| **Set TX Power** | 📡 | Opens a power picker — applies chosen power to all selected channels |
-| **Set Groups** | 🏷 | Opens a group editor — assigns groups to all selected channels |
+| **Bulk Edit** | ✎ | Opens a field picker (TX power, groups, modulation, bandwidth, busy lock) |
 | **Export CSV** | ↑□ | Names and exports selected channels as a CHIRP-compatible CSV file |
 | **Delete** | 🗑 | Clears (empties) all selected channel slots |
 | **Done** | text | Exits multi-select mode, returns to normal browsing |
@@ -338,7 +337,7 @@ channel list. The swap is performed in memory; tap **Save to Radio** afterward t
 
 ### 6.2 Set TX Power (Bulk)
 
-Tap the **📡** (RF transmit / antenna) button while channels are selected:
+Tap **Bulk Edit** (✎), then choose **TX power**:
 
 ```
 ┌─────────────────────────────┐
@@ -386,7 +385,7 @@ used in the advisory. Apply is never blocked — the stored value is saved as-is
 
 ### 6.3 Set Channel Groups (Bulk)
 
-Tap the **🏷** (label/tag) button while channels are selected:
+Tap **Bulk Edit** (✎), then choose **Channel groups**:
 
 ```
 ┌──────────────────────────────────────────┐
@@ -538,8 +537,8 @@ Tap the **🔍** (magnifying glass) icon in the top toolbar to open the search b
 **Select All Matches:**
 Once you have results, tap **Select All** to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
 - Tap **Export CSV** (↑□) to export the whole matched set as a CHIRP CSV.
-- Tap **Set TX Power** (📡) to change power for the whole group at once.
-- Tap **Set Groups** (🏷) to bulk-assign groups to all matches.
+- Tap **Bulk Edit** (✎) then **TX power** to change power for the whole group at once.
+- Tap **Bulk Edit** (✎) then **Channel groups** to bulk-assign groups to all matches.
 - Tap any card to deselect individually, or tap **Done** to exit selection mode.
 
 > **Example workflow — share all GMRS repeaters:**
@@ -1429,7 +1428,7 @@ Target   Raw Value (approx.)
   category (e.g., a GMRS repeater might be in Group A *and* Group D for local repeaters).
 - After organizing groups, run **Sort Channels by Group** to pack related channels into
   contiguous slot numbers for cleaner scanning.
-- Use **Bulk Group Edit** (🏷 in multi-select mode) to assign a group to dozens of
+- Use **Bulk Edit** (✎ in multi-select mode), then choose **Channel groups**, to assign a group to dozens of
   channels at once instead of editing each one individually.
 
 ---

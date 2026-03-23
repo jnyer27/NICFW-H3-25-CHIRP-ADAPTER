@@ -7,15 +7,17 @@ import com.nicfw.tdh3editor.radio.EepromParser
 /**
  * Bulk-editable channel fields (multi-select on the main list). Each maps to a
  * “setting type” in the UI: list pickers vs checkbox for bool.
- *
- * TX power and groups stay on their dedicated toolbar buttons.
  */
 enum class ChannelBulkField {
+    TX_POWER,
+    GROUPS,
     MODULATION,
     BANDWIDTH,
     BUSY_LOCK;
 
     fun title(context: Context): String = when (this) {
+        TX_POWER -> context.getString(R.string.bulk_edit_field_tx_power)
+        GROUPS -> context.getString(R.string.bulk_edit_field_groups)
         MODULATION -> context.getString(R.string.bulk_edit_field_modulation)
         BANDWIDTH -> context.getString(R.string.bulk_edit_field_bandwidth)
         BUSY_LOCK -> context.getString(R.string.bulk_edit_field_busy_lock)

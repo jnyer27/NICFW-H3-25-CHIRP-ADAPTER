@@ -112,19 +112,19 @@
                 android:textSize="14sp" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSelectAllMatches"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select All"
-                android:visibility="gone" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnClearSearch"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="✕" />
+
+            <ImageButton
+                android:id="@+id/btnSelectAllMatches"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_select_all_outline"
+                android:contentDescription="@string/select_all_matches_cd" />
 
         </LinearLayout>
 
@@ -186,22 +186,6 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_move_to_slot"
                 android:contentDescription="Move selected channels to slot" />
-
-            <ImageButton
-                android:id="@+id/btnSetTxPower"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_tx_power"
-                android:contentDescription="Set TX power for selected channels" />
-
-            <ImageButton
-                android:id="@+id/btnSetGroups"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_group_label"
-                android:contentDescription="Set channel groups for selected channels" />
 
             <ImageButton
                 android:id="@+id/btnBulkEdit"

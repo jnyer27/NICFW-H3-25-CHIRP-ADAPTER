@@ -351,8 +351,6 @@ class MainActivity : AppCompatActivity() {
         binding.btnMoveUp.setOnClickListener        { moveSelectedUp() }
         binding.btnMoveDown.setOnClickListener      { moveSelectedDown() }
         binding.btnMoveTo.setOnClickListener        { moveSelectedToPosition() }
-        binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
-        binding.btnSetGroups.setOnClickListener     { setGroupsSelected() }
         binding.btnBulkEdit.setOnClickListener      { bulkEditSelectedChannels() }
         binding.btnExportCsv.setOnClickListener     { exportSelectedChannels() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
@@ -372,8 +370,6 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable?) {
                 searchQuery = s?.toString() ?: ""
-                binding.btnSelectAllMatches.visibility =
-                    if (searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
                 applyFilter()
             }
         })
@@ -381,7 +377,6 @@ class MainActivity : AppCompatActivity() {
             searchQuery = ""
             binding.searchEditText.setText("")
             binding.searchBar.visibility = View.GONE
-            binding.btnSelectAllMatches.visibility = View.GONE
             applyFilter()
         }
         binding.btnSelectAllMatches.setOnClickListener {
@@ -395,7 +390,6 @@ class MainActivity : AppCompatActivity() {
             searchQuery = ""
             binding.searchEditText.setText("")
             binding.searchBar.visibility = View.GONE
-            binding.btnSelectAllMatches.visibility = View.GONE
             applyFilter()
         } else {
             binding.searchBar.visibility = View.VISIBLE
@@ -1407,8 +1401,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Bulk-edit modulation, bandwidth, or busy lock on selected non-empty channels.
-     * TX power and groups use their dedicated toolbar actions.
+     * Bulk-edit selected non-empty channels from one entry point (pencil menu).
      */
     private fun bulkEditSelectedChannels() {
         val eep = eeprom ?: return
@@ -1420,6 +1413,8 @@ class MainActivity : AppCompatActivity() {
             .setTitle(getString(R.string.bulk_edit_pick_field, selected.size))
             .setItems(labels) { _, which ->
                 when (ChannelBulkField.entries[which]) {
+                    ChannelBulkField.TX_POWER -> setTxPowerSelected()
+                    ChannelBulkField.GROUPS -> setGroupsSelected()
                     ChannelBulkField.MODULATION -> showBulkModulationDialog(eep, selected)
                     ChannelBulkField.BANDWIDTH -> showBulkBandwidthDialog(eep, selected)
                     ChannelBulkField.BUSY_LOCK -> showBulkBusyLockDialog(eep, selected)

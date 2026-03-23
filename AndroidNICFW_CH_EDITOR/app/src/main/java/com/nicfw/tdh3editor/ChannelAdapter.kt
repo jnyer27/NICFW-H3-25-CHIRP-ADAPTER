@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.graphics.Color
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.nicfw.tdh3editor.radio.Channel
 import com.nicfw.tdh3editor.radio.EepromConstants
 
@@ -134,33 +136,39 @@ class ChannelAdapter(
 
         private val channelNumber:    TextView     = card.findViewById(R.id.channelNumber)
         private val channelFreq:      TextView     = card.findViewById(R.id.channelFreq)
+        private val channelGroups:    ChipGroup    = card.findViewById(R.id.channelGroups)
         private val channelName:      TextView     = card.findViewById(R.id.channelName)
-        private val channelGroups:    TextView     = card.findViewById(R.id.channelGroups)
-        private val channelToneGroup: LinearLayout = card.findViewById(R.id.channelToneGroup)
-        private val channelTxTone:    TextView     = card.findViewById(R.id.channelTxTone)
-        private val channelRxTone:    TextView     = card.findViewById(R.id.channelRxTone)
-        private val channelDuplex:     TextView     = card.findViewById(R.id.channelDuplex)
-        private val channelPower:      TextView     = card.findViewById(R.id.channelPower)
-        private val channelBandwidth:  TextView     = card.findViewById(R.id.channelBandwidth)
+        private val channelChips:     ChipGroup    = card.findViewById(R.id.channelChips)
         private val channelDragHandle: ImageView    = card.findViewById(R.id.channelDragHandle)
 
         @Suppress("ClickableViewAccessibility")
         fun bind(channel: Channel) {
             channelNumber.text = card.context.getString(R.string.channel_number, channel.number)
+            channelGroups.removeAllViews()
+            channelChips.removeAllViews()
 
             if (channel.empty) {
                 channelFreq.text   = card.context.getString(R.string.empty_channel)
+                channelGroups.visibility = View.GONE
                 channelName.text   = ""
-                channelGroups.text = ""; channelGroups.visibility = View.GONE
-                channelDuplex.text = ""
-                channelPower.text  = ""
-                channelBandwidth.visibility = View.GONE
-                channelTxTone.text = ""; channelRxTone.text = ""
-                channelToneGroup.visibility = View.GONE
             } else {
                 channelFreq.text   = channel.displayFreq()
+                val groupNames = buildGroupsList(channel)
+                if (groupNames.isEmpty()) {
+                    channelGroups.visibility = View.GONE
+                } else {
+                    groupNames.forEach { label ->
+                        channelGroups.addView(
+                            makeChip(
+                                text = label,
+                                bgColor = Color.parseColor("#4B5563"),
+                                textColor = Color.WHITE
+                            )
+                        )
+                    }
+                    channelGroups.visibility = View.VISIBLE
+                }
                 channelName.text   = channel.name.ifEmpty { "-" }
-                channelDuplex.text = channel.displayDuplex()
                 val wattsText = EepromConstants.powerToWatts(channel.power)
                 // TX restricted when the frequency's Band Plan entry has txAllowed=false,
                 // or when the frequency doesn't fall in any Band Plan entry at all.
@@ -182,29 +190,58 @@ class ChannelAdapter(
                 val cap = if (isVhf) ts.maxPowerSettingVHF else ts.maxPowerSettingUHF
                 val exceedsCap = rawPower > 0 && rawPower > cap
 
-                channelPower.text = when {
+                val powerLabel = when {
                     wattsText != "N/T" && txRestricted && exceedsCap ->
-                        "$wattsText (BP) ⚠"   // Band Plan restricts TX AND over cap
+                        "$wattsText (BP) ⚠"
                     wattsText != "N/T" && txRestricted ->
-                        "$wattsText (BP)"      // Band Plan forces N/T on this frequency
+                        "$wattsText (BP)"
                     exceedsCap ->
-                        "$wattsText ⚠"        // Exceeds VHF/UHF power cap — will be clamped
+                        "$wattsText ⚠"
                     else ->
                         wattsText
                 }
 
-                channelBandwidth.text       = if (channel.bandwidth == "Narrow") "N" else "W"
-                channelBandwidth.visibility = View.VISIBLE
+                val rawPowerValue = channel.power.toIntOrNull() ?: 0
+                val powerChipBg = when {
+                    rawPowerValue <= 0 -> Color.parseColor("#6B7280")   // gray for N/T or 0
+                    rawPowerValue > 70 -> Color.parseColor("#DC2626")   // red
+                    else -> Color.parseColor("#FACC15")                  // yellow
+                }
+                val powerChipText = if (rawPowerValue in 1..70) Color.BLACK else Color.WHITE
+                channelChips.addView(
+                    makeChip(
+                        text = "PWR:$powerLabel",
+                        bgColor = powerChipBg,
+                        textColor = powerChipText
+                    )
+                )
 
-                val groups = buildGroupsDisplay(channel)
-                channelGroups.text       = groups
-                channelGroups.visibility = if (groups.isEmpty()) View.GONE else View.VISIBLE
+                channelChips.addView(
+                    makeChip(
+                        text = channel.mode,
+                        bgColor = modeChipColor(channel.mode),
+                        textColor = Color.WHITE
+                    )
+                )
+                channelChips.addView(
+                    makeChip(
+                        text = duplexChipText(channel),
+                        bgColor = duplexChipColor(channel),
+                        textColor = Color.WHITE
+                    )
+                )
 
-                val tx = channel.displayTxTone()
-                val rx = channel.displayRxTone()
-                channelTxTone.text    = if (tx.isNotEmpty()) "T: $tx" else ""
-                channelRxTone.text    = if (rx.isNotEmpty()) "R: $rx" else ""
-                channelToneGroup.visibility = if (tx.isEmpty() && rx.isEmpty()) View.GONE else View.VISIBLE
+                val isNarrow = channel.bandwidth == "Narrow"
+                channelChips.addView(
+                    makeChip(
+                        text = if (isNarrow) "BW:N" else "BW:W",
+                        bgColor = if (isNarrow) Color.parseColor("#D97706") else Color.parseColor("#2563EB"),
+                        textColor = Color.WHITE
+                    )
+                )
+
+                addToneChip(channel.txToneMode, channel.txToneVal, channel.txTonePolarity, prefix = "TX")
+                addToneChip(channel.rxToneMode, channel.rxToneVal, channel.rxTonePolarity, prefix = "RX")
             }
 
             // Selection check state (drives the MaterialCardView checked-icon overlay)
@@ -241,18 +278,77 @@ class ChannelAdapter(
         }
 
         /**
-         * Builds the groups display string, resolving letter codes to user-defined
-         * labels (e.g. "All", "MURS"). Falls back to letter when label is blank.
+         * Builds the group chips list resolving group letters to user-defined labels.
          */
-        private fun buildGroupsDisplay(channel: Channel): String {
+        private fun buildGroupsList(channel: Channel): List<String> {
             val labels = EepromHolder.groupLabels
             return listOf(channel.group1, channel.group2, channel.group3, channel.group4)
                 .filter { it != "None" }
-                .joinToString("  ") { letter ->
+                .map { letter ->
                     val idx   = EepromConstants.GROUP_LETTERS.indexOf(letter)
                     val label = labels.getOrNull(idx)?.trim() ?: ""
                     if (label.isEmpty()) letter else label
                 }
+        }
+
+        private fun addToneChip(mode: String?, value: Double?, polarity: String?, prefix: String) {
+            val (text, bg, fg) = when (mode) {
+                "Tone" -> Triple(
+                    "$prefix:${"%.1f".format(value ?: 0.0)}Hz",
+                    Color.parseColor("#06B6D4"),
+                    Color.BLACK
+                )
+                "DTCS" -> Triple(
+                    "$prefix:D${"%03d".format((value ?: 0.0).toInt())}${polarity ?: "N"}",
+                    Color.parseColor("#C026D3"),
+                    Color.WHITE
+                )
+                else -> return
+            }
+            channelChips.addView(makeChip(text, bg, fg))
+        }
+
+        private fun duplexChipText(channel: Channel): String = when (channel.duplex) {
+            "+" -> "+${channel.offsetHz / 1_000_000L}MHz"
+            "-" -> "-${channel.offsetHz / 1_000_000L}MHz"
+            "split" -> "Split"
+            else -> "Simplex"
+        }
+
+        private fun duplexChipColor(channel: Channel): Int = when (channel.duplex) {
+            "+" -> Color.parseColor("#2563EB")      // blue
+            "-" -> Color.parseColor("#9333EA")      // purple
+            "split" -> Color.parseColor("#0D9488")  // teal
+            else -> Color.parseColor("#4B5563")     // neutral gray (simplex)
+        }
+
+        private fun modeChipColor(mode: String): Int = when (mode.uppercase()) {
+            "FM" -> Color.parseColor("#0EA5E9")    // sky
+            "AM" -> Color.parseColor("#B45309")    // amber-brown
+            "USB" -> Color.parseColor("#7C3AED")   // violet
+            "AUTO" -> Color.parseColor("#6B7280")  // neutral gray
+            else -> Color.parseColor("#4B5563")
+        }
+
+        private fun makeChip(text: String, bgColor: Int, textColor: Int): Chip {
+            return Chip(card.context).apply {
+                this.text = text
+                isClickable = false
+                isCheckable = false
+                chipCornerRadius = 999f
+                chipBackgroundColor = android.content.res.ColorStateList.valueOf(bgColor)
+                setTextColor(textColor)
+                textSize = 11f
+                setEnsureMinTouchTargetSize(false)
+                minHeight = 0
+                chipMinHeight = 0f
+                chipStartPadding = 6f
+                chipEndPadding = 6f
+                textStartPadding = 0f
+                textEndPadding = 0f
+                textAlignment = View.TEXT_ALIGNMENT_CENTER
+                gravity = android.view.Gravity.CENTER
+            }
         }
     }
 
