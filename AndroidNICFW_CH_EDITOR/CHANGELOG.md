@@ -2,6 +2,13 @@
 
 All notable changes to this app are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+### BLE
+
+- **Setup failures** — Service discovery errors, missing UART service/characteristics, or a failed CCCD (notification enable) write now report failure to the caller and **disconnect + close GATT on the main thread**, instead of leaving a half-open connection or treating a bad descriptor write as success.
+- **Stream teardown** — `BleRadioStream` clears its GATT and write-characteristic references on `close()` to avoid use-after-close writes.
+
 ## [1.1.0] — 2026-03-20
 
 ### BLE (Bluetooth Low Energy)

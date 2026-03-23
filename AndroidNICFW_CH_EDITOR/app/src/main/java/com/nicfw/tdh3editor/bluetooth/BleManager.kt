@@ -3,6 +3,7 @@ package com.nicfw.tdh3editor.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothStatusCodes
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
@@ -130,6 +131,12 @@ class BleManager(private val context: Context) {
             }
         }
 
+        /** Release GATT after a failed setup step (discovery / CCCD) on the main thread. */
+        fun failSetup(err: Exception) {
+            deliver(Result.failure(err))
+            mainHandler.post { disconnect() }
+        }
+
         val discoverLock = AtomicBoolean(false)
         val mtuFallbackRef = AtomicReference<Runnable?>(null)
 
@@ -184,17 +191,19 @@ class BleManager(private val context: Context) {
 
             override fun onServicesDiscovered(g: BluetoothGatt, status: Int) {
                 if (status != BluetoothGatt.GATT_SUCCESS) {
-                    return deliver(Result.failure(IOException("Service discovery failed (status=$status)")))
+                    failSetup(IOException("Service discovery failed (status=$status)"))
+                    return
                 }
                 val svc = SUPPORTED_UART_SERVICE_UUIDS.firstNotNullOfOrNull { uuid -> g.getService(uuid) }
-                    ?: return deliver(
-                        Result.failure(
+                    ?: run {
+                        failSetup(
                             IOException(
                                 "No supported UART service found. Expected one of: " +
                                     SUPPORTED_UART_SERVICE_UUIDS.joinToString { it.toString() }
                             )
                         )
-                    )
+                        return
+                    }
 
                 var notifyChar: BluetoothGattCharacteristic? = null
                 var writeChar: BluetoothGattCharacteristic? = null
@@ -216,13 +225,12 @@ class BleManager(private val context: Context) {
                 }
 
                 if (notifyChar == null || writeChar == null) {
-                    return deliver(
-                        Result.failure(
-                            IOException(
-                                "Required notify + write characteristics not found on service ${svc.uuid}"
-                            )
+                    failSetup(
+                        IOException(
+                            "Required notify + write characteristics not found on service ${svc.uuid}"
                         )
                     )
+                    return
                 }
 
                 // Prefer WRITE_TYPE_DEFAULT (with ACK) when available
@@ -246,6 +254,10 @@ class BleManager(private val context: Context) {
                 descriptor: BluetoothGattDescriptor,
                 status: Int
             ) {
+                if (status != BluetoothGatt.GATT_SUCCESS) {
+                    failSetup(IOException("CCCD write failed (status=$status)"))
+                    return
+                }
                 stream.markReady()
                 deliver(Result.success(stream))
             }
@@ -393,6 +405,8 @@ class BleRadioStream : RadioStream {
         openFlag.set(false)
         rxQueue.clear()
         txBuf.reset()
+        gatt = null
+        writeChar = null
         // Unblock any thread waiting on a write ACK
         writeLatch.getAndSet(null)?.countDown()
     }
@@ -501,7 +515,7 @@ class BleRadioStream : RadioStream {
         writeType: Int
     ): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            g.writeCharacteristic(wc, data, writeType) == 0 // 0 = BluetoothStatusCodes.SUCCESS
+            g.writeCharacteristic(wc, data, writeType) == BluetoothStatusCodes.SUCCESS
         } else {
             wc.value = data
             wc.writeType = writeType

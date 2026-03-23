@@ -27,4 +27,24 @@
     <string name="groups">Groups</string>
     <string name="tx_tone">TX Tone</string>
     <string name="rx_tone">RX Tone</string>
+
+    <string name="bulk_edit_pick_field">Bulk edit — %1$d selected</string>
+    <string name="bulk_edit_field_tx_power">TX power</string>
+    <string name="bulk_edit_field_groups">Channel groups</string>
+    <string name="bulk_edit_field_modulation">Modulation</string>
+    <string name="bulk_edit_field_bandwidth">Bandwidth</string>
+    <string name="bulk_edit_field_busy_lock">Busy lock</string>
+    <string name="bulk_edit_set_modulation">Set modulation</string>
+    <string name="bulk_edit_set_bandwidth">Set bandwidth</string>
+    <string name="bulk_edit_busy_lock_title">Set busy lock</string>
+    <string name="bulk_edit_busy_lock_checkbox">Enable busy lock</string>
+    <string name="bulk_edit_apply">Apply</string>
+    <string name="bulk_edit_cd">Bulk edit selected channels</string>
+    <string name="bulk_edit_toast_modulation">Modulation → %1$s (%2$d channel(s))</string>
+    <string name="bulk_edit_toast_bandwidth">Bandwidth → %1$s (%2$d channel(s))</string>
+    <string name="bulk_edit_toast_busy_lock">Busy lock %1$s — %2$d channel(s)</string>
+    <string name="bulk_edit_toast_busy_lock_skipped">Busy lock on — %1$d channel(s); %2$d skipped (repeater/split)</string>
+    <string name="bulk_edit_state_on">on</string>
+    <string name="bulk_edit_state_off">off</string>
+    <string name="select_all_matches_cd">Select all visible matches</string>
 </resources>

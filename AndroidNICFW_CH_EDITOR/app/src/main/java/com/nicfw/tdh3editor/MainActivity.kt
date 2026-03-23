@@ -13,6 +13,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -349,8 +351,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnMoveUp.setOnClickListener        { moveSelectedUp() }
         binding.btnMoveDown.setOnClickListener      { moveSelectedDown() }
         binding.btnMoveTo.setOnClickListener        { moveSelectedToPosition() }
-        binding.btnSetTxPower.setOnClickListener    { setTxPowerSelected() }
-        binding.btnSetGroups.setOnClickListener     { setGroupsSelected() }
+        binding.btnBulkEdit.setOnClickListener      { bulkEditSelectedChannels() }
         binding.btnExportCsv.setOnClickListener     { exportSelectedChannels() }
         binding.btnClearSelected.setOnClickListener { clearSelectedChannels() }
         binding.btnSelectionDone.setOnClickListener {
@@ -369,8 +370,6 @@ class MainActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
             override fun afterTextChanged(s: Editable?) {
                 searchQuery = s?.toString() ?: ""
-                binding.btnSelectAllMatches.visibility =
-                    if (searchQuery.isNotEmpty()) View.VISIBLE else View.GONE
                 applyFilter()
             }
         })
@@ -378,7 +377,6 @@ class MainActivity : AppCompatActivity() {
             searchQuery = ""
             binding.searchEditText.setText("")
             binding.searchBar.visibility = View.GONE
-            binding.btnSelectAllMatches.visibility = View.GONE
             applyFilter()
         }
         binding.btnSelectAllMatches.setOnClickListener {
@@ -392,7 +390,6 @@ class MainActivity : AppCompatActivity() {
             searchQuery = ""
             binding.searchEditText.setText("")
             binding.searchBar.visibility = View.GONE
-            binding.btnSelectAllMatches.visibility = View.GONE
             applyFilter()
         } else {
             binding.searchBar.visibility = View.VISIBLE
@@ -1401,6 +1398,110 @@ class MainActivity : AppCompatActivity() {
             }
             .setNegativeButton("Cancel", null)
             .show()
+    }
+
+    /**
+     * Bulk-edit selected non-empty channels from one entry point (pencil menu).
+     */
+    private fun bulkEditSelectedChannels() {
+        val eep = eeprom ?: return
+        val selected = adapter.selectedChannelNumbers
+        if (selected.isEmpty()) return
+
+        val labels = ChannelBulkField.entries.map { it.title(this) }.toTypedArray()
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.bulk_edit_pick_field, selected.size))
+            .setItems(labels) { _, which ->
+                when (ChannelBulkField.entries[which]) {
+                    ChannelBulkField.TX_POWER -> setTxPowerSelected()
+                    ChannelBulkField.GROUPS -> setGroupsSelected()
+                    ChannelBulkField.MODULATION -> showBulkModulationDialog(eep, selected)
+                    ChannelBulkField.BANDWIDTH -> showBulkBandwidthDialog(eep, selected)
+                    ChannelBulkField.BUSY_LOCK -> showBulkBusyLockDialog(eep, selected)
+                }
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showBulkModulationDialog(eep: ByteArray, selected: Set<Int>) {
+        val items = EepromConstants.MODULATION_LIST
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.bulk_edit_set_modulation))
+            .setItems(items.toTypedArray()) { _, which ->
+                val mode = items[which]
+                val count = ChannelBulkEdit.applyModulation(eep, selected, mode)
+                finishBulkEditRefresh(
+                    eep,
+                    getString(R.string.bulk_edit_toast_modulation, mode, count)
+                )
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showBulkBandwidthDialog(eep: ByteArray, selected: Set<Int>) {
+        val items = EepromConstants.BANDWIDTH_LIST
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.bulk_edit_set_bandwidth))
+            .setItems(items.toTypedArray()) { _, which ->
+                val bw = items[which]
+                val count = ChannelBulkEdit.applyBandwidth(eep, selected, bw)
+                finishBulkEditRefresh(
+                    eep,
+                    getString(R.string.bulk_edit_toast_bandwidth, bw, count)
+                )
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun showBulkBusyLockDialog(eep: ByteArray, selected: Set<Int>) {
+        val pad = (20 * resources.displayMetrics.density).toInt()
+        val check = CheckBox(this).apply {
+            text = getString(R.string.bulk_edit_busy_lock_checkbox)
+        }
+        val wrap = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(pad, pad / 2, pad, pad)
+            addView(check)
+        }
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.bulk_edit_busy_lock_title))
+            .setView(wrap)
+            .setPositiveButton(R.string.bulk_edit_apply) { _, _ ->
+                val enabled = check.isChecked
+                val (updated, skipped) = ChannelBulkEdit.applyBusyLock(eep, selected, enabled)
+                val toastMsg = when {
+                    !enabled -> getString(
+                        R.string.bulk_edit_toast_busy_lock,
+                        getString(R.string.bulk_edit_state_off),
+                        updated
+                    )
+                    skipped > 0 -> getString(
+                        R.string.bulk_edit_toast_busy_lock_skipped,
+                        updated,
+                        skipped
+                    )
+                    else -> getString(
+                        R.string.bulk_edit_toast_busy_lock,
+                        getString(R.string.bulk_edit_state_on),
+                        updated
+                    )
+                }
+                finishBulkEditRefresh(eep, toastMsg)
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
+
+    private fun finishBulkEditRefresh(eep: ByteArray, toastMsg: String) {
+        eeprom = eep
+        EepromHolder.eeprom = eep
+        channelList = EepromParser.parseAllChannels(eep)
+        dragWorkList = channelList.toMutableList()
+        applyFilter()
+        Toast.makeText(this, toastMsg, Toast.LENGTH_SHORT).show()
     }
 
     // ─────────────────────────────────────────────────────────────────────────
