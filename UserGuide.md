@@ -179,11 +179,10 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 | Column | Description |
 |---|---|
 | `#` | Channel slot number (1–198, fixed) |
-| Name | Up to 12-character label |
-| Freq | RX frequency in MHz (TX offset shown on edit screen) |
-| Power | Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: `(BP)` = Band Plan restricts TX on this frequency; `⚠` = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see [Tune Settings §8.8](#88-tune-settings)) |
-| Groups | Active group assignments (up to 4 letters) |
-| BW | Bandwidth: `W` = Wide, `N` = Narrow |
+| Left column | `Ch #`, RX frequency, and Group chips |
+| Name | Up to 12-character label (larger text) |
+| Chips | Power (`PWR:`), Mode (`FM/AM/USB/AUTO`), Duplex (`Simplex`, `+xMHz`, `-xMHz`, `Split`), Bandwidth (`BW:W` / `BW:N`), and conditional Tone chips (`TX:` / `RX:`) |
+| Chip colors | Power: gray (`N/T/0`), yellow (`1–70`), red (`>70`); bandwidth: blue/orange; duplex and mode are color-coded by value |
 
 - **Tap** a channel row to open the channel editor.
 - **Long-press** a channel row to enter [Multi-Select Mode](#6-multi-select-mode).
@@ -535,7 +534,7 @@ Tap the **🔍** (magnifying glass) icon in the top toolbar to open the search b
 - Tap the 🔍 icon again to close the search bar.
 
 **Select All Matches:**
-Once you have results, tap **Select All** to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
+Once you have results, tap the **□** (hollow-square select-all icon) to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
 - Tap **Export CSV** (↑□) to export the whole matched set as a CHIRP CSV.
 - Tap **Bulk Edit** (✎) then **TX power** to change power for the whole group at once.
 - Tap **Bulk Edit** (✎) then **Channel groups** to bulk-assign groups to all matches.
@@ -543,7 +542,7 @@ Once you have results, tap **Select All** to enter multi-select mode with every 
 
 > **Example workflow — share all GMRS repeaters:**
 > 1. Tap 🔍, type `GMRS`.
-> 2. Tap **Select All** — all channels in your GMRS group are selected.
+> 2. Tap **□** — all channels in your GMRS group are selected.
 > 3. Tap **↑□** → name the file → **Export & Share**.
 
 ---
