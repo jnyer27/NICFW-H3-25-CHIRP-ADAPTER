@@ -1113,24 +1113,20 @@ or leave the app during a save operation.</p>
 <td>Channel slot number (1–198, fixed)</td>
 </tr>
 <tr>
+<td>Left column</td>
+<td><code>Ch #</code>, RX frequency, and Group chips</td>
+</tr>
+<tr>
 <td>Name</td>
-<td>Up to 12-character label</td>
+<td>Up to 12-character label (larger text)</td>
 </tr>
 <tr>
-<td>Freq</td>
-<td>RX frequency in MHz (TX offset shown on edit screen)</td>
+<td>Chips</td>
+<td>Power (<code>PWR:</code>), Mode (<code>FM/AM/USB/AUTO</code>), Duplex (<code>Simplex</code>, <code>+xMHz</code>, <code>-xMHz</code>, <code>Split</code>), Bandwidth (<code>BW:W</code> / <code>BW:N</code>), and conditional Tone chips (<code>TX:</code> / <code>RX:</code>)</td>
 </tr>
 <tr>
-<td>Power</td>
-<td>Estimated output power (N/T = no transmit, 0.5W–5W+). Suffixes: <code>(BP)</code> = Band Plan restricts TX on this frequency; <code>⚠</code> = stored power exceeds the radio's VHF/UHF power cap and will be clamped at TX time (see <a href="#88-tune-settings">Tune Settings §8.8</a>)</td>
-</tr>
-<tr>
-<td>Groups</td>
-<td>Active group assignments (up to 4 letters)</td>
-</tr>
-<tr>
-<td>BW</td>
-<td>Bandwidth: <code>W</code> = Wide, <code>N</code> = Narrow</td>
+<td>Chip colors</td>
+<td>Power: gray (<code>N/T/0</code>), yellow (<code>1–70</code>), red (<code>&gt;70</code>); bandwidth: blue/orange; duplex and mode are color-coded by value</td>
 </tr>
 </tbody>
 </table>
@@ -1587,7 +1583,7 @@ immediately continue editing or move them again.</p>
 - Tap <strong>✕</strong> to clear the search and restore the full channel list.
 - Tap the 🔍 icon again to close the search bar.</p>
 <p><strong>Select All Matches:</strong>
-Once you have results, tap <strong>Select All</strong> to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
+Once you have results, tap the <strong>□</strong> (hollow-square select-all icon) to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
 - Tap <strong>Export CSV</strong> (↑□) to export the whole matched set as a CHIRP CSV.
 - Tap <strong>Bulk Edit</strong> (✎) then <strong>TX power</strong> to change power for the whole group at once.
 - Tap <strong>Bulk Edit</strong> (✎) then <strong>Channel groups</strong> to bulk-assign groups to all matches.
@@ -1595,7 +1591,7 @@ Once you have results, tap <strong>Select All</strong> to enter multi-select mod
 <blockquote>
 <p><strong>Example workflow — share all GMRS repeaters:</strong>
 1. Tap 🔍, type <code>GMRS</code>.
-2. Tap <strong>Select All</strong> — all channels in your GMRS group are selected.
+2. Tap <strong>□</strong> — all channels in your GMRS group are selected.
 3. Tap <strong>↑□</strong> → name the file → <strong>Export &amp; Share</strong>.</p>
 </blockquote>
 <hr/>
