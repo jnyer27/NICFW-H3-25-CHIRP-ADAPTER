@@ -43,10 +43,6 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * After connecting, [com.nicfw.tdh3editor.radio.Protocol] EEPROM commands are sent over
  * [BleRadioStream] as over a classic serial link — no protocol changes required.
- *
- * **USB / FTDI:** This app has no USB host serial path (no usb-serial / FTDI stack).
- * Fixes aimed at RadioDroid-style USB cable bugs do not apply unless USB programming
- * is added later.
  */
 @SuppressLint("MissingPermission")
 class BleManager(private val context: Context) {

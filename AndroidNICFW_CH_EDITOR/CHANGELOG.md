@@ -9,10 +9,6 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 - **Setup failures** — Service discovery errors, missing UART service/characteristics, or a failed CCCD (notification enable) write now report failure to the caller and **disconnect + close GATT on the main thread**, instead of leaving a half-open connection or treating a bad descriptor write as success.
 - **Stream teardown** — `BleRadioStream` clears its GATT and write-characteristic references on `close()` to avoid use-after-close writes.
 
-### USB / FTDI
-
-- This app does **not** use USB host serial (no FTDI / usb-serial stack). RadioDroid-style USB cable fixes are **not applicable** unless USB programming is added later.
-
 ## [1.1.0] — 2026-03-20
 
 ### BLE (Bluetooth Low Energy)
