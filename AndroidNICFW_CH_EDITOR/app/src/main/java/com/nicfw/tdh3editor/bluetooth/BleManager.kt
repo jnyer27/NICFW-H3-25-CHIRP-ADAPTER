@@ -43,6 +43,10 @@ import java.util.concurrent.atomic.AtomicReference
  *
  * After connecting, [com.nicfw.tdh3editor.radio.Protocol] EEPROM commands are sent over
  * [BleRadioStream] as over a classic serial link — no protocol changes required.
+ *
+ * **USB / FTDI:** This app has no USB host serial path (no usb-serial / FTDI stack).
+ * Fixes aimed at RadioDroid-style USB cable bugs do not apply unless USB programming
+ * is added later.
  */
 @SuppressLint("MissingPermission")
 class BleManager(private val context: Context) {
@@ -130,6 +134,12 @@ class BleManager(private val context: Context) {
             }
         }
 
+        /** Release GATT after a failed setup step (discovery / CCCD) on the main thread. */
+        fun failSetup(err: Exception) {
+            deliver(Result.failure(err))
+            mainHandler.post { disconnect() }
+        }
+
         val discoverLock = AtomicBoolean(false)
         val mtuFallbackRef = AtomicReference<Runnable?>(null)
 
@@ -184,17 +194,19 @@ class BleManager(private val context: Context) {
 
             override fun onServicesDiscovered(g: BluetoothGatt, status: Int) {
                 if (status != BluetoothGatt.GATT_SUCCESS) {
-                    return deliver(Result.failure(IOException("Service discovery failed (status=$status)")))
+                    failSetup(IOException("Service discovery failed (status=$status)"))
+                    return
                 }
                 val svc = SUPPORTED_UART_SERVICE_UUIDS.firstNotNullOfOrNull { uuid -> g.getService(uuid) }
-                    ?: return deliver(
-                        Result.failure(
+                    ?: run {
+                        failSetup(
                             IOException(
                                 "No supported UART service found. Expected one of: " +
                                     SUPPORTED_UART_SERVICE_UUIDS.joinToString { it.toString() }
                             )
                         )
-                    )
+                        return
+                    }
 
                 var notifyChar: BluetoothGattCharacteristic? = null
                 var writeChar: BluetoothGattCharacteristic? = null
@@ -216,13 +228,12 @@ class BleManager(private val context: Context) {
                 }
 
                 if (notifyChar == null || writeChar == null) {
-                    return deliver(
-                        Result.failure(
-                            IOException(
-                                "Required notify + write characteristics not found on service ${svc.uuid}"
-                            )
+                    failSetup(
+                        IOException(
+                            "Required notify + write characteristics not found on service ${svc.uuid}"
                         )
                     )
+                    return
                 }
 
                 // Prefer WRITE_TYPE_DEFAULT (with ACK) when available
@@ -246,6 +257,10 @@ class BleManager(private val context: Context) {
                 descriptor: BluetoothGattDescriptor,
                 status: Int
             ) {
+                if (status != BluetoothGatt.GATT_SUCCESS) {
+                    failSetup(IOException("CCCD write failed (status=$status)"))
+                    return
+                }
                 stream.markReady()
                 deliver(Result.success(stream))
             }
@@ -393,6 +408,8 @@ class BleRadioStream : RadioStream {
         openFlag.set(false)
         rxQueue.clear()
         txBuf.reset()
+        gatt = null
+        writeChar = null
         // Unblock any thread waiting on a write ACK
         writeLatch.getAndSet(null)?.countDown()
     }
