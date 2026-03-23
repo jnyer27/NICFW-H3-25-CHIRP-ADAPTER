@@ -1089,25 +1089,25 @@ or leave the app during a save operation.</p>
 <p>After loading, the main screen shows all 198 channel slots in a scrollable list.</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-3-1" id="__codelineno-3-1" name="__codelineno-3-1"></a>┌──────────────────────────────────────────────────────────────────────────┐
 <a href="#__codelineno-3-2" id="__codelineno-3-2" name="__codelineno-3-2"></a>│ Ch 1      462.5625      GMRS 1                                          │
-<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>│ [⬛ GRP:All][⬛ GRP:GMRS] [🟨 PWR:1.0W][🟦 FM][⬜ Simplex][🟧 BW:N][🟦 TX:67.0Hz] │
+<a href="#__codelineno-3-3" id="__codelineno-3-3" name="__codelineno-3-3"></a>│ [GRP:All][GRP:GMRS]     [PWR:1.0W][FM][Simplex][BW:N][TX:67.0Hz]       │
 <a href="#__codelineno-3-4" id="__codelineno-3-4" name="__codelineno-3-4"></a>├──────────────────────────────────────────────────────────────────────────┤
 <a href="#__codelineno-3-5" id="__codelineno-3-5" name="__codelineno-3-5"></a>│ Ch 2      462.5875      GMRS 2                                          │
-<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>│ [⬛ GRP:All][⬛ GRP:GMRS] [🟥 PWR:5.0W][🟦 FM][🟦 +5MHz][🟦 BW:W][🟪 RX:D023N] │
+<a href="#__codelineno-3-6" id="__codelineno-3-6" name="__codelineno-3-6"></a>│ [GRP:All][GRP:GMRS]     [PWR:5.0W][FM][+5MHz][BW:W][RX:D023N]          │
 <a href="#__codelineno-3-7" id="__codelineno-3-7" name="__codelineno-3-7"></a>├──────────────────────────────────────────────────────────────────────────┤
 <a href="#__codelineno-3-8" id="__codelineno-3-8" name="__codelineno-3-8"></a>│ Ch 4      162.4000      WX1                                             │
-<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>│ [⬛ GRP:WX]              [⬜ PWR:N/T][⬜ AUTO][⬜ Simplex][🟦 BW:W]        │
+<a href="#__codelineno-3-9" id="__codelineno-3-9" name="__codelineno-3-9"></a>│ [GRP:WX]                [PWR:N/T][AUTO][Simplex][BW:W]                  │
 <a href="#__codelineno-3-10" id="__codelineno-3-10" name="__codelineno-3-10"></a>├──────────────────────────────────────────────────────────────────────────┤
 <a href="#__codelineno-3-11" id="__codelineno-3-11" name="__codelineno-3-11"></a>│ Ch 5      (empty)       -                                               │
 <a href="#__codelineno-3-12" id="__codelineno-3-12" name="__codelineno-3-12"></a>└──────────────────────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p><strong>Chip color legend (visual intent):</strong></p>
 <ul>
-<li><strong>⬛ Groups (<code>GRP:*</code>)</strong> = dark gray chips with white text.</li>
-<li><strong>Power (<code>PWR:*</code>)</strong> = <strong>⬜ gray</strong> (<code>N/T</code> or <code>0</code>), <strong>🟨 yellow</strong> (<code>1–70</code>), <strong>🟥 red</strong> (<code>&gt;70</code>).</li>
-<li><strong>Mode</strong> = color-coded by mode (<code>FM</code>, <code>AM</code>, <code>USB</code>, <code>AUTO</code>).</li>
-<li><strong>Duplex</strong> = color-coded by mode (<code>Simplex</code>, <code>+xMHz</code>, <code>-xMHz</code>, <code>Split</code>).</li>
-<li><strong>Bandwidth</strong> = <strong>🟦 blue</strong> for <code>BW:W</code>, <strong>🟧 orange/amber</strong> for <code>BW:N</code>.</li>
-<li><strong>Tone chips</strong> = <strong>🟦 cyan/light-blue</strong> for CTCSS (<code>TX:67.0Hz</code>), <strong>🟪 magenta/fuchsia</strong> for DCS (<code>RX:D023N</code>).</li>
+<li><strong>Groups (<code>GRP:*</code>)</strong> = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#4B5563;color:#fff;font-weight:600;">dark gray</span>.</li>
+<li><strong>Power (<code>PWR:*</code>)</strong> = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#6B7280;color:#fff;font-weight:600;">gray (N/T or 0)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#FACC15;color:#000;font-weight:600;">yellow (1–70)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#DC2626;color:#fff;font-weight:600;">red (&gt;70)</span>.</li>
+<li><strong>Mode</strong> = color-coded by value (<code>FM</code>, <code>AM</code>, <code>USB</code>, <code>AUTO</code>) with the same chip style.</li>
+<li><strong>Duplex</strong> = color-coded by value (<code>Simplex</code>, <code>+xMHz</code>, <code>-xMHz</code>, <code>Split</code>) with the same chip style.</li>
+<li><strong>Bandwidth</strong> = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#2563EB;color:#fff;font-weight:600;">blue (BW:W)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#D97706;color:#fff;font-weight:600;">orange (BW:N)</span>.</li>
+<li><strong>Tone chips</strong> = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#06B6D4;color:#000;font-weight:600;">cyan for CTCSS</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#C026D3;color:#fff;font-weight:600;">magenta for DCS</span>.</li>
 </ul>
 <p><strong>Column descriptions:</strong></p>
 <table>
