@@ -1326,7 +1326,7 @@ appears at the bottom of the screen:</p>
 <a href="#__codelineno-6-7" id="__codelineno-6-7" name="__codelineno-6-7"></a>│ ✓ │ GMRS 3  │ 462.6125  │  1.0W │  A  │ N  ← selected │
 <a href="#__codelineno-6-8" id="__codelineno-6-8" name="__codelineno-6-8"></a>│  …                                                       │
 <a href="#__codelineno-6-9" id="__codelineno-6-9" name="__codelineno-6-9"></a>├──────────────────────────────────────────────────────────┤
-<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>│ 3 selected  │ ↑ │ ↓ │ ⤓ │ 📡 │ 🏷 │ 🗑 │ Done │
+<a href="#__codelineno-6-10" id="__codelineno-6-10" name="__codelineno-6-10"></a>│ 3 selected  │ ↑ │ ↓ │ ⤓ │ ✎ │ ↑□ │ 🗑 │ Done │
 <a href="#__codelineno-6-11" id="__codelineno-6-11" name="__codelineno-6-11"></a>└──────────────────────────────────────────────────────────┘
 </code></pre></div>
 <p><strong>Selection bar buttons:</strong></p>
@@ -1355,14 +1355,9 @@ appears at the bottom of the screen:</p>
 <td>Opens a slot picker — moves the selected block to any slot (1–198) in one step</td>
 </tr>
 <tr>
-<td><strong>Set TX Power</strong></td>
-<td>📡</td>
-<td>Opens a power picker — applies chosen power to all selected channels</td>
-</tr>
-<tr>
-<td><strong>Set Groups</strong></td>
-<td>🏷</td>
-<td>Opens a group editor — assigns groups to all selected channels</td>
+<td><strong>Bulk Edit</strong></td>
+<td>✎</td>
+<td>Opens a field picker (TX power, groups, modulation, bandwidth, busy lock)</td>
 </tr>
 <tr>
 <td><strong>Export CSV</strong></td>
@@ -1397,7 +1392,7 @@ from the overflow menu.</p>
 </blockquote>
 <hr/>
 <h3 id="62-set-tx-power-bulk">6.2 Set TX Power (Bulk)<a class="headerlink" href="#62-set-tx-power-bulk" title="Permanent link">¶</a></h3>
-<p>Tap the <strong>📡</strong> (RF transmit / antenna) button while channels are selected:</p>
+<p>Tap <strong>Bulk Edit</strong> (✎), then choose <strong>TX power</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-7-1" id="__codelineno-7-1" name="__codelineno-7-1"></a>┌─────────────────────────────┐
 <a href="#__codelineno-7-2" id="__codelineno-7-2" name="__codelineno-7-2"></a>│  Set TX Power               │
 <a href="#__codelineno-7-3" id="__codelineno-7-3" name="__codelineno-7-3"></a>│                             │
@@ -1433,7 +1428,7 @@ wheel</strong> when the chosen value exceeds the applicable cap:</p>
 used in the advisory. Apply is never blocked — the stored value is saved as-is.</p>
 <hr/>
 <h3 id="63-set-channel-groups-bulk">6.3 Set Channel Groups (Bulk)<a class="headerlink" href="#63-set-channel-groups-bulk" title="Permanent link">¶</a></h3>
-<p>Tap the <strong>🏷</strong> (label/tag) button while channels are selected:</p>
+<p>Tap <strong>Bulk Edit</strong> (✎), then choose <strong>Channel groups</strong>:</p>
 <div class="highlight"><pre><span></span><code><a href="#__codelineno-10-1" id="__codelineno-10-1" name="__codelineno-10-1"></a>┌──────────────────────────────────────────┐
 <a href="#__codelineno-10-2" id="__codelineno-10-2" name="__codelineno-10-2"></a>│  Set Groups for Selected Channels        │
 <a href="#__codelineno-10-3" id="__codelineno-10-3" name="__codelineno-10-3"></a>├──────────────────────────────────────────┤
@@ -1594,8 +1589,8 @@ immediately continue editing or move them again.</p>
 <p><strong>Select All Matches:</strong>
 Once you have results, tap <strong>Select All</strong> to enter multi-select mode with every visible (filtered) channel pre-selected. From there you can:
 - Tap <strong>Export CSV</strong> (↑□) to export the whole matched set as a CHIRP CSV.
-- Tap <strong>Set TX Power</strong> (📡) to change power for the whole group at once.
-- Tap <strong>Set Groups</strong> (🏷) to bulk-assign groups to all matches.
+- Tap <strong>Bulk Edit</strong> (✎) then <strong>TX power</strong> to change power for the whole group at once.
+- Tap <strong>Bulk Edit</strong> (✎) then <strong>Channel groups</strong> to bulk-assign groups to all matches.
 - Tap any card to deselect individually, or tap <strong>Done</strong> to exit selection mode.</p>
 <blockquote>
 <p><strong>Example workflow — share all GMRS repeaters:</strong>
@@ -2983,7 +2978,7 @@ for assigning human-readable names to channel groups.</p>
   category (e.g., a GMRS repeater might be in Group A <em>and</em> Group D for local repeaters).</li>
 <li>After organizing groups, run <strong>Sort Channels by Group</strong> to pack related channels into
   contiguous slot numbers for cleaner scanning.</li>
-<li>Use <strong>Bulk Group Edit</strong> (🏷 in multi-select mode) to assign a group to dozens of
+<li>Use <strong>Bulk Edit</strong> (✎ in multi-select mode), then choose <strong>Channel groups</strong>, to assign a group to dozens of
   channels at once instead of editing each one individually.</li>
 </ul>
 <hr/>
