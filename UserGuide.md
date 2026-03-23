@@ -163,13 +163,13 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
 │ Ch 1      462.5625      GMRS 1                                          │
-│ [⬛ GRP:All][⬛ GRP:GMRS] [🟨 PWR:1.0W][🟦 FM][⬜ Simplex][🟧 BW:N][🟦 TX:67.0Hz] │
+│ [GRP:All][GRP:GMRS]     [PWR:1.0W][FM][Simplex][BW:N][TX:67.0Hz]       │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 2      462.5875      GMRS 2                                          │
-│ [⬛ GRP:All][⬛ GRP:GMRS] [🟥 PWR:5.0W][🟦 FM][🟦 +5MHz][🟦 BW:W][🟪 RX:D023N] │
+│ [GRP:All][GRP:GMRS]     [PWR:5.0W][FM][+5MHz][BW:W][RX:D023N]          │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 4      162.4000      WX1                                             │
-│ [⬛ GRP:WX]              [⬜ PWR:N/T][⬜ AUTO][⬜ Simplex][🟦 BW:W]        │
+│ [GRP:WX]                [PWR:N/T][AUTO][Simplex][BW:W]                  │
 ├──────────────────────────────────────────────────────────────────────────┤
 │ Ch 5      (empty)       -                                               │
 └──────────────────────────────────────────────────────────────────────────┘
@@ -177,12 +177,12 @@ After loading, the main screen shows all 198 channel slots in a scrollable list.
 
 **Chip color legend (visual intent):**
 
-- **⬛ Groups (`GRP:*`)** = dark gray chips with white text.
-- **Power (`PWR:*`)** = **⬜ gray** (`N/T` or `0`), **🟨 yellow** (`1–70`), **🟥 red** (`>70`).
-- **Mode** = color-coded by mode (`FM`, `AM`, `USB`, `AUTO`).
-- **Duplex** = color-coded by mode (`Simplex`, `+xMHz`, `-xMHz`, `Split`).
-- **Bandwidth** = **🟦 blue** for `BW:W`, **🟧 orange/amber** for `BW:N`.
-- **Tone chips** = **🟦 cyan/light-blue** for CTCSS (`TX:67.0Hz`), **🟪 magenta/fuchsia** for DCS (`RX:D023N`).
+- **Groups (`GRP:*`)** = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#4B5563;color:#fff;font-weight:600;">dark gray</span>.
+- **Power (`PWR:*`)** = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#6B7280;color:#fff;font-weight:600;">gray (N/T or 0)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#FACC15;color:#000;font-weight:600;">yellow (1–70)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#DC2626;color:#fff;font-weight:600;">red (>70)</span>.
+- **Mode** = color-coded by value (`FM`, `AM`, `USB`, `AUTO`) with the same chip style.
+- **Duplex** = color-coded by value (`Simplex`, `+xMHz`, `-xMHz`, `Split`) with the same chip style.
+- **Bandwidth** = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#2563EB;color:#fff;font-weight:600;">blue (BW:W)</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#D97706;color:#fff;font-weight:600;">orange (BW:N)</span>.
+- **Tone chips** = <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#06B6D4;color:#000;font-weight:600;">cyan for CTCSS</span>, <span style="display:inline-block;padding:2px 6px;border-radius:9999px;background:#C026D3;color:#fff;font-weight:600;">magenta for DCS</span>.
 
 **Column descriptions:**
 
