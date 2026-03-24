@@ -149,7 +149,7 @@ class TuneSettingsActivity : AppCompatActivity() {
     /** Reads the shared protect preference and wires the toggle in both directions. */
     private fun setupProtectToggle() {
         val prefs = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
-        val protect = prefs.getBoolean("pref_protect_tune", false)
+        val protect = prefs.getBoolean("pref_protect_tune", true)
         binding.switchProtectTune.isChecked = protect
         updateProtectState(protect)
 
@@ -187,7 +187,7 @@ class TuneSettingsActivity : AppCompatActivity() {
         // Hard guard: if protection is enabled, don't write (UI already blocks via button state,
         // but this ensures safety even if called programmatically).
         if (getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
-                .getBoolean("pref_protect_tune", false)) {
+                .getBoolean("pref_protect_tune", true)) {
             Toast.makeText(this, "Tune Settings are protected \u2014 not written", Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -260,3 +260,4 @@ class TuneSettingsActivity : AppCompatActivity() {
             Intent(context, TuneSettingsActivity::class.java)
     }
 }
+

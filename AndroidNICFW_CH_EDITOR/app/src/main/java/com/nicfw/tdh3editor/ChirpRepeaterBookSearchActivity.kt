@@ -63,6 +63,10 @@ import kotlinx.coroutines.withTimeoutOrNull
  */
 class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
 
+    private companion object {
+        const val DEFAULT_LOCATION_DISTANCE_MI = 30.0
+    }
+
     private lateinit var binding: ActivityChirpRepeaterbookSearchBinding
 
     private val allRows = mutableListOf<RepeaterBookJsonRow>()
@@ -211,6 +215,12 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
             if (pair != null) {
                 binding.editLat.setText(String.format(Locale.US, "%.6f", pair.first))
                 binding.editLon.setText(String.format(Locale.US, "%.6f", pair.second))
+                val currentDistance = binding.editDistanceMiles.text?.toString()?.toDoubleOrNull() ?: 0.0
+                if (currentDistance <= 0.0) {
+                    binding.editDistanceMiles.setText(
+                        String.format(Locale.US, "%.0f", DEFAULT_LOCATION_DISTANCE_MI),
+                    )
+                }
             } else {
                 Toast.makeText(
                     this@ChirpRepeaterBookSearchActivity,

@@ -526,7 +526,7 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.action_xtal671_calculator)?.isEnabled = true
         // Reflect current protect-tune preference as a checkmark
         menu.findItem(R.id.action_protect_tune)?.isChecked =
-            getSharedPreferences("nicfw_prefs", MODE_PRIVATE).getBoolean("pref_protect_tune", false)
+            getSharedPreferences("nicfw_prefs", MODE_PRIVATE).getBoolean("pref_protect_tune", true)
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -601,7 +601,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_protect_tune -> {
                 val prefs = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
-                val now = !prefs.getBoolean("pref_protect_tune", false)
+                val now = !prefs.getBoolean("pref_protect_tune", true)
                 prefs.edit().putBoolean("pref_protect_tune", now).apply()
                 item.isChecked = now
                 val msg = if (now)
@@ -1567,7 +1567,7 @@ class MainActivity : AppCompatActivity() {
     private fun showSaveConfirm() {
         val eep = eeprom ?: return
         val protect = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
-            .getBoolean("pref_protect_tune", false)
+            .getBoolean("pref_protect_tune", true)
         val baseMsg = getString(R.string.save_confirm_message)
         val message = if (protect)
             "$baseMsg\n\n\uD83D\uDD12 Tune Settings PROTECTED — the target radio's calibration " +
@@ -1588,7 +1588,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         val protect = getSharedPreferences("nicfw_prefs", MODE_PRIVATE)
-            .getBoolean("pref_protect_tune", false)
+            .getBoolean("pref_protect_tune", true)
         stream.readTimeoutMs = 500
         binding.progressBar.visibility = View.VISIBLE
         binding.progressText.visibility = View.VISIBLE
@@ -1646,3 +1646,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
