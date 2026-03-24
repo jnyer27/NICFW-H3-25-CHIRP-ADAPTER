@@ -4,6 +4,19 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.2.0] — 2026-03-24
+
+### Search RepeaterBook
+
+- **Scrollable screen** — Form, results, filter, and actions share one vertical scroll so tall forms don’t push results off-screen.
+- **Select all visible** — Toolbar item and on-screen control select every row that matches the **Filter results** box (after search).
+- **US amateur proximity** — When using **Amateur** + US coordinates + distance, optional **band**, **mode**, **frequency**, and **More search options** (features, operational status, simplex nodes) align with RepeaterBook **Proximity 2.0**.
+- **State / province required (export API)** — For **United States**, **Canada**, and **Mexico**, **State / province** must not be **All** when the app uses the JSON **export** path. Use a real jurisdiction, or enter **latitude**, **longitude**, and **distance** for **US proximity** (GMRS or amateur), which does not require state selection.
+
+### CHIRP import
+
+- **Channel preview** — Preview rows use the same **chip** styling and content as the main channel list (groups, power, mode, duplex/offset, bandwidth, TX/RX tones), with shared logic in **ChannelListChips**.
+
 ## [2.1.0] — 2026-03-24
 
 ### UI and workflow polish
@@ -48,3 +61,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 [1.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0
 [2.0.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.0.0
 [2.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0
+[2.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.2.0

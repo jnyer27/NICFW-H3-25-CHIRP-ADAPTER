@@ -17,6 +17,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +35,8 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import com.nicfw.tdh3editor.BuildConfig
 import com.nicfw.tdh3editor.databinding.ActivityChirpRepeaterbookSearchBinding
 import com.nicfw.tdh3editor.radio.ChirpCsvExporter
@@ -83,6 +91,11 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
     private var countryAdapter: ArrayAdapter<String>? = null
     private var stateAdapter: ArrayAdapter<String>? = null
 
+    private val prox2FeatureIds = mutableSetOf<String>()
+    private var prox2StatusId: String = RepeaterBookProx2.STATUS_ANY
+    private var prox2IncludeSimplex: Boolean = false
+    private var prox2FilterChipsInitialized: Boolean = false
+
     private val locationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions(),
     ) { grants ->
@@ -123,6 +136,9 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
 
         binding.recyclerResults.layoutManager = LinearLayoutManager(this)
         binding.recyclerResults.adapter = adapter
+        binding.recyclerResults.isNestedScrollingEnabled = false
+
+        binding.btnSelectAllVisible.setOnClickListener { selectAllVisible() }
 
         countryAdapter = ArrayAdapter(
             this,
@@ -150,7 +166,13 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
         }
         onCountryChanged()
 
-        binding.radioGroupService.setOnCheckedChangeListener { _, _ -> updateServiceEnabled() }
+        binding.radioGroupService.setOnCheckedChangeListener { _, _ ->
+            updateServiceEnabled()
+            updateAmateurProx2Visibility()
+        }
+
+        ensureProx2FilterChips()
+        binding.btnProx2Advanced.setOnClickListener { showProx2AdvancedDialog() }
 
         binding.btnSearch.setOnClickListener { runSearch() }
         binding.btnUseMyLocation.setOnClickListener { onUseMyLocationClicked() }
@@ -172,9 +194,7 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.repeaterbook_menu_select_all -> {
-                visibleRows.forEach { it.selected = true }
-                adapter.notifyDataSetChanged()
-                updateImportButton()
+                selectAllVisible()
                 return true
             }
             R.id.repeaterbook_menu_clear -> {
@@ -310,10 +330,155 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
             binding.spinnerState.adapter = it
         }
         binding.spinnerState.setSelection(0)
+        updateAmateurProx2Visibility()
     }
 
     private fun serviceGmrs(): Boolean =
         binding.radioServiceGmrs.isChecked
+
+    private fun updateAmateurProx2Visibility() {
+        val show = !serviceGmrs() && selectedCountry() == "United States"
+        binding.layoutAmateurProx2.isVisible = show
+    }
+
+    private fun ensureProx2FilterChips() {
+        if (prox2FilterChipsInitialized) return
+        prox2FilterChipsInitialized = true
+        fun filterChip(label: String, value: String, checked: Boolean) =
+            Chip(this, null, com.google.android.material.R.attr.chipStyle).apply {
+                text = label
+                tag = value
+                isCheckable = true
+                isChecked = checked
+            }
+        val bands = listOf(
+            getString(R.string.chirp_rb_band_10m) to RepeaterBookProx2.BAND_10M,
+            getString(R.string.chirp_rb_band_6m) to RepeaterBookProx2.BAND_6M,
+            getString(R.string.chirp_rb_band_2m) to RepeaterBookProx2.BAND_2M,
+            getString(R.string.chirp_rb_band_125m) to RepeaterBookProx2.BAND_125M,
+            getString(R.string.chirp_rb_band_70cm) to RepeaterBookProx2.BAND_70CM,
+            getString(R.string.chirp_rb_band_33cm) to RepeaterBookProx2.BAND_33CM,
+            getString(R.string.chirp_rb_band_23cm) to RepeaterBookProx2.BAND_23CM,
+        )
+        for ((label, value) in bands) {
+            binding.chipGroupProx2Bands.addView(
+                filterChip(label, value, checked = value == RepeaterBookProx2.BAND_2M),
+            )
+        }
+        val modes = listOf(
+            getString(R.string.chirp_rb_mode_fm) to RepeaterBookProx2.MODE_FM,
+            getString(R.string.chirp_rb_mode_dmr) to RepeaterBookProx2.MODE_DMR,
+            getString(R.string.chirp_rb_mode_dstar) to RepeaterBookProx2.MODE_DSTAR,
+            getString(R.string.chirp_rb_mode_m17) to RepeaterBookProx2.MODE_M17,
+            getString(R.string.chirp_rb_mode_nxdn) to RepeaterBookProx2.MODE_NXDN,
+            getString(R.string.chirp_rb_mode_p25) to RepeaterBookProx2.MODE_P25,
+            getString(R.string.chirp_rb_mode_fusion) to RepeaterBookProx2.MODE_FUSION,
+        )
+        for ((label, value) in modes) {
+            binding.chipGroupProx2Modes.addView(
+                filterChip(label, value, checked = value == RepeaterBookProx2.MODE_FM),
+            )
+        }
+    }
+
+    private fun collectCheckedChipValues(group: ChipGroup): List<String> {
+        val out = ArrayList<String>()
+        for (i in 0 until group.childCount) {
+            val chip = group.getChildAt(i) as? Chip ?: continue
+            if (chip.isChecked) out.add(chip.tag as String)
+        }
+        return out
+    }
+
+    private fun showProx2AdvancedDialog() {
+        data class Feat(val id: String, val labelRes: Int)
+
+        val feats = listOf(
+            Feat(RepeaterBookProx2.FEATURE_ALLSTAR, R.string.feat_allstar),
+            Feat(RepeaterBookProx2.FEATURE_AUTOPATCH, R.string.feat_autopatch),
+            Feat(RepeaterBookProx2.FEATURE_EPOWER, R.string.feat_epower),
+            Feat(RepeaterBookProx2.FEATURE_ECHOLINK, R.string.feat_echolink),
+            Feat(RepeaterBookProx2.FEATURE_IRLP, R.string.feat_irlp),
+            Feat(RepeaterBookProx2.FEATURE_WIRES_X, R.string.feat_wiresx),
+            Feat(RepeaterBookProx2.FEATURE_WIDE_AREA, R.string.feat_wide_area),
+            Feat(RepeaterBookProx2.FEATURE_WX, R.string.feat_wx),
+        )
+        val scroll = ScrollView(this)
+        val container = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            val pad = (resources.displayMetrics.density * 12f).toInt()
+            setPadding(pad, pad / 2, pad, pad / 2)
+        }
+        container.addView(
+            TextView(this).apply {
+                text = getString(R.string.chirp_rb_prox2_features_help)
+            },
+        )
+        val featChecks = mutableMapOf<String, CheckBox>()
+        for (f in feats) {
+            val cb = CheckBox(this).apply {
+                text = getString(f.labelRes)
+                isChecked = prox2FeatureIds.contains(f.id)
+            }
+            featChecks[f.id] = cb
+            container.addView(cb)
+        }
+        container.addView(
+            TextView(this).apply {
+                text = getString(R.string.chirp_rb_prox2_status)
+                val top = (resources.displayMetrics.density * 16f).toInt()
+                setPadding(0, top, 0, top / 2)
+            },
+        )
+        val statusGroup = RadioGroup(this)
+        val rbAllId = View.generateViewId()
+        val rbOnAirId = View.generateViewId()
+        statusGroup.addView(
+            RadioButton(this).apply {
+                id = rbAllId
+                text = getString(R.string.chirp_rb_prox2_status_all)
+            },
+        )
+        statusGroup.addView(
+            RadioButton(this).apply {
+                id = rbOnAirId
+                text = getString(R.string.chirp_rb_prox2_status_on_air)
+            },
+        )
+        when (prox2StatusId) {
+            RepeaterBookProx2.STATUS_ON_AIR_CONFIRMED -> statusGroup.check(rbOnAirId)
+            else -> statusGroup.check(rbAllId)
+        }
+        container.addView(statusGroup)
+        val cbSimplex = CheckBox(this).apply {
+            text = getString(R.string.chirp_rb_prox2_include_simplex)
+            isChecked = prox2IncludeSimplex
+            val top = (resources.displayMetrics.density * 12f).toInt()
+            setPadding(0, top, 0, 0)
+        }
+        container.addView(cbSimplex)
+        scroll.addView(container)
+        AlertDialog.Builder(this)
+            .setTitle(R.string.chirp_rb_prox2_advanced_title)
+            .setView(scroll)
+            .setPositiveButton(android.R.string.ok) { d, _ ->
+                prox2FeatureIds.clear()
+                for (f in feats) {
+                    if (featChecks[f.id]?.isChecked == true) {
+                        prox2FeatureIds.add(f.id)
+                    }
+                }
+                prox2StatusId = if (statusGroup.checkedRadioButtonId == rbOnAirId) {
+                    RepeaterBookProx2.STATUS_ON_AIR_CONFIRMED
+                } else {
+                    RepeaterBookProx2.STATUS_ANY
+                }
+                prox2IncludeSimplex = cbSimplex.isChecked
+                d.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
+    }
 
     private fun runSearch() {
         if (!hasRepeaterBookConfig()) {
@@ -328,26 +493,70 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
         val stateItem = binding.spinnerState.selectedItem?.toString()
             ?: ChirpRepeaterBookData.stateAll
 
-        binding.btnSearch.isEnabled = false
-        binding.progressSearch.visibility = View.VISIBLE
-
         val lat = binding.editLat.text?.toString()?.toDoubleOrNull() ?: 0.0
         val lon = binding.editLon.text?.toString()?.toDoubleOrNull() ?: 0.0
         val distMiles = binding.editDistanceMiles.text?.toString()?.toDoubleOrNull() ?: 0.0
+        val gmrsSelected = serviceGmrs()
+        val useHtmlProx = country == "United States" &&
+            lat != 0.0 &&
+            lon != 0.0 &&
+            distMiles > 0.0
+        val useAmateurProx2 = !gmrsSelected && useHtmlProx
+        if (useAmateurProx2) {
+            val proxBands = collectCheckedChipValues(binding.chipGroupProx2Bands)
+            val proxFreq = binding.editProx2Freq.text?.toString()?.trim().orEmpty()
+            if (proxBands.isEmpty() && proxFreq.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    R.string.chirp_rb_prox2_need_band_or_freq,
+                    Toast.LENGTH_LONG,
+                ).show()
+                return
+            }
+            val proxModes = collectCheckedChipValues(binding.chipGroupProx2Modes)
+            if (proxModes.isEmpty()) {
+                Toast.makeText(this, R.string.chirp_rb_prox2_need_mode, Toast.LENGTH_LONG).show()
+                return
+            }
+        }
+
+        val useGmrsProx = gmrsSelected && useHtmlProx
+        val usingProximity = useGmrsProx || useAmateurProx2
+        if (!usingProximity &&
+            country in ChirpRepeaterBookData.naCountries &&
+            stateItem.equals(ChirpRepeaterBookData.stateAll, ignoreCase = true)
+        ) {
+            Toast.makeText(this, R.string.chirp_rb_need_state_or_proximity, Toast.LENGTH_LONG).show()
+            return
+        }
+
+        binding.btnSearch.isEnabled = false
+        binding.progressSearch.visibility = View.VISIBLE
+
         val chirpFilter = binding.editFilterChirp.text?.toString().orEmpty()
         val openOnly = binding.checkOpenOnly.isChecked
-        val fmConv = binding.checkFmConv.isChecked
+        val proxBandsSnap = if (useAmateurProx2) {
+            collectCheckedChipValues(binding.chipGroupProx2Bands)
+        } else {
+            emptyList()
+        }
+        val proxModesSnap = if (useAmateurProx2) {
+            collectCheckedChipValues(binding.chipGroupProx2Modes)
+        } else {
+            emptyList()
+        }
+        val proxFreqSnap = if (useAmateurProx2) {
+            binding.editProx2Freq.text?.toString()?.trim().orEmpty()
+        } else {
+            ""
+        }
+        val proxFeaturesSnap = prox2FeatureIds.toList()
+        val proxStatusSnap = prox2StatusId
+        val proxSimplexSnap = prox2IncludeSimplex
 
         lifecycleScope.launch {
             val result = withContext(Dispatchers.IO) {
                 runCatching {
-                    val useHtmlProx = country == "United States" &&
-                        lat != 0.0 &&
-                        lon != 0.0 &&
-                        distMiles > 0.0
-                    val useGmrsProx = serviceGmrs() && useHtmlProx
-                    val useAmateurProx2 = !serviceGmrs() && useHtmlProx
-
                     val objs = when {
                         useGmrsProx -> {
                             RepeaterBookGmrsProx.fetchRepeaters(
@@ -365,13 +574,19 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
                                 longDeg = lon,
                                 distance = distMiles,
                                 miles = true,
+                                bandIds = proxBandsSnap,
+                                modeIds = proxModesSnap,
+                                freqMhz = proxFreqSnap,
+                                featureIds = proxFeaturesSnap,
+                                statusId = proxStatusSnap,
+                                includeSimplex = proxSimplexSnap,
                             )
                         }
                         else -> {
                             val query = ChirpRepeaterBookApiQuery.toRepeaterBookQuery(
                                 country = country,
                                 stateUi = stateItem,
-                                serviceGmrs = serviceGmrs(),
+                                serviceGmrs = gmrsSelected,
                             )
                             val json = RepeaterBookHttp.fetchRepeaters(query)
                             RepeaterBookJsonParser.parseResults(json)
@@ -406,8 +621,12 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
                 allRows.clear()
                 allRows.addAll(rows)
                 binding.layoutFilter.isVisible = rows.isNotEmpty()
+                binding.layoutResultsActions.isVisible = rows.isNotEmpty()
                 binding.editFilter.setText("")
                 applyQuickFilter()
+                if (rows.isNotEmpty()) {
+                    scrollResultsSectionIntoView()
+                }
                 if (rows.isEmpty()) {
                     binding.textEmptyResults.isVisible = true
                     binding.recyclerResults.isVisible = false
@@ -442,6 +661,20 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
                     ).show()
                 }
             }
+        }
+    }
+
+    private fun selectAllVisible() {
+        visibleRows.forEach { it.selected = true }
+        adapter.notifyDataSetChanged()
+        updateImportButton()
+    }
+
+    /** Scrolls so the results filter / list area is reachable after a tall search form. */
+    private fun scrollResultsSectionIntoView() {
+        if (!binding.layoutFilter.isVisible) return
+        binding.scrollContent.post {
+            binding.scrollContent.smoothScrollTo(0, binding.layoutFilter.top)
         }
     }
 

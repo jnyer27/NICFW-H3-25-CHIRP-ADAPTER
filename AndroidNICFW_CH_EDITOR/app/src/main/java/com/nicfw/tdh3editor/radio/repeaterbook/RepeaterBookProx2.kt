@@ -31,17 +31,47 @@ object RepeaterBookProx2 {
     private const val HTML_BASE = "https://www.repeaterbook.com/repeaters/"
 
     /** RepeaterBook band id for 2 m (matches default proximity UI). */
+    const val BAND_10M = "1"
+    const val BAND_6M = "2"
     const val BAND_2M = "4"
+    const val BAND_125M = "8"
+    const val BAND_70CM = "16"
+    const val BAND_33CM = "32"
+    const val BAND_23CM = "64"
 
     /** Mode id for FM on prox2 form. */
     const val MODE_FM = "1"
+    const val MODE_DMR = "2"
+    const val MODE_DSTAR = "4"
+    const val MODE_M17 = "8"
+    const val MODE_NXDN = "16"
+    const val MODE_P25 = "32"
+    const val MODE_FUSION = "64"
+
+    /** `status_id` query value: any operational status (matches RepeaterBook prox2 form). */
+    const val STATUS_ANY = "%"
+
+    /** Confirmed on-air only. */
+    const val STATUS_ON_AIR_CONFIRMED = "1"
+
+    const val FEATURE_ALLSTAR = "1"
+    const val FEATURE_AUTOPATCH = "2"
+    const val FEATURE_EPOWER = "4"
+    const val FEATURE_ECHOLINK = "8"
+    const val FEATURE_IRLP = "16"
+    const val FEATURE_WIRES_X = "32"
+    const val FEATURE_WIDE_AREA = "64"
+    const val FEATURE_WX = "128"
 
     /**
      * @param distance interpreted per [miles] (`Dunit=m` vs `k`).
-     * @param bandIds passed as repeated `band[]` (e.g. [BAND_2M]).
-     * @param modeIds passed as repeated `mode[]` (e.g. [MODE_FM]).
-     */
-    /**
+     * @param bandIds passed as repeated `band[]` (e.g. [BAND_2M]). Omit all only when [freqMhz] is non-blank
+     * (RepeaterBook requires at least one band **or** a frequency).
+     * @param modeIds passed as repeated `mode[]` (non-empty).
+     * @param freqMhz optional single frequency (MHz), prox2 `freq` field.
+     * @param featureIds `feature[]` AND semantics on RepeaterBook.
+     * @param statusId [STATUS_ANY] or [STATUS_ON_AIR_CONFIRMED].
+     * @param includeSimplex when true, adds `include_simplex=1` (same-frequency simplex nodes).
      * @param enrichFromDetails when true, one HTTP GET per repeater to [details.php] fills **PL** / **TSQ**
      * from Uplink / Downlink tone rows (slower but matches the site’s full technical data).
      */
@@ -54,23 +84,24 @@ object RepeaterBookProx2 {
         miles: Boolean,
         bandIds: List<String> = listOf(BAND_2M),
         modeIds: List<String> = listOf(MODE_FM),
+        freqMhz: String = "",
+        featureIds: List<String> = emptyList(),
+        statusId: String = STATUS_ANY,
+        includeSimplex: Boolean = false,
         enrichFromDetails: Boolean = true,
     ): List<JSONObject> {
-        val b = PROX2_PAGE.newBuilder()
-            .addQueryParameter("city", "")
-            .addQueryParameter("lat", RepeaterBookGmrsProx.formatCoord(latDeg))
-            .addQueryParameter("long", RepeaterBookGmrsProx.formatCoord(longDeg))
-            .addQueryParameter("distance", String.format(Locale.US, "%.2f", distance))
-            .addQueryParameter("Dunit", if (miles) "m" else "k")
-            .addQueryParameter("freq", "")
-            .addQueryParameter("status_id", "%")
-        for (id in bandIds) {
-            b.addQueryParameter("band[]", id)
-        }
-        for (id in modeIds) {
-            b.addQueryParameter("mode[]", id)
-        }
-        val url = b.build()
+        val url = buildProx2Url(
+            latDeg = latDeg,
+            longDeg = longDeg,
+            distance = distance,
+            miles = miles,
+            bandIds = bandIds,
+            modeIds = modeIds,
+            freqMhz = freqMhz,
+            featureIds = featureIds,
+            statusId = statusId,
+            includeSimplex = includeSimplex,
+        )
 
         val request = Request.Builder()
             .url(url)
@@ -92,6 +123,41 @@ object RepeaterBookProx2 {
             return rows
         }
     }
+
+    internal fun buildProx2Url(
+        latDeg: Double,
+        longDeg: Double,
+        distance: Double,
+        miles: Boolean,
+        bandIds: List<String>,
+        modeIds: List<String>,
+        freqMhz: String,
+        featureIds: List<String>,
+        statusId: String,
+        includeSimplex: Boolean,
+    ) = PROX2_PAGE.newBuilder()
+        .addQueryParameter("city", "")
+        .addQueryParameter("lat", RepeaterBookGmrsProx.formatCoord(latDeg))
+        .addQueryParameter("long", RepeaterBookGmrsProx.formatCoord(longDeg))
+        .addQueryParameter("distance", String.format(Locale.US, "%.2f", distance))
+        .addQueryParameter("Dunit", if (miles) "m" else "k")
+        .addQueryParameter("freq", freqMhz.trim())
+        .addQueryParameter("status_id", statusId)
+        .apply {
+            for (id in bandIds) {
+                addQueryParameter("band[]", id)
+            }
+            for (id in modeIds) {
+                addQueryParameter("mode[]", id)
+            }
+            for (id in featureIds) {
+                addQueryParameter("feature[]", id)
+            }
+            if (includeSimplex) {
+                addQueryParameter("include_simplex", "1")
+            }
+        }
+        .build()
 
     internal fun parseHtml(html: String): List<JSONObject> {
         val doc = Jsoup.parse(html, HTML_BASE)
