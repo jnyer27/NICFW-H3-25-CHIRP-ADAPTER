@@ -37,6 +37,72 @@ class RepeaterBookDetailsTonesTest {
     }
 
     @Test
+    fun parseGmrsHtml_thTd_numericTones() {
+        val html = """
+            <html><body><table>
+            <tr><th>Uplink Tone:</th><td>192.8</td></tr>
+            <tr><th>Downlink Tone:</th><td>192.8</td></tr>
+            </table></body></html>
+        """.trimIndent()
+        val p = RepeaterBookDetailsTones.parseGmrsHtml(html)
+        assertEquals("192.8", p.uplink)
+        assertEquals("192.8", p.downlink)
+    }
+
+    @Test
+    fun parseGmrsHtml_loginWall_returnsNullTones() {
+        val html = """
+            <html><body><table>
+            <tr><th>Uplink Tone:</th><td><a href="/login">LOG IN TO VIEW</a></td></tr>
+            <tr><th>Downlink Tone:</th><td>LOG IN TO VIEW</td></tr>
+            </table></body></html>
+        """.trimIndent()
+        val p = RepeaterBookDetailsTones.parseGmrsHtml(html)
+        assertNull(p.uplink)
+        assertNull(p.downlink)
+    }
+
+    @Test
+    fun parseGmrsHtml_travelTone_ignored() {
+        val html = """
+            <html><body><table>
+            <tr><th>Travel Tone:</th><td>Yes</td></tr>
+            <tr><th>Uplink Tone:</th><td>88.5</td></tr>
+            </table></body></html>
+        """.trimIndent()
+        val p = RepeaterBookDetailsTones.parseGmrsHtml(html)
+        assertEquals("88.5", p.uplink)
+        assertNull(p.downlink)
+    }
+
+    @Test
+    fun parseGmrsHtml_duplicateUplink_lastWins() {
+        val html = """
+            <html><body><table>
+            <tr><th>Uplink Tone:</th><td>100.0</td></tr>
+            <tr><th>Uplink Tone:</th><td>123.0</td></tr>
+            </table></body></html>
+        """.trimIndent()
+        val p = RepeaterBookDetailsTones.parseGmrsHtml(html)
+        assertEquals("123.0", p.uplink)
+    }
+
+    @Test
+    fun normalizeToneCell_rejectsLoginPhrases() {
+        assertNull(RepeaterBookDetailsTones.normalizeToneCell("LOG IN TO VIEW"))
+        assertNull(RepeaterBookDetailsTones.normalizeToneCell("log in to view"))
+        assertNull(RepeaterBookDetailsTones.normalizeToneCell("LOGIN TO VIEW"))
+    }
+
+    @Test
+    fun normalizeGmrsDetailLabel_stripsTrailingColon() {
+        assertEquals(
+            "uplink tone",
+            RepeaterBookDetailsTones.normalizeGmrsDetailLabel("Uplink Tone:"),
+        )
+    }
+
+    @Test
     fun mergeTones_sets_pl_and_tsq() {
         val o = JSONObject()
         RepeaterBookDetailsTones.mergeTones(
