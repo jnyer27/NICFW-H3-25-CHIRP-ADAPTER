@@ -4,6 +4,17 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.3.0] — 2026-03-24
+
+### Documentation
+
+- **User Guide PDF** — Regenerated via MkDocs Material and a print stylesheet (Playwright), aligned with the in-repo guide.
+- **Connection clarity** — Explains **USB‑C + CHIRP on PC** vs **BLE on Android**, and labels **Classic Bluetooth (SPP)** as *unconfirmed* for nicFW 2.5 (prefer BLE).
+
+### Android project notes
+
+- **README** — BLE scan/MTU notes and Classic SPP caveat to match the guide.
+
 ## [2.2.0] — 2026-03-24
 
 ### Search RepeaterBook
@@ -62,3 +73,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 [2.0.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.0.0
 [2.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0
 [2.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.2.0
+[2.3.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.3.0
