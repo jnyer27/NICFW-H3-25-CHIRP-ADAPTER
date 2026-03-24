@@ -445,6 +445,15 @@
     </span>
 </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#search-repeaterbook-api">
+<span class="md-ellipsis">
+      
+        Search RepeaterBook (API)
+      
+    </span>
+</a>
+</li>
 </ul>
 </nav>
 </li>
@@ -1736,6 +1745,18 @@ above ensures that tone is captured as a TX encode rather than silently discarde
 If you do <em>not</em> want the tone imported, zero out the <code>rToneFreq</code> column (or set it
 to <code>88.5</code>) before importing.</p>
 </blockquote>
+<h4 id="search-repeaterbook-api">Search RepeaterBook (API)<a class="headerlink" href="#search-repeaterbook-api" title="Permanent link">¶</a></h4>
+<p>Use <strong>⋮ → Search RepeaterBook…</strong> to query <a href="https://www.repeaterbook.com">RepeaterBook</a> over the approved JSON API per the <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">official API wiki</a>: <strong>North America</strong> uses <code>export.php</code> (parameters include <code>state_id</code>, <code>county</code>, <code>emcomm</code>, <code>stype</code>); <strong>Rest of world</strong> uses <code>exportROW.php</code> (parameters include <code>region</code> only — no <code>state_id</code>, <code>county</code>, <code>emcomm</code>, or <code>stype</code> in the documented ROW API). You can enter <strong>multiple countries</strong> separated by commas; the app sends repeated <code>country=</code> query arguments like the wiki’s US+Canada example. Then pick repeaters and <strong>Import selected</strong> — the app opens the same <strong>Import CHIRP CSV</strong> screen as file/clipboard (groups, power, starting channel, preview).</p>
+<p><strong>Developer / build setup (do not commit secrets):</strong> in the project’s <code>local.properties</code> (next to the Android module), add:</p>
+<ul>
+<li><code>REPEATERBOOK_APP_TOKEN=</code> — your RepeaterBook app token  </li>
+<li><code>REPEATERBOOK_CONTACT_EMAIL=</code> — contact email required in the API User-Agent  </li>
+<li><code>REPEATERBOOK_APP_URL=</code> <em>(optional)</em> — public project or support URL included in the User-Agent  </li>
+<li><code>REPEATERBOOK_AUTH_MODE=</code> <em>(optional)</em> — how the token is sent: <code>x_rb_app_token</code> (canonical header <code>X-RB-App-Token</code>, when your approval email specifies it), <code>bearer</code> (<code>Authorization: Bearer</code>, optional compatibility), or <code>raw</code>, <code>token</code>, <code>query_key</code>, <code>query_token</code>, <code>query_api_key</code>, <code>x_api_key</code> — match your approval email  </li>
+<li><code>REPEATERBOOK_USER_AGENT=</code> <em>(optional)</em> — if RepeaterBook allowlisted an <strong>exact</strong> User-Agent string, set it here; otherwise the app builds one from version, URL, and email  </li>
+</ul>
+<p>As of early 2026, RepeaterBook may deny requests whose User-Agent is not on their allowlist. HTTP <strong>401</strong> usually means the allowlisted string does not match what the app sends, or the token is missing/wrong format — try <code>REPEATERBOOK_USER_AGENT</code> first, then <code>REPEATERBOOK_AUTH_MODE</code>.</p>
+<p>Rebuild the app after changing these values. Data use is subject to <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">RepeaterBook API terms</a>.</p>
 <hr/>
 <h3 id="82-sort-channels-by-group">8.2 Sort Channels by Group<a class="headerlink" href="#82-sort-channels-by-group" title="Permanent link">¶</a></h3>
 <p>Automatically reorganize all channels so that each group's channels are contiguous in
