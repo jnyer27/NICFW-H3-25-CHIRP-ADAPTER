@@ -674,6 +674,22 @@ The importer follows the CHIRP column spec:
 > If you do *not* want the tone imported, zero out the `rToneFreq` column (or set it
 > to `88.5`) before importing.
 
+#### Search RepeaterBook (API)
+
+Use **⋮ → Search RepeaterBook…** to query [RepeaterBook](https://www.repeaterbook.com) over the approved JSON API per the [official API wiki](https://www.repeaterbook.com/wiki/doku.php?id=api): **North America** uses `export.php` (parameters include `state_id`, `county`, `emcomm`, `stype`); **Rest of world** uses `exportROW.php` (parameters include `region` only — no `state_id`, `county`, `emcomm`, or `stype` in the documented ROW API). You can enter **multiple countries** separated by commas; the app sends repeated `country=` query arguments like the wiki’s US+Canada example. Then pick repeaters and **Import selected** — the app opens the same **Import CHIRP CSV** screen as file/clipboard (groups, power, starting channel, preview).
+
+**Developer / build setup (do not commit secrets):** in the project’s `local.properties` (next to the Android module), add:
+
+- `REPEATERBOOK_APP_TOKEN=` — your RepeaterBook app token  
+- `REPEATERBOOK_CONTACT_EMAIL=` — contact email required in the API User-Agent  
+- `REPEATERBOOK_APP_URL=` *(optional)* — public project or support URL included in the User-Agent  
+- `REPEATERBOOK_AUTH_MODE=` *(optional)* — how the token is sent: `x_rb_app_token` (canonical header `X-RB-App-Token`, when your approval email specifies it), `bearer` (`Authorization: Bearer`, optional compatibility), or `raw`, `token`, `query_key`, `query_token`, `query_api_key`, `x_api_key` — match your approval email  
+- `REPEATERBOOK_USER_AGENT=` *(optional)* — if RepeaterBook allowlisted an **exact** User-Agent string, set it here; otherwise the app builds one from version, URL, and email  
+
+As of early 2026, RepeaterBook may deny requests whose User-Agent is not on their allowlist. HTTP **401** usually means the allowlisted string does not match what the app sends, or the token is missing/wrong format — try `REPEATERBOOK_USER_AGENT` first, then `REPEATERBOOK_AUTH_MODE`.
+
+Rebuild the app after changing these values. Data use is subject to [RepeaterBook API terms](https://www.repeaterbook.com/wiki/doku.php?id=api).
+
 ---
 
 ### 8.2 Sort Channels by Group

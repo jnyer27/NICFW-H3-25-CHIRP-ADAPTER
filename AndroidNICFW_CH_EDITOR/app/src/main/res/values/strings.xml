@@ -47,4 +47,53 @@
     <string name="bulk_edit_state_on">on</string>
     <string name="bulk_edit_state_off">off</string>
     <string name="select_all_matches_cd">Select all visible matches</string>
+
+    <string name="action_search_repeaterbook">Search RepeaterBook…</string>
+    <string name="action_search_chirp_repeaterbook">Search RepeaterBook (CHIRP mirror)…</string>
+    <string name="chirp_rb_title">RepeaterBook (CHIRP)</string>
+    <string name="chirp_rb_country">Country</string>
+    <string name="chirp_rb_state">State / province</string>
+    <string name="chirp_rb_service">Service</string>
+    <string name="chirp_rb_service_amateur">Amateur</string>
+    <string name="chirp_rb_service_gmrs">GMRS</string>
+    <string name="chirp_rb_lat">Latitude (optional, decimal)</string>
+    <string name="chirp_rb_lon">Longitude (optional, decimal)</string>
+    <string name="chirp_rb_use_my_location">Use my location</string>
+    <string name="chirp_rb_location_denied">Location permission is needed to fill coordinates.</string>
+    <string name="chirp_rb_location_unavailable">Could not read a location. Turn on location (GPS) and try again, or enter latitude and longitude manually.</string>
+    <string name="chirp_rb_dist_mi">Distance limit miles (optional, with lat/lon)</string>
+    <string name="chirp_rb_filter_chirp">Filter (optional, matches county/city/callsign/notes like CHIRP)</string>
+    <string name="chirp_rb_open_only">Open repeaters only</string>
+    <string name="chirp_rb_fm_conv">Convert dual-mode digital to FM when analog capable</string>
+    <string name="chirp_rb_pick_country">Choose a country</string>
+    <string name="chirp_rb_attribution_html"><![CDATA[CHIRP-style filters with data from the official <a href="https://www.repeaterbook.com/api">RepeaterBook API</a> (export.php / exportROW.php). Repeater data © <a href="https://www.repeaterbook.com">RepeaterBook.com</a>. Same User-Agent and token as the other RepeaterBook search.]]></string>
+    <string name="repeaterbook_title">Search RepeaterBook</string>
+    <string name="repeaterbook_search">Search</string>
+    <string name="repeaterbook_import_selected">Import selected</string>
+    <string name="repeaterbook_exit">Exit</string>
+    <string name="repeaterbook_region_na">North America (export.php)</string>
+    <string name="repeaterbook_region_row">Rest of world (exportROW.php)</string>
+    <string name="repeaterbook_country">Country</string>
+    <string name="repeaterbook_country_hint">Comma separates multiple (wiki: United States, Canada)</string>
+    <string name="repeaterbook_state_id">State ID (NA, e.g. FIPS)</string>
+    <string name="repeaterbook_region_row_hint">Region (ROW)</string>
+    <string name="repeaterbook_county">County</string>
+    <string name="repeaterbook_city">City</string>
+    <string name="repeaterbook_landmark">Landmark</string>
+    <string name="repeaterbook_callsign">Callsign</string>
+    <string name="repeaterbook_frequency">Frequency (MHz)</string>
+    <string name="repeaterbook_mode">Mode</string>
+    <string name="repeaterbook_emcomm">Emcomm</string>
+    <string name="repeaterbook_stype">Service type</string>
+    <string name="repeaterbook_filter_results">Filter results</string>
+    <string name="repeaterbook_no_results">No repeaters returned. Try broader filters.</string>
+    <string name="repeaterbook_need_eeprom">Load EEPROM from the radio before searching RepeaterBook.</string>
+    <string name="repeaterbook_configure_token">Add REPEATERBOOK_APP_TOKEN and REPEATERBOOK_CONTACT_EMAIL to local.properties (see UserGuide).</string>
+    <string name="repeaterbook_search_failed">Search failed: %1$s</string>
+    <string name="repeaterbook_error_401_title">RepeaterBook access denied (401)</string>
+    <string name="repeaterbook_error_401_hint">RepeaterBook allowlists clients by User-Agent (see their API wiki). If your approval email gave an exact User-Agent string, set REPEATERBOOK_USER_AGENT in local.properties to that value and rebuild.\n\nIf the email specified X-RB-App-Token, set REPEATERBOOK_AUTH_MODE to x_rb_app_token. Otherwise try bearer, raw, query_key, query_token, query_api_key, token, or x_api_key.</string>
+    <string name="repeaterbook_select_one">Select at least one repeater to import.</string>
+    <string name="repeaterbook_menu_select_all">Select all</string>
+    <string name="repeaterbook_menu_clear">Clear selection</string>
+    <string name="repeaterbook_attribution_html"><![CDATA[Repeater data © <a href="https://www.repeaterbook.com">RepeaterBook.com</a> — used under their API terms.]]></string>
 </resources>

@@ -12,4 +12,18 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <!-- Filled secondary actions matching channel row cards (avoids M3 outline on M2 DayNight theme). -->
+    <style name="Widget.NicFw.Button.ChannelLike" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:textColor">@color/channel_like_button_text</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="backgroundTint">@color/channel_card_bg</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="rippleColor">@color/channel_like_button_ripple</item>
+    </style>
 </resources>

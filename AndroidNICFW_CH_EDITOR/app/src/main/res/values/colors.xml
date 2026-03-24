@@ -6,4 +6,10 @@
     <color name="secondary">#FF9800</color>
     <color name="on_secondary">#000000</color>
     <color name="empty_channel_bg">#E0E0E0</color>
+
+    <!-- Channel list card (item_channel) — reuse for CHIRP RepeaterBook secondary buttons -->
+    <color name="channel_card_bg">#1F2937</color>
+    <color name="channel_card_stroke">#334155</color>
+    <color name="channel_like_button_text">#F3F4F6</color>
+    <color name="channel_like_button_ripple">#33FFFFFF</color>
 </resources>
