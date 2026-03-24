@@ -48,9 +48,8 @@
     <string name="bulk_edit_state_off">off</string>
     <string name="select_all_matches_cd">Select all visible matches</string>
 
-    <string name="action_search_repeaterbook">Search RepeaterBook…</string>
-    <string name="action_search_chirp_repeaterbook">Search RepeaterBook (CHIRP mirror)…</string>
-    <string name="chirp_rb_title">RepeaterBook (CHIRP)</string>
+    <string name="action_search_chirp_repeaterbook">Search RepeaterBook…</string>
+    <string name="chirp_rb_title">Search RepeaterBook</string>
     <string name="chirp_rb_country">Country</string>
     <string name="chirp_rb_state">State / province</string>
     <string name="chirp_rb_service">Service</string>

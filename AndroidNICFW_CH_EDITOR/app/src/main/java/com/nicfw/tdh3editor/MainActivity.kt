@@ -512,7 +512,6 @@ class MainActivity : AppCompatActivity() {
         val hasEeprom = (eeprom != null)
         menu.findItem(R.id.action_import_chirp)?.isEnabled           = hasEeprom
         menu.findItem(R.id.action_import_chirp_clipboard)?.isEnabled = hasEeprom
-        menu.findItem(R.id.action_search_repeaterbook)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_search_chirp_repeaterbook)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_sort_by_group)?.isEnabled = hasEeprom
         menu.findItem(R.id.action_save_dump)?.isEnabled = hasEeprom
@@ -554,14 +553,6 @@ class MainActivity : AppCompatActivity() {
                     return true
                 }
                 processChirpCsv(csvText)
-                true
-            }
-            R.id.action_search_repeaterbook -> {
-                if (eeprom == null) {
-                    Toast.makeText(this, "Load EEPROM from radio before importing", Toast.LENGTH_SHORT).show()
-                    return true
-                }
-                startActivity(Intent(this, RepeaterBookSearchActivity::class.java))
                 true
             }
             R.id.action_search_chirp_repeaterbook -> {

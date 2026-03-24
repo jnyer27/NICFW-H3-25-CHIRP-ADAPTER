@@ -4,6 +4,15 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.0.0] — 2026-03-24
+
+### RepeaterBook support
+
+- **Major feature release: "Repeaterbook Support!"** — Adds integrated RepeaterBook search/import flow with CHIRP-style filtering and direct handoff to CHIRP import preview.
+- **Proximity workflows** — Supports US proximity HTML flows for both GMRS (`prox_result.php`) and amateur (`prox2_result.php`), with miles default (`Dunit=m`) and optional location-based search.
+- **Tone enrichment** — Fetches repeater detail pages to populate uplink/downlink tones (mapped to `PL`/`TSQ`) when available.
+- **UI polish** — Simplifies menu to one RepeaterBook search entry and improves readability/styling consistency for action buttons and chips in dark mode.
+
 ## [1.2.0] — 2026-03-23
 
 ### BLE
@@ -28,3 +37,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 [1.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0
 [1.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0
+[2.0.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.0.0

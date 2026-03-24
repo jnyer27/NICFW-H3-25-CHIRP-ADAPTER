@@ -19,11 +19,6 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_search_repeaterbook"
-        android:title="@string/action_search_repeaterbook"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_search_chirp_repeaterbook"
         android:title="@string/action_search_chirp_repeaterbook"
         app:showAsAction="never" />
