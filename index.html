@@ -986,7 +986,7 @@
 
 <h1 id="td-h3-channel-editor-user-guide">TD-H3 Channel Editor — User Guide<a class="headerlink" href="#td-h3-channel-editor-user-guide" title="Permanent link">¶</a></h1>
 <blockquote>
-<p><strong>App:</strong> NICFW TD-H3 Channel Editor (<strong>Android v2.1.0</strong> — see <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0">release notes</a> and <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">app CHANGELOG</a>)
+<p><strong>App:</strong> NICFW TD-H3 Channel Editor (<strong>Android v2.2.0</strong> — see <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.2.0">release notes</a> and <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">app CHANGELOG</a>)
 <strong>Radio:</strong> TIDRadio TD-H3 running <strong>nicFW v2.5</strong>
 <strong>Platform:</strong> Android (min SDK 24 / Android 7.0)</p>
 </blockquote>
@@ -1724,13 +1724,14 @@ All other items require an EEPROM to be loaded first.</p>
 <a href="#__codelineno-15-16" id="__codelineno-15-16" name="__codelineno-15-16"></a>│  [ Ch 1 ▼ ]                                         │
 <a href="#__codelineno-15-17" id="__codelineno-15-17" name="__codelineno-15-17"></a>├──────────────────────────────────────────────────────┤
 <a href="#__codelineno-15-18" id="__codelineno-15-18" name="__codelineno-15-18"></a>│  Channel Preview                                     │
-<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>│  → Ch 1  │ GMRS 1   │ 462.5625 MHz  │ T: 100.0 Hz  │
-<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>│  → Ch 2  │ GMRS 2   │ 462.5875 MHz                 │
-<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>│  → Ch 3  │ WX1      │ 162.4000 MHz  (CSV #43)      │
-<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a>│  …                                                  │
-<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a>├──────────────────────────────────────────────────────┤
-<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a>│  [ Cancel ]                     [ Import ]           │
-<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a>└──────────────────────────────────────────────────────┘
+<a href="#__codelineno-15-19" id="__codelineno-15-19" name="__codelineno-15-19"></a>│  → Ch 1  GMRS 1        462.5625 MHz                  │
+<a href="#__codelineno-15-20" id="__codelineno-15-20" name="__codelineno-15-20"></a>│        [PWR…][FM][Simplex][BW:…][TX:…] … chips      │
+<a href="#__codelineno-15-21" id="__codelineno-15-21" name="__codelineno-15-21"></a>│  → Ch 2  …  (same chip row as main channel list)    │
+<a href="#__codelineno-15-22" id="__codelineno-15-22" name="__codelineno-15-22"></a>│  → Ch 3  WX1 … + CSV #43 line below chips            │
+<a href="#__codelineno-15-23" id="__codelineno-15-23" name="__codelineno-15-23"></a>│  …                                                  │
+<a href="#__codelineno-15-24" id="__codelineno-15-24" name="__codelineno-15-24"></a>├──────────────────────────────────────────────────────┤
+<a href="#__codelineno-15-25" id="__codelineno-15-25" name="__codelineno-15-25"></a>│  [ Cancel ]                     [ Import ]           │
+<a href="#__codelineno-15-26" id="__codelineno-15-26" name="__codelineno-15-26"></a>└──────────────────────────────────────────────────────┘
 </code></pre></div>
 <ol>
 <li>Optionally assign all imported channels to up to 4 groups using the <strong>Group</strong> spinners.</li>
@@ -1804,7 +1805,7 @@ to <code>88.5</code>) before importing.</p>
 <tbody>
 <tr>
 <td><strong>Country</strong>, <strong>State / province</strong></td>
-<td>Drives the JSON query when the app uses the <strong>export API</strong> (not used for US proximity HTML).</td>
+<td>Drives the JSON query when the app uses the <strong>export API</strong>. For <strong>United States</strong>, <strong>Canada</strong>, and <strong>Mexico</strong>, you must pick a <strong>specific</strong> state or province (not <strong>All</strong>) on that path — or use <strong>US proximity</strong> (lat/lon + distance) instead, which does not require state.</td>
 </tr>
 <tr>
 <td><strong>Service</strong></td>
@@ -3317,7 +3318,7 @@ field label.</p>
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "toc.integrate", "search.highlight", "search.share", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.1.0"}</script>
+<script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "toc.integrate", "search.highlight", "search.share", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.2.0"}</script>
 <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
 </body>
 </html>
