@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- One row in the CHIRP import preview list. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -52,20 +53,33 @@
 
         </LinearLayout>
 
-        <!-- TX/RX tone summary (hidden when no tones) -->
-        <TextView
-            android:id="@+id/importTone"
+        <!-- Group chips (same style as main channel list) -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/importGroupChips"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:text="" />
+            android:layout_marginTop="4dp"
+            android:visibility="gone"
+            app:chipSpacingHorizontal="4dp"
+            app:chipSpacingVertical="4dp"
+            app:singleLine="false" />
+
+        <!-- PWR / mode / duplex / BW / tones — same chips as main list -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/importDetailChips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            app:chipSpacingHorizontal="6dp"
+            app:chipSpacingVertical="4dp"
+            app:singleLine="false" />
 
         <!-- Comment / source location from CSV -->
         <TextView
             android:id="@+id/importComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textSize="11sp"
             android:textColor="?android:attr/textColorSecondary"
             android:text="" />

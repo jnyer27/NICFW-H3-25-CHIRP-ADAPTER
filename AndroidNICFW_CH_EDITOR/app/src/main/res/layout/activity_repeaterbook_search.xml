@@ -17,18 +17,12 @@
             app:title="@string/repeaterbook_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <LinearLayout
         android:id="@+id/searchFormScroll"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
 
             <RadioGroup
                 android:id="@+id/radioRegion"
@@ -199,15 +193,14 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/repeaterbook_search" />
 
-            <ProgressBar
-                android:id="@+id/progressSearch"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
-        </LinearLayout>
-    </ScrollView>
+        <ProgressBar
+            android:id="@+id/progressSearch"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/layoutFilter"
@@ -228,7 +221,7 @@
         android:id="@+id/recyclerResults"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:clipToPadding="false"
         android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -238,7 +231,7 @@
         android:id="@+id/textEmptyResults"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="1"
         android:gravity="center"
         android:padding="16dp"
         android:text="@string/repeaterbook_no_results"

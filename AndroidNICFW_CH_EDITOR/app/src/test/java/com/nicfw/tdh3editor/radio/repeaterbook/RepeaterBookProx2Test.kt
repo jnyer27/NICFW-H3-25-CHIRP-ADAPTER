@@ -8,6 +8,29 @@ import org.junit.Test
 class RepeaterBookProx2Test {
 
     @Test
+    fun buildProx2Url_includes_freq_features_status_and_simplex() {
+        val u = RepeaterBookProx2.buildProx2Url(
+            latDeg = 39.375145,
+            longDeg = -76.589754,
+            distance = 25.0,
+            miles = true,
+            bandIds = listOf(RepeaterBookProx2.BAND_2M),
+            modeIds = listOf(RepeaterBookProx2.MODE_FM, RepeaterBookProx2.MODE_DMR),
+            freqMhz = "146.520",
+            featureIds = listOf(
+                RepeaterBookProx2.FEATURE_ALLSTAR,
+                RepeaterBookProx2.FEATURE_ECHOLINK,
+            ),
+            statusId = RepeaterBookProx2.STATUS_ON_AIR_CONFIRMED,
+            includeSimplex = true,
+        ).toString()
+        assertTrue(u.contains("freq=146.520"))
+        assertTrue(u.contains("include_simplex=1"))
+        assertTrue(u.contains("status_id=1"))
+        assertTrue(u.contains("Dunit=m"))
+    }
+
+    @Test
     fun parseHtml_extracts_prox2_style_row() {
         val html = """
             <html><body><table>

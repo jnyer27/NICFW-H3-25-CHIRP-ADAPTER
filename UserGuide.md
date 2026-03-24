@@ -1,6 +1,6 @@
 # TD-H3 Channel Editor — User Guide
 
-> **App:** NICFW TD-H3 Channel Editor (**Android v2.1.0** — see [release notes](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0) and [app CHANGELOG](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md))
+> **App:** NICFW TD-H3 Channel Editor (**Android v2.2.0** — see [release notes](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.2.0) and [app CHANGELOG](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md))
 > **Radio:** TIDRadio TD-H3 running **nicFW v2.5**
 > **Platform:** Android (min SDK 24 / Android 7.0)
 
@@ -632,9 +632,10 @@ Two input methods are supported:
 │  [ Ch 1 ▼ ]                                         │
 ├──────────────────────────────────────────────────────┤
 │  Channel Preview                                     │
-│  → Ch 1  │ GMRS 1   │ 462.5625 MHz  │ T: 100.0 Hz  │
-│  → Ch 2  │ GMRS 2   │ 462.5875 MHz                 │
-│  → Ch 3  │ WX1      │ 162.4000 MHz  (CSV #43)      │
+│  → Ch 1  GMRS 1        462.5625 MHz                  │
+│        [PWR…][FM][Simplex][BW:…][TX:…] … chips      │
+│  → Ch 2  …  (same chip row as main channel list)    │
+│  → Ch 3  WX1 … + CSV #43 line below chips            │
 │  …                                                  │
 ├──────────────────────────────────────────────────────┤
 │  [ Cancel ]                     [ Import ]           │
@@ -688,7 +689,7 @@ Use **⋮ → Search RepeaterBook…** after loading EEPROM from the radio. The 
 
 | Field / control | Purpose |
 |-----------------|--------|
-| **Country**, **State / province** | Drives the JSON query when the app uses the **export API** (not used for US proximity HTML). |
+| **Country**, **State / province** | Drives the JSON query when the app uses the **export API**. For **United States**, **Canada**, and **Mexico**, you must pick a **specific** state or province (not **All**) on that path — or use **US proximity** (lat/lon + distance) instead, which does not require state. |
 | **Service** | **Amateur** or **GMRS** (GMRS is only enabled when country is United States). |
 | **Latitude / Longitude** | Optional. With **United States** + both set + **distance** &gt; 0, the app uses **HTML proximity** instead of export-only search (see below). |
 | **Use my location** | Requests location permission, fills lat/lon when a fix is available. If **distance** is empty or zero, it is prefilled to **30** miles as a starting value (you can change it). |

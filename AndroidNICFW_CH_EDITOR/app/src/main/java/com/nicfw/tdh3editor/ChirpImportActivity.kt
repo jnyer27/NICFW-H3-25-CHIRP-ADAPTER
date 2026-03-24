@@ -218,16 +218,14 @@ class ChirpImportActivity : AppCompatActivity() {
             row.findViewById<TextView>(R.id.importFreq).text =
                 "%.4f MHz".format(ch.freqRxHz / 1_000_000.0)
 
-            // Tone summary
-            val toneText = buildString {
-                val tx = ch.displayTxTone()
-                val rx = ch.displayRxTone()
-                if (tx.isNotEmpty()) append("T: $tx  ")
-                if (rx.isNotEmpty()) append("R: $rx")
-            }.trim()
-            val toneView = row.findViewById<TextView>(R.id.importTone)
-            if (toneText.isNotEmpty()) toneView.text = toneText
-            else toneView.visibility = View.GONE
+            ChannelListChips.populateGroupChips(
+                row.findViewById(R.id.importGroupChips),
+                ch,
+            )
+            ChannelListChips.populateDetailChips(
+                row.findViewById(R.id.importDetailChips),
+                ch,
+            )
 
             // Comment (CSV Location + optional comment column)
             val comment = comments.getOrNull(i)?.trim() ?: ""

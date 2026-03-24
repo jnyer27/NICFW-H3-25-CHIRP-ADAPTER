@@ -1,5 +1,7 @@
 package com.nicfw.tdh3editor.radio
 
+import kotlin.math.abs
+
 /**
  * One memory channel (1–198). Mirrors chirp_common.Memory / _channel_to_memory.
  */
@@ -40,6 +42,17 @@ data class Channel(
 
     fun displayTxTone(): String = formatTone(txToneMode, txToneVal, txTonePolarity)
     fun displayRxTone(): String = formatTone(rxToneMode, rxToneVal, rxTonePolarity)
+
+    /**
+     * Same text as the main channel list duplex chip: signed offset in kHz with no unit
+     * (e.g. `+5000`, `-600`), or `Split` / `Simplex`.
+     */
+    fun duplexOffsetChipLabel(): String = when (duplex) {
+        "+" -> "+${abs(offsetHz) / 1_000L}"
+        "-" -> "-${abs(offsetHz) / 1_000L}"
+        "split" -> "Split"
+        else -> "Simplex"
+    }
 
     /** Returns active group letters space-separated, e.g. "A B" — empty string if all None. */
     fun displayGroups(): String = listOf(group1, group2, group3, group4)
