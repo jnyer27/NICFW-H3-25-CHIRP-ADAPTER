@@ -4,8 +4,11 @@ name: Update User Guide
 # 1. Every published GitHub Release — attaches User Guide PDF to THAT tag (so each
 #    version, e.g. v1.0.0 and android-editor-v1.1.0, gets a downloadable PDF).
 #    Also appends MkDocs / PDF links to release notes once (marker: nicfw-docs:userguide).
-# 2. Push to main when UserGuide.md / docs / mkdocs.yml change — redeploys Pages and
-#    backfills the PDF onto ALL published releases (keeps older tags like v1.0.0 in sync).
+# 2. Push to main when UserGuide.md / docs / mkdocs.yml / Android version change —
+#    redeploys Pages and backfills the PDF onto ALL published releases. The PDF cover
+#    and Material header read versionName from app/build.gradle.kts (docs/hooks.py), so
+#    gh-pages must rebuild when only the app version bumps (otherwise user-guide.pdf
+#    on Pages lags behind releases).
 # 3. workflow_dispatch — same as (2), for manual runs / one-off backfill.
 on:
   release:
@@ -20,6 +23,7 @@ on:
       - 'docs/**'
       - 'mkdocs.yml'
       - 'requirements-docs.txt'
+      - 'AndroidNICFW_CH_EDITOR/app/build.gradle.kts'
       - '.github/workflows/update-userguide.yml'
   workflow_dispatch:
 
