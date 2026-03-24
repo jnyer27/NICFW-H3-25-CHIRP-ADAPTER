@@ -4,6 +4,15 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.1.0] — 2026-03-24
+
+### UI and workflow polish
+
+- **Main channel offset chips** now show signed kHz integers with no units (for example: `+5000`, `+600`, `-600`) to match the channel editor TX/Offset entry style.
+- **Protect Tune Settings default** is now **ON** for fresh installs; existing users keep their stored preference.
+- **Proximity location helper** now pre-fills distance to **30 miles** when using **Use my location** and the distance field is blank/zero.
+- **Documentation refresh** expands RepeaterBook guidance, including API vs proximity behavior and setup notes.
+
 ## [2.0.0] — 2026-03-24
 
 ### RepeaterBook support
@@ -38,3 +47,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 [1.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.1.0
 [1.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0
 [2.0.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.0.0
+[2.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0

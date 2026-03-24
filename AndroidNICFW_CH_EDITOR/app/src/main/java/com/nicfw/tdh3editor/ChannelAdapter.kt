@@ -17,6 +17,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.nicfw.tdh3editor.radio.Channel
 import com.nicfw.tdh3editor.radio.EepromConstants
+import kotlin.math.abs
 
 /**
  * RecyclerView adapter for the 198-channel list on [MainActivity].
@@ -311,8 +312,8 @@ class ChannelAdapter(
         }
 
         private fun duplexChipText(channel: Channel): String = when (channel.duplex) {
-            "+" -> "+${channel.offsetHz / 1_000_000L}MHz"
-            "-" -> "-${channel.offsetHz / 1_000_000L}MHz"
+            "+" -> "+${abs(channel.offsetHz) / 1_000L}"
+            "-" -> "-${abs(channel.offsetHz) / 1_000L}"
             "split" -> "Split"
             else -> "Simplex"
         }
