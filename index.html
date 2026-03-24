@@ -14,6 +14,7 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
 <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+<link href="stylesheets/print.css" rel="stylesheet"/>
 <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
 </head>
 <body data-md-color-accent="indigo" data-md-color-primary="indigo" data-md-color-scheme="default" dir="ltr">
@@ -200,10 +201,10 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#option-b-classic-bluetooth-spp">
+<a class="md-nav__link" href="#option-b-classic-bluetooth-spp-unconfirmed">
 <span class="md-ellipsis">
       
-        Option B — Classic Bluetooth (SPP)
+        Option B — Classic Bluetooth (SPP) (unconfirmed)
       
     </span>
 </a>
@@ -1080,7 +1081,11 @@ not only the TD-H3’s built‑in radio.</p>
   <strong>Location</strong> permission. Grant when prompted.</li>
 </ul>
 <p>For a concise technical list of changes, see <strong><a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">AndroidNICFW_CH_EDITOR/CHANGELOG.md</a></strong> (section <strong>1.1.0</strong>).</p>
-<h3 id="option-b-classic-bluetooth-spp">Option B — Classic Bluetooth (SPP)<a class="headerlink" href="#option-b-classic-bluetooth-spp" title="Permanent link">¶</a></h3>
+<h3 id="option-b-classic-bluetooth-spp-unconfirmed">Option B — Classic Bluetooth (SPP) <em>(unconfirmed)</em><a class="headerlink" href="#option-b-classic-bluetooth-spp-unconfirmed" title="Permanent link">¶</a></h3>
+<blockquote>
+<p><strong>Note:</strong> Classic SPP connectivity has not been confirmed to work with the TD-H3 and
+nicFW 2.5. BLE is the recommended and verified connection method.</p>
+</blockquote>
 <ul>
 <li>Pair the radio to your phone first via Android's system Bluetooth settings.</li>
 <li>Tap <strong>Paired Devices (Classic BT)</strong> and select the radio from the list.</li>
@@ -1700,7 +1705,7 @@ All other items require an EEPROM to be loaded first.</p>
 <h4 id="steps">Steps<a class="headerlink" href="#steps" title="Permanent link">¶</a></h4>
 <ol>
 <li>Export your channel list from CHIRP as a CSV file (<code>File → Export</code>).</li>
-<li>Transfer the CSV to your Android device (email, cloud storage, USB, etc.),
+<li>Transfer the CSV to your Android device (email, cloud storage, USB file transfer, etc.),
    <strong>or</strong> copy the CSV text to the clipboard on a device where CHIRP is running.</li>
 <li>In the app, tap <strong>⋮ → Import CHIRP CSV from File…</strong> and pick the file,
    <strong>or</strong> tap <strong>⋮ → Import CHIRP CSV from Clipboard…</strong> to import from the clipboard.</li>
@@ -3009,7 +3014,9 @@ each unit.</p>
 <p>The repository also includes a CHIRP radio driver:
 <strong><code>tidradio_h3_nicfw25.py</code></strong></p>
 <p>This driver lets you use <strong>CHIRP</strong> (the desktop radio programming software) to program
-the TD-H3 over a USB serial or Bluetooth serial connection.</p>
+the TD-H3 from a <strong>PC</strong> over a USB serial connection (connect the radio's USB-C port
+directly to your PC — no separate programming cable required). This is a desktop/PC
+connection and is separate from the Android app, which uses Bluetooth BLE.</p>
 <h3 id="connection">Connection<a class="headerlink" href="#connection" title="Permanent link">¶</a></h3>
 <ol>
 <li>Open CHIRP.</li>
