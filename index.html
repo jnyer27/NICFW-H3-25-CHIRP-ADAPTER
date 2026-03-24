@@ -446,13 +446,53 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#search-repeaterbook-api">
+<a class="md-nav__link" href="#search-repeaterbook">
 <span class="md-ellipsis">
       
-        Search RepeaterBook (API)
+        Search RepeaterBook
       
     </span>
 </a>
+<nav aria-label="Search RepeaterBook" class="md-nav">
+<ul class="md-nav__list">
+<li class="md-nav__item">
+<a class="md-nav__link" href="#how-the-search-screen-works">
+<span class="md-ellipsis">
+      
+        How the search screen works
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#export-api-vs-proximity-html-when-each-is-used">
+<span class="md-ellipsis">
+      
+        Export API vs. proximity (HTML) — when each is used
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#repeaterbook-location-and-distance">
+<span class="md-ellipsis">
+      
+        RepeaterBook location and distance
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#developer-build-setup-do-not-commit-secrets">
+<span class="md-ellipsis">
+      
+        Developer / build setup (do not commit secrets)
+      
+    </span>
+</a>
+</li>
+</ul>
+</nav>
 </li>
 </ul>
 </nav>
@@ -946,7 +986,7 @@
 
 <h1 id="td-h3-channel-editor-user-guide">TD-H3 Channel Editor — User Guide<a class="headerlink" href="#td-h3-channel-editor-user-guide" title="Permanent link">¶</a></h1>
 <blockquote>
-<p><strong>App:</strong> NICFW TD-H3 Channel Editor (<strong>Android v1.2.0</strong> — see <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v1.2.0">release notes</a> and <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">app CHANGELOG</a>)
+<p><strong>App:</strong> NICFW TD-H3 Channel Editor (<strong>Android v2.0.0</strong> — see <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.0.0">release notes</a> and <a href="https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md">app CHANGELOG</a>)
 <strong>Radio:</strong> TIDRadio TD-H3 running <strong>nicFW v2.5</strong>
 <strong>Platform:</strong> Android (min SDK 24 / Android 7.0)</p>
 </blockquote>
@@ -969,6 +1009,7 @@
 <li><a href="#7-channel-search">Channel Search</a></li>
 <li><a href="#8-overflow-menu-features">Overflow Menu Features</a></li>
 <li><a href="#81-import-chirp-csv">Import CHIRP CSV</a></li>
+<li><a href="#search-repeaterbook">Search RepeaterBook</a></li>
 <li><a href="#82-sort-channels-by-group">Sort Channels by Group</a></li>
 <li><a href="#83-edit-group-labels">Edit Group Labels</a></li>
 <li><a href="#84-save-import-eeprom-dump">Save / Import EEPROM Dump</a></li>
@@ -1745,9 +1786,109 @@ above ensures that tone is captured as a TX encode rather than silently discarde
 If you do <em>not</em> want the tone imported, zero out the <code>rToneFreq</code> column (or set it
 to <code>88.5</code>) before importing.</p>
 </blockquote>
-<h4 id="search-repeaterbook-api">Search RepeaterBook (API)<a class="headerlink" href="#search-repeaterbook-api" title="Permanent link">¶</a></h4>
-<p>Use <strong>⋮ → Search RepeaterBook…</strong> to query <a href="https://www.repeaterbook.com">RepeaterBook</a> over the approved JSON API per the <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">official API wiki</a>: <strong>North America</strong> uses <code>export.php</code> (parameters include <code>state_id</code>, <code>county</code>, <code>emcomm</code>, <code>stype</code>); <strong>Rest of world</strong> uses <code>exportROW.php</code> (parameters include <code>region</code> only — no <code>state_id</code>, <code>county</code>, <code>emcomm</code>, or <code>stype</code> in the documented ROW API). You can enter <strong>multiple countries</strong> separated by commas; the app sends repeated <code>country=</code> query arguments like the wiki’s US+Canada example. Then pick repeaters and <strong>Import selected</strong> — the app opens the same <strong>Import CHIRP CSV</strong> screen as file/clipboard (groups, power, starting channel, preview).</p>
-<p><strong>Developer / build setup (do not commit secrets):</strong> in the project’s <code>local.properties</code> (next to the Android module), add:</p>
+<h4 id="search-repeaterbook">Search RepeaterBook<a class="headerlink" href="#search-repeaterbook" title="Permanent link">¶</a></h4>
+<p>Use <strong>⋮ → Search RepeaterBook…</strong> after loading EEPROM from the radio. The <strong>Search RepeaterBook</strong> screen queries <a href="https://www.repeaterbook.com">RepeaterBook</a>, lets you multi-select repeaters, then <strong>Import selected</strong> opens the same <strong>Import CHIRP CSV</strong> flow as file/clipboard (groups, power, starting channel, preview).</p>
+<p><strong>What you need</strong></p>
+<ul>
+<li>Valid RepeaterBook API credentials in <code>local.properties</code> (see <a href="#repeaterbook-developer-setup">Developer setup</a> below).</li>
+<li>For <strong>proximity (HTML) search</strong> in the United States: set <strong>Country</strong> to <strong>United States</strong>, enter <strong>non-zero latitude and longitude</strong>, and a <strong>distance</strong> greater than zero (see <a href="#repeaterbook-location-and-distance">Location and distance</a>).</li>
+</ul>
+<h5 id="how-the-search-screen-works">How the search screen works<a class="headerlink" href="#how-the-search-screen-works" title="Permanent link">¶</a></h5>
+<table>
+<thead>
+<tr>
+<th>Field / control</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Country</strong>, <strong>State / province</strong></td>
+<td>Drives the JSON query when the app uses the <strong>export API</strong> (not used for US proximity HTML).</td>
+</tr>
+<tr>
+<td><strong>Service</strong></td>
+<td><strong>Amateur</strong> or <strong>GMRS</strong> (GMRS is only enabled when country is United States).</td>
+</tr>
+<tr>
+<td><strong>Latitude / Longitude</strong></td>
+<td>Optional. With <strong>United States</strong> + both set + <strong>distance</strong> &gt; 0, the app uses <strong>HTML proximity</strong> instead of export-only search (see below).</td>
+</tr>
+<tr>
+<td><strong>Use my location</strong></td>
+<td>Requests location permission, fills lat/lon when a fix is available. If <strong>distance</strong> is empty or zero, it is prefilled to <strong>30</strong> miles as a starting value (you can change it).</td>
+</tr>
+<tr>
+<td><strong>Distance limit miles</strong></td>
+<td>Radius for <strong>US proximity</strong> searches. RepeaterBook’s HTML forms use <strong><code>Dunit=m</code></strong> (miles) for that radius; the value you enter is sent as miles. For <strong>export API</strong> results, the same field is converted internally for client-side distance filtering when coordinates are present.</td>
+</tr>
+<tr>
+<td><strong>Filter</strong></td>
+<td>Optional text filter (CHIRP-style: city, county, callsign, notes, etc.).</td>
+</tr>
+<tr>
+<td><strong>Open repeaters only</strong></td>
+<td>Keeps repeaters marked OPEN when data includes that field.</td>
+</tr>
+<tr>
+<td><strong>Convert dual-mode digital to FM</strong></td>
+<td>When importing, favors FM for dual-mode entries where applicable.</td>
+</tr>
+</tbody>
+</table>
+<p>Results can be narrowed with the <strong>Filter results</strong> field after search. Attribution and API credit appear at the bottom of the screen.</p>
+<h5 id="export-api-vs-proximity-html-when-each-is-used">Export API vs. proximity (HTML) — when each is used<a class="headerlink" href="#export-api-vs-proximity-html-when-each-is-used" title="Permanent link">¶</a></h5>
+<p>The app uses <strong>two different data paths</strong>. Only one applies per search.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Export API</strong> (<code>export.php</code> / <code>exportROW.php</code>)</th>
+<th><strong>Proximity (HTML)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Triggered when</strong></td>
+<td>Country is not <em>US+coords+distance</em>, or lat/lon/distance are missing, or distance is 0</td>
+<td><strong>United States</strong>, <strong>non-zero lat/lon</strong>, <strong>distance &gt; 0</strong></td>
+</tr>
+<tr>
+<td><strong>Amateur</strong></td>
+<td>JSON from <code>export.php</code> (NA) or <code>exportROW.php</code> (ROW) per the <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">API wiki</a></td>
+<td>HTML from <strong>Proximity 2.0</strong> <a href="https://www.repeaterbook.com/repeaters/prox2_result.php"><code>prox2_result.php</code></a> (default <strong>2 m</strong>, <strong>FM</strong> on the site form)</td>
+</tr>
+<tr>
+<td><strong>GMRS</strong></td>
+<td>Same JSON endpoints</td>
+<td>HTML from <a href="https://www.repeaterbook.com/gmrs/prox_result.php"><code>gmrs/prox_result.php</code></a></td>
+</tr>
+<tr>
+<td><strong>Radius</strong></td>
+<td>If you provide lat/lon + distance, the app can <strong>filter/sort</strong> JSON rows by distance when records include coordinates (Haversine, miles converted to km internally). Otherwise state/country drive the query.</td>
+<td>Radius is whatever RepeaterBook returns for your <strong>miles</strong> + <strong><code>Dunit=m</code></strong> request (same convention as the website).</td>
+</tr>
+<tr>
+<td><strong>Tones</strong></td>
+<td>Whatever fields exist in the JSON record (<code>PL</code>, <code>TSQ</code>, etc.)</td>
+<td>List pages show a single <strong>Access</strong> column; the app can <strong>follow each repeater’s detail page</strong> to read <strong>Uplink Tone</strong> / <strong>Downlink Tone</strong> and map them to <strong>PL</strong> / <strong>TSQ</strong> when available.</td>
+</tr>
+<tr>
+<td><strong>Token / HTTP client</strong></td>
+<td>Uses your configured token, auth mode, and User-Agent on <strong>export</strong> requests</td>
+<td>Proximity pages are normal <strong>HTML GET</strong> requests using the same HTTP client (still subject to site behavior and your allowlisted <strong>User-Agent</strong> if required).</td>
+</tr>
+</tbody>
+</table>
+<p>In short: <strong>export API</strong> = documented JSON export, best for <strong>country/state</strong> (and worldwide) workflows; <strong>proximity</strong> = same idea as using RepeaterBook’s <strong>location + radius</strong> search on the web, for <strong>US</strong> users who enter coordinates and a <strong>miles</strong> radius.</p>
+<h5 id="repeaterbook-location-and-distance">RepeaterBook location and distance<a class="headerlink" href="#repeaterbook-location-and-distance" title="Permanent link">¶</a></h5>
+<ul>
+<li><strong>Proximity mode</strong> requires <strong>United States</strong>, valid <strong>latitude</strong>, <strong>longitude</strong>, and <strong>distance</strong> (miles) <strong>&gt; 0</strong>.</li>
+<li><strong>Use my location</strong> helps fill coordinates; if distance was blank or zero, <strong>30</strong> miles is suggested so proximity mode can run without an extra step.</li>
+</ul>
+<p><a id="repeaterbook-developer-setup"></a></p>
+<h5 id="developer-build-setup-do-not-commit-secrets">Developer / build setup (do not commit secrets)<a class="headerlink" href="#developer-build-setup-do-not-commit-secrets" title="Permanent link">¶</a></h5>
+<p>In the project’s <code>local.properties</code> (next to the Android module), add:</p>
 <ul>
 <li><code>REPEATERBOOK_APP_TOKEN=</code> — your RepeaterBook app token  </li>
 <li><code>REPEATERBOOK_CONTACT_EMAIL=</code> — contact email required in the API User-Agent  </li>
@@ -1755,6 +1896,7 @@ to <code>88.5</code>) before importing.</p>
 <li><code>REPEATERBOOK_AUTH_MODE=</code> <em>(optional)</em> — how the token is sent: <code>x_rb_app_token</code> (canonical header <code>X-RB-App-Token</code>, when your approval email specifies it), <code>bearer</code> (<code>Authorization: Bearer</code>, optional compatibility), or <code>raw</code>, <code>token</code>, <code>query_key</code>, <code>query_token</code>, <code>query_api_key</code>, <code>x_api_key</code> — match your approval email  </li>
 <li><code>REPEATERBOOK_USER_AGENT=</code> <em>(optional)</em> — if RepeaterBook allowlisted an <strong>exact</strong> User-Agent string, set it here; otherwise the app builds one from version, URL, and email  </li>
 </ul>
+<p><strong>North America</strong> queries use <code>export.php</code> (parameters include <code>state_id</code>, <code>county</code>, <code>emcomm</code>, <code>stype</code>); <strong>rest of world</strong> uses <code>exportROW.php</code> (parameters include <code>region</code> only — no <code>state_id</code>, <code>county</code>, <code>emcomm</code>, or <code>stype</code> in the documented ROW API). You can enter <strong>multiple countries</strong> separated by commas; the app sends repeated <code>country=</code> query arguments like the wiki’s US+Canada example.</p>
 <p>As of early 2026, RepeaterBook may deny requests whose User-Agent is not on their allowlist. HTTP <strong>401</strong> usually means the allowlisted string does not match what the app sends, or the token is missing/wrong format — try <code>REPEATERBOOK_USER_AGENT</code> first, then <code>REPEATERBOOK_AUTH_MODE</code>.</p>
 <p>Rebuild the app after changing these values. Data use is subject to <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">RepeaterBook API terms</a>.</p>
 <hr/>
@@ -2611,7 +2753,11 @@ same interpolation table as the channel list power column.</p>
 the per-radio calibration values and enables a safe multi-radio write workflow.</p>
 <p>The same toggle is also available inside the Tune Settings screen itself as a switch
 at the top of the page.</p>
-<p><strong>When protection is OFF (default):</strong>
+<blockquote>
+<p><strong>Default on new installs:</strong> Protect Tune Settings starts <strong>ON</strong> by default.
+Existing installs keep their previously saved preference.</p>
+</blockquote>
+<p><strong>When protection is OFF:</strong>
 - Tune Settings fields (XTAL, VHF cap, UHF cap) are fully editable.
 - <strong>Save to Radio</strong> uploads the EEPROM as-is — calibration bytes are whatever is
   in the current template.</p>
