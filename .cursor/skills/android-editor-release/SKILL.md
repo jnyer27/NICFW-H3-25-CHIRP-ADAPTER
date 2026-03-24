@@ -23,6 +23,8 @@ Goal: **what is in git (version + changelog + tag) matches the signed APK** you 
    - Body: bullet summary of what shipped; end with `Made-with: Cursor` if that is your habit.
 6. **`git push origin main`** before tagging so the remote matches.
 
+**GitHub Pages `user-guide.pdf`:** The live PDF URL in release notes always serves whatever was last deployed from **`main`**. The **Update User Guide** workflow (`.github/workflows/update-userguide.yml`) rebuilds and runs `mkdocs gh-deploy` when `UserGuide.md`, `docs/**`, `mkdocs.yml`, **`AndroidNICFW_CH_EDITOR/app/build.gradle.kts`**, or the workflow file changes, and on each **release** `published`/`edited`. If you ever bump only Android files that are not in those paths, run **Actions → Update User Guide → Run workflow** so the cover `App v…` matches `versionName`.
+
 **Rule:** The commit you are about to tag **must** contain the final `versionCode` / `versionName` for this release. Do not tag an older commit after bumping only locally without pushing.
 
 ## 2. Signed release APK (`assembleRelease`)
