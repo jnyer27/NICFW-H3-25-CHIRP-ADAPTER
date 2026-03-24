@@ -1,2 +1,4 @@
 # For running tests only. CHIRP itself must be installed or on PYTHONPATH.
 pytest>=7.0.0
+mkdocs-material>=9.0
+playwright>=1.50

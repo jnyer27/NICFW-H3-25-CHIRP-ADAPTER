@@ -109,7 +109,10 @@ not only the TD-H3’s built‑in radio.
 
 For a concise technical list of changes, see **[AndroidNICFW_CH_EDITOR/CHANGELOG.md](https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/blob/main/AndroidNICFW_CH_EDITOR/CHANGELOG.md)** (section **1.1.0**).
 
-### Option B — Classic Bluetooth (SPP)
+### Option B — Classic Bluetooth (SPP) *(unconfirmed)*
+
+> **Note:** Classic SPP connectivity has not been confirmed to work with the TD-H3 and
+> nicFW 2.5. BLE is the recommended and verified connection method.
 
 - Pair the radio to your phone first via Android's system Bluetooth settings.
 - Tap **Paired Devices (Classic BT)** and select the radio from the list.
@@ -607,7 +610,7 @@ Two input methods are supported:
 #### Steps
 
 1. Export your channel list from CHIRP as a CSV file (`File → Export`).
-2. Transfer the CSV to your Android device (email, cloud storage, USB, etc.),
+2. Transfer the CSV to your Android device (email, cloud storage, USB file transfer, etc.),
    **or** copy the CSV text to the clipboard on a device where CHIRP is running.
 3. In the app, tap **⋮ → Import CHIRP CSV from File…** and pick the file,
    **or** tap **⋮ → Import CHIRP CSV from Clipboard…** to import from the clipboard.
@@ -1401,7 +1404,9 @@ The repository also includes a CHIRP radio driver:
 **`tidradio_h3_nicfw25.py`**
 
 This driver lets you use **CHIRP** (the desktop radio programming software) to program
-the TD-H3 over a USB serial or Bluetooth serial connection.
+the TD-H3 from a **PC** over a USB serial connection (connect the radio's USB-C port
+directly to your PC — no separate programming cable required). This is a desktop/PC
+connection and is separate from the Android app, which uses Bluetooth BLE.
 
 ### Connection
 

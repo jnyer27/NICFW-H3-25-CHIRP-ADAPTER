@@ -1,0 +1,33 @@
+@media print {
+  /* Hide navigation, sidebar, header, footer for clean print */
+  .md-header,
+  .md-tabs,
+  .md-sidebar,
+  .md-footer,
+  .md-search,
+  [data-md-component="header"],
+  [data-md-component="sidebar"],
+  [data-md-component="toc"],
+  .md-top {
+    display: none !important;
+  }
+
+  /* Remove content offset from hidden sidebar */
+  .md-content {
+    margin: 0 !important;
+  }
+  .md-main__inner {
+    margin: 0 !important;
+  }
+
+  /* A4 page */
+  @page {
+    size: A4;
+    margin: 20mm;
+  }
+
+  /* Keep code blocks from splitting across pages */
+  pre {
+    page-break-inside: avoid;
+  }
+}
