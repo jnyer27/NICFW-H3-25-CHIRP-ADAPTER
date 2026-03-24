@@ -1,5 +1,7 @@
 package com.nicfw.tdh3editor
 
+import android.content.res.ColorStateList
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -296,7 +298,7 @@ class ChannelAdapter(
                 "Tone" -> Triple(
                     "$prefix:${"%.1f".format(value ?: 0.0)}Hz",
                     Color.parseColor("#06B6D4"),
-                    Color.BLACK
+                    Color.WHITE
                 )
                 "DTCS" -> Triple(
                     "$prefix:D${"%03d".format((value ?: 0.0).toInt())}${polarity ?: "N"}",
@@ -336,14 +338,17 @@ class ChannelAdapter(
                 isClickable = false
                 isCheckable = false
                 chipCornerRadius = 999f
-                chipBackgroundColor = android.content.res.ColorStateList.valueOf(bgColor)
+                chipBackgroundColor = ColorStateList.valueOf(bgColor)
                 setTextColor(textColor)
-                textSize = 11f
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 13f)
+                chipStrokeWidth = 0f
+                chipStrokeColor = ColorStateList.valueOf(Color.TRANSPARENT)
+                elevation = 0f
                 setEnsureMinTouchTargetSize(false)
                 minHeight = 0
                 chipMinHeight = 0f
-                chipStartPadding = 6f
-                chipEndPadding = 6f
+                chipStartPadding = 8f
+                chipEndPadding = 8f
                 textStartPadding = 0f
                 textEndPadding = 0f
                 textAlignment = View.TEXT_ALIGNMENT_CENTER

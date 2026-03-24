@@ -93,7 +93,7 @@
             android:padding="8dp"
             android:src="@drawable/ic_drag_handle"
             android:contentDescription="Drag to reorder"
-            android:tint="@android:color/white"
+            app:tint="@android:color/white"
             android:visibility="gone" />
 
     </LinearLayout>

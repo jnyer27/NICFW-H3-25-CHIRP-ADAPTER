@@ -7,6 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
@@ -19,14 +20,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nicfw.tdh3editor.BuildConfig
 import com.nicfw.tdh3editor.databinding.ActivityRepeaterbookSearchBinding
 import com.nicfw.tdh3editor.radio.ChirpCsvExporter
+import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookApiException
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookHttp
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookJsonParser
+import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookJsonRow
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookQuery
+import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookResultsAdapter
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookToChannelMapper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
 /**
  * Search RepeaterBook via export.php / exportROW, multi-select results, then hand off to
@@ -37,10 +40,10 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRepeaterbookSearchBinding
 
     /** Full result set from last successful search. */
-    private val allRows = mutableListOf<RepeaterRow>()
+    private val allRows = mutableListOf<RepeaterBookJsonRow>()
 
     /** Filtered view for the adapter. */
-    private val visibleRows = mutableListOf<RepeaterRow>()
+    private val visibleRows = mutableListOf<RepeaterBookJsonRow>()
 
     private val adapter = RepeaterBookResultsAdapter(
         visibleRows,
@@ -125,6 +128,9 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
         binding.layoutStateId.isVisible = na
         binding.layoutCounty.isVisible = na
         binding.layoutRegionRow.isVisible = !na
+        // exportROW.php documents only callsign, city, landmark, country, region, frequency, mode
+        binding.layoutEmcomm.isVisible = na
+        binding.layoutStype.isVisible = na
     }
 
     private fun buildQuery(): RepeaterBookQuery {
@@ -157,7 +163,7 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
                 runCatching {
                     val json = RepeaterBookHttp.fetchRepeaters(buildQuery())
                     val objs = RepeaterBookJsonParser.parseResults(json)
-                    objs.map { RepeaterRow(it, selected = false) }
+                    objs.map { RepeaterBookJsonRow(it, selected = false) }
                 }
             }
             binding.progressSearch.visibility = View.GONE
@@ -177,11 +183,30 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
                 }
                 updateImportButton()
             }.onFailure { e ->
-                Toast.makeText(
-                    this@RepeaterBookSearchActivity,
-                    getString(R.string.repeaterbook_search_failed, e.message ?: e.toString()),
-                    Toast.LENGTH_LONG,
-                ).show()
+                val act = this@RepeaterBookSearchActivity
+                if (e is RepeaterBookApiException && e.statusCode == 401) {
+                    val detail = buildString {
+                        append(getString(R.string.repeaterbook_search_failed, e.message ?: ""))
+                        val body = e.errorBody?.trim().orEmpty()
+                        if (body.isNotEmpty()) {
+                            append("\n\n")
+                            append(body.take(400))
+                        }
+                        append("\n\n")
+                        append(getString(R.string.repeaterbook_error_401_hint))
+                    }
+                    AlertDialog.Builder(act)
+                        .setTitle(R.string.repeaterbook_error_401_title)
+                        .setMessage(detail)
+                        .setPositiveButton(android.R.string.ok, null)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        act,
+                        getString(R.string.repeaterbook_search_failed, e.message ?: e.toString()),
+                        Toast.LENGTH_LONG,
+                    ).show()
+                }
             }
         }
     }
@@ -193,7 +218,7 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
             visibleRows.addAll(allRows)
         } else {
             allRows.filterTo(visibleRows) { row ->
-                row.matchesFilter(q)
+                row.matchesQuickFilter(q)
             }
         }
         adapter.notifyDataSetChanged()
@@ -235,68 +260,5 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
             },
         )
         finish()
-    }
-
-    data class RepeaterRow(val json: JSONObject, var selected: Boolean) {
-        fun matchesFilter(q: String): Boolean {
-            val call = json.optString("Callsign", "").lowercase()
-            val city = json.optString("Nearest City", "").lowercase()
-            val freq = json.optString("Frequency", "") + json.opt("Frequency")?.toString().orEmpty()
-            val line = "$call $city $freq".lowercase()
-            return line.contains(q)
-        }
-    }
-}
-
-private class RepeaterBookResultsAdapter(
-    private val rows: List<RepeaterBookSearchActivity.RepeaterRow>,
-    private val onToggle: (RepeaterBookSearchActivity.RepeaterRow, Boolean) -> Unit,
-) : androidx.recyclerview.widget.RecyclerView.Adapter<RepeaterBookResultsAdapter.VH>() {
-
-    class VH(val binding: com.nicfw.tdh3editor.databinding.ItemRepeaterbookResultBinding) :
-        androidx.recyclerview.widget.RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: android.view.ViewGroup, viewType: Int): VH {
-        val binding = com.nicfw.tdh3editor.databinding.ItemRepeaterbookResultBinding.inflate(
-            android.view.LayoutInflater.from(parent.context),
-            parent,
-            false,
-        )
-        return VH(binding)
-    }
-
-    override fun getItemCount(): Int = rows.size
-
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val row = rows[position]
-        val j = row.json
-        val call = j.optString("Callsign", "").ifBlank { "—" }
-        val freq = j.opt("Frequency")?.toString()?.trim().orEmpty().ifBlank { j.optString("Frequency") }
-        val title = "$call  $freq MHz".trim()
-        val pl = j.optString("PL", "")
-        val tsq = j.optString("TSQ", "")
-        val tone = when {
-            pl.isNotBlank() && tsq.isNotBlank() -> "PL $pl  TSQ $tsq"
-            pl.isNotBlank() -> "PL $pl"
-            tsq.isNotBlank() -> "TSQ $tsq"
-            else -> ""
-        }
-        val sub = buildString {
-            append(RepeaterBookToChannelMapper.commentLine(j))
-            if (tone.isNotEmpty()) {
-                if (isNotEmpty()) append(" · ")
-                append(tone)
-            }
-        }
-        holder.binding.textTitle.text = title
-        holder.binding.textSubtitle.text = sub.ifBlank { "—" }
-        holder.binding.checkSelected.setOnCheckedChangeListener(null)
-        holder.binding.checkSelected.isChecked = row.selected
-        holder.binding.checkSelected.setOnCheckedChangeListener { _, checked ->
-            onToggle(row, checked)
-        }
-        holder.itemView.setOnClickListener {
-            holder.binding.checkSelected.isChecked = !holder.binding.checkSelected.isChecked
-        }
     }
 }

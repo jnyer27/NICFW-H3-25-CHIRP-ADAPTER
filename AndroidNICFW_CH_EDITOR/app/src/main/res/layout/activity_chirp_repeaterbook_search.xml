@@ -14,7 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="@string/repeaterbook_title" />
+            app:title="@string/chirp_rb_title" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -30,123 +30,100 @@
             android:orientation="vertical"
             android:padding="12dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:text="@string/chirp_rb_country"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerCountry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:text="@string/chirp_rb_state"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+            <Spinner
+                android:id="@+id/spinnerState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="4dp"
+                android:text="@string/chirp_rb_service"
+                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
             <RadioGroup
-                android:id="@+id/radioRegion"
+                android:id="@+id/radioGroupService"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/radioNa"
+                    android:id="@+id/radioServiceAmateur"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
-                    android:text="@string/repeaterbook_region_na" />
+                    android:text="@string/chirp_rb_service_amateur" />
 
                 <RadioButton
-                    android:id="@+id/radioRow"
+                    android:id="@+id/radioServiceGmrs"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/repeaterbook_region_row" />
+                    android:text="@string/chirp_rb_service_gmrs" />
             </RadioGroup>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_country">
+                android:hint="@string/chirp_rb_lat">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editCountry"
+                    android:id="@+id/editLat"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/repeaterbook_country_hint"
-                    android:inputType="text"
-                    android:text="United States" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutStateId"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_state_id">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editStateId"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutRegionRow"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_region_row_hint"
-                android:visibility="gone">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editRegionRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutCounty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_county">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editCounty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="numberDecimal|numberSigned" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_city">
+                android:hint="@string/chirp_rb_lon">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editCity"
+                    android:id="@+id/editLon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
+                    android:inputType="numberDecimal|numberSigned" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnUseMyLocation"
+                style="@style/Widget.NicFw.Button.ChannelLike"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/chirp_rb_use_my_location" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_landmark">
+                android:hint="@string/chirp_rb_dist_mi">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editLandmark"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_callsign">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editCallsign"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_frequency">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editFrequency"
+                    android:id="@+id/editDistanceMiles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal" />
@@ -155,42 +132,26 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_mode">
+                android:hint="@string/chirp_rb_filter_chirp">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editMode"
+                    android:id="@+id/editFilterChirp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="analog, DMR, …"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutEmcomm"
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkOpenOnly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_emcomm">
+                android:text="@string/chirp_rb_open_only" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editEmcomm"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/layoutStype"
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/checkFmConv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/repeaterbook_stype">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editStype"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="gmrs"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:text="@string/chirp_rb_fm_conv" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSearch"
@@ -213,9 +174,9 @@
         android:id="@+id/layoutFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/repeaterbook_filter_results"
         android:paddingHorizontal="12dp"
-        android:visibility="gone"
-        android:hint="@string/repeaterbook_filter_results">
+        android:visibility="gone">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editFilter"
@@ -274,5 +235,5 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textAppearance="?attr/textAppearanceBodySmall"
-        tools:text="RepeaterBook attribution" />
+        tools:text="Attribution" />
 </LinearLayout>

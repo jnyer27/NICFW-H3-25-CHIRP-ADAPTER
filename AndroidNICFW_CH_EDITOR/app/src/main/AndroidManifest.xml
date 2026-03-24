@@ -4,9 +4,9 @@
     <!-- Classic Bluetooth (Android ≤ 11) -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <!-- BLE scanning requires location on Android 6–11 (lint: pair coarse + fine) -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
+    <!-- BLE (Android 6–11) + RepeaterBook “use my location” on all supported API levels; pair coarse + fine. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <!-- Bluetooth (Android 12+) -->
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
@@ -53,6 +53,10 @@
             android:theme="@style/Theme.NicFwChannelEditor" />
         <activity
             android:name=".RepeaterBookSearchActivity"
+            android:exported="false"
+            android:theme="@style/Theme.NicFwChannelEditor" />
+        <activity
+            android:name=".ChirpRepeaterBookSearchActivity"
             android:exported="false"
             android:theme="@style/Theme.NicFwChannelEditor" />
         <activity

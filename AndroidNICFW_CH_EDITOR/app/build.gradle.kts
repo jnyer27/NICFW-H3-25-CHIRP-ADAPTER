@@ -18,6 +18,10 @@ fun String?.forBuildConfig(): String =
 val repeaterBookToken = localProps.getProperty("REPEATERBOOK_APP_TOKEN", "").forBuildConfig()
 val repeaterBookEmail = localProps.getProperty("REPEATERBOOK_CONTACT_EMAIL", "").forBuildConfig()
 val repeaterBookUrl = localProps.getProperty("REPEATERBOOK_APP_URL", "").forBuildConfig()
+/** x_rb_app_token | bearer | raw | token | query_* | x_api_key — see UserGuide / local.properties */
+val repeaterBookAuthMode = localProps.getProperty("REPEATERBOOK_AUTH_MODE", "bearer").forBuildConfig()
+/** If set, sent as User-Agent verbatim (allowlist must match this string). */
+val repeaterBookUserAgent = localProps.getProperty("REPEATERBOOK_USER_AGENT", "").forBuildConfig()
 
 android {
     namespace = "com.nicfw.tdh3editor"
@@ -32,6 +36,8 @@ android {
         buildConfigField("String", "REPEATERBOOK_APP_TOKEN", "\"$repeaterBookToken\"")
         buildConfigField("String", "REPEATERBOOK_CONTACT_EMAIL", "\"$repeaterBookEmail\"")
         buildConfigField("String", "REPEATERBOOK_APP_URL", "\"$repeaterBookUrl\"")
+        buildConfigField("String", "REPEATERBOOK_AUTH_MODE", "\"$repeaterBookAuthMode\"")
+        buildConfigField("String", "REPEATERBOOK_USER_AGENT", "\"$repeaterBookUserAgent\"")
     }
 
     signingConfigs {
@@ -89,4 +95,5 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
+    implementation(libs.jsoup)
 }
