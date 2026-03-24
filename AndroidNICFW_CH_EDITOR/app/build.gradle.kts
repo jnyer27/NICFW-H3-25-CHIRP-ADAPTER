@@ -31,8 +31,8 @@ android {
         applicationId = "com.nicfw.tdh3editor"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 7
-        versionName = "2.3.0"
+        versionCode = 8
+        versionName = "2.3.1"
         buildConfigField("String", "REPEATERBOOK_APP_TOKEN", "\"$repeaterBookToken\"")
         buildConfigField("String", "REPEATERBOOK_CONTACT_EMAIL", "\"$repeaterBookEmail\"")
         buildConfigField("String", "REPEATERBOOK_APP_URL", "\"$repeaterBookUrl\"")

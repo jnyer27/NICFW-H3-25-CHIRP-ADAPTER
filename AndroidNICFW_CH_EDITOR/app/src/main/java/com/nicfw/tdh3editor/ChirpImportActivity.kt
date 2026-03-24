@@ -143,8 +143,26 @@ class ChirpImportActivity : AppCompatActivity() {
         val items = listOf("From CSV") + EepromConstants.POWERLEVEL_LIST
         binding.spinnerImportPower.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, items)
-        // Default to "From CSV" (index 0)
+        // Default to "From CSV" (index 0) before attaching listener so we don't rebuild early
         binding.spinnerImportPower.setSelection(0)
+        binding.spinnerImportPower.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?, view: View?, position: Int, id: Long
+                ) = buildPreview()
+
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+            }
+    }
+
+    /** `null` = keep per-row CSV power; otherwise uniform override from [EepromConstants.POWERLEVEL_LIST]. */
+    private fun selectedPowerOverride(): String? {
+        val powerPos = binding.spinnerImportPower.selectedItemPosition
+        return if (powerPos > 0) {
+            EepromConstants.POWERLEVEL_LIST.getOrNull(powerPos - 1)
+        } else {
+            null
+        }
     }
 
     // ── Group spinners ────────────────────────────────────────────────────────
@@ -205,10 +223,17 @@ class ChirpImportActivity : AppCompatActivity() {
         val container = binding.previewContainer
         container.removeAllViews()
 
+        val powerPos = binding.spinnerImportPower.selectedItemPosition
+        val powerOverride: String? = if (powerPos > 0)
+            EepromConstants.POWERLEVEL_LIST.getOrNull(powerPos - 1)
+        else null
+
         for (i in 0 until canImport) {
             val entry = entries[i]
             val slot  = slots[i]
-            val ch    = entry.channel
+            val ch    = entry.channel.copy(
+                power = powerOverride ?: entry.channel.power,
+            )
 
             val row = layoutInflater.inflate(R.layout.item_import_preview, container, false)
 
@@ -266,11 +291,7 @@ class ChirpImportActivity : AppCompatActivity() {
         val g3 = groupAt(binding.spinnerImportGroup3)
         val g4 = groupAt(binding.spinnerImportGroup4)
 
-        // Position 0 = "From CSV" (no override); positions 1+ map to POWERLEVEL_LIST index 0+
-        val powerPos = binding.spinnerImportPower.selectedItemPosition
-        val powerOverride: String? = if (powerPos > 0)
-            EepromConstants.POWERLEVEL_LIST.getOrNull(powerPos - 1)
-        else null
+        val powerOverride = selectedPowerOverride()
 
         for (i in 0 until canImport) {
             val slot = slots[i]

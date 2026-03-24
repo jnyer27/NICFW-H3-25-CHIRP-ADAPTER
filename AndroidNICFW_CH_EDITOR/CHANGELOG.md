@@ -4,6 +4,12 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.3.1] — 2026-03-24
+
+### CHIRP import
+
+- **TX Power preview** — Changing **TX Power (All Imported Channels)** from **From CSV** to a fixed level updates the **PWR** chips in the import preview immediately (import behavior was already correct).
+
 ## [2.3.0] — 2026-03-24
 
 ### Documentation
@@ -74,3 +80,4 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 [2.1.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.1.0
 [2.2.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.2.0
 [2.3.0]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.3.0
+[2.3.1]: https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER/releases/tag/android-editor-v2.3.1
