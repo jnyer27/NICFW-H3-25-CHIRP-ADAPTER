@@ -103,6 +103,39 @@ class RepeaterBookDetailsTonesTest {
     }
 
     @Test
+    fun normalizeRbNumericIdSegment_stripsLeadingZeros() {
+        assertEquals("6", RepeaterBookDetailsTones.normalizeRbNumericIdSegment("06"))
+        assertEquals("48", RepeaterBookDetailsTones.normalizeRbNumericIdSegment("048"))
+        assertEquals("123", RepeaterBookDetailsTones.normalizeRbNumericIdSegment("0123"))
+    }
+
+    @Test
+    fun gmrsCompoundRepeaterKey_normalizesNumericParts() {
+        assertEquals("48-5", RepeaterBookDetailsTones.gmrsCompoundRepeaterKey("048", "005"))
+    }
+
+    @Test
+    fun normalizeRbNumericIdSegment_leavesAlphanumericState() {
+        assertEquals("CA01", RepeaterBookDetailsTones.normalizeRbNumericIdSegment("CA01"))
+    }
+
+    @Test
+    fun gmrsExportRowMatches_stateAndRptrId_separateFields() {
+        val row = JSONObject().apply {
+            put("State ID", "41")
+            put("Rptr ID", "2")
+        }
+        assertEquals(
+            true,
+            RepeaterBookDetailsTones.gmrsExportRowMatches(row, "41", "2", 462.55, "WXYZ"),
+        )
+        assertEquals(
+            true,
+            RepeaterBookDetailsTones.gmrsExportRowMatches(row, "041", "002", 462.55, "WXYZ"),
+        )
+    }
+
+    @Test
     fun mergeTones_sets_pl_and_tsq() {
         val o = JSONObject()
         RepeaterBookDetailsTones.mergeTones(

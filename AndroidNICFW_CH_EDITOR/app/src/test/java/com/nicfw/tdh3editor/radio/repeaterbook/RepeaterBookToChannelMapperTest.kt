@@ -39,6 +39,21 @@ class RepeaterBookToChannelMapperTest {
     }
 
     @Test
+    fun mapsDcsPlTsq_fromExportStrings() {
+        val j = JSONObject(
+            """
+            {"Callsign":"TEST","Frequency":462.55,"Input Freq":"462.55",
+            "PL":"DCS 023","TSQ":"DCS 023","Nearest City":"X","State":"OR"}
+            """.trimIndent(),
+        )
+        val ch = RepeaterBookToChannelMapper.fromJson(j)!!
+        assertEquals("DTCS", ch.txToneMode)
+        assertEquals("DTCS", ch.rxToneMode)
+        assertEquals(23.0, ch.txToneVal!!, 0.01)
+        assertEquals(23.0, ch.rxToneVal!!, 0.01)
+    }
+
+    @Test
     fun commentLine_joinsLocation() {
         val j = JSONObject("{\"Nearest City\":\"Towson\",\"State\":\"MD\",\"County\":\"Baltimore\"}")
         val c = RepeaterBookToChannelMapper.commentLine(j)
