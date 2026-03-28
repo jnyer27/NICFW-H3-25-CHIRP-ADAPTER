@@ -4,10 +4,12 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.4.0] — 2026-03-28
+
 ### RepeaterBook
 
-- **GMRS proximity tones** — After **gmrs/prox_result.php**, **`RepeaterBookGmrsProx.fetchRepeaters`** calls **`enrichGmrsRows`** so each row loads **Uplink Tone** / **Downlink Tone** from **gmrs/details.php** into **PL** / **TSQ** (same pattern as amateur **prox2**).
-- **`parseGmrsHtml`** — Prefers **`th`/`td`** detail rows, falls back to two-column **`td`/`td`**; requires **uplink+tone** / **downlink+tone** so **Travel Tone** is ignored; last matching row wins. **`normalizeToneCell`** drops **LOG IN TO VIEW** / paywall-style text. Extended **`RepeaterBookDetailsTonesTest`**.
+- **Proximity tone fetch on import** — **GMRS** and **amateur** HTML proximity searches no longer request **details.php** for every row. Internal IDs stay on each row; **PL** / **TSQ** load **only for selected repeaters** when you tap **Import selected** (aligned with RadioDroid).
+- **GMRS detail parsing** — **`parseGmrsHtml`** prefers **`th`/`td`** detail rows, falls back to two-column **`td`/`td`**; requires **uplink+tone** / **downlink+tone** so **Travel Tone** is ignored; last matching row wins. **`normalizeToneCell`** drops **LOG IN TO VIEW** / paywall-style text. Extended **`RepeaterBookDetailsTonesTest`**.
 
 ## [2.3.1] — 2026-03-24
 
