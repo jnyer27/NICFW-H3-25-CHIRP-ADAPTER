@@ -18,6 +18,14 @@ if [ ! -f local.properties ]; then
     cp "$MAIN_REPO/AndroidNICFW_CH_EDITOR/local.properties" local.properties
 fi
 
+# RepeaterBook tokens are entered in the app. They are not build inputs.
+if [ -f local.properties ] && grep -q -E '^(REPEATERBOOK_APP_TOKEN|REPEATERBOOK_AUTH_MODE)=' local.properties; then
+    echo "Removing RepeaterBook token and authentication-mode lines from local.properties."
+    tmp="$(mktemp)"
+    grep -v -E '^(REPEATERBOOK_APP_TOKEN|REPEATERBOOK_AUTH_MODE)=' local.properties > "$tmp"
+    mv "$tmp" local.properties
+fi
+
 ./gradlew assembleDebug
 
 BUILT_APK="$SCRIPT_DIR/AndroidNICFW_CH_EDITOR/app/build/outputs/apk/debug/app-debug.apk"

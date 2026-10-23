@@ -1,6 +1,5 @@
 package com.nicfw.tdh3editor.radio.repeaterbook
 
-import com.nicfw.tdh3editor.BuildConfig
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -18,8 +17,8 @@ import kotlin.math.abs
  * Loads **Uplink Tone** / **Downlink Tone** from RepeaterBook HTML detail pages and maps them to
  * export-style **PL** (transmit / access) and **TSQ** (receive squelch) for [RepeaterBookToChannelMapper].
  *
- * GMRS `details.php` often hides tone cells behind login; when [BuildConfig.REPEATERBOOK_APP_TOKEN]
- * is set, [enrichGmrsRows] falls back to [RepeaterBookHttp.fetchRepeaters] (`export.php`, `stype=gmrs`)
+ * GMRS `details.php` often hides tone cells behind login; when a personal token is stored,
+ * [enrichGmrsRows] falls back to [RepeaterBookHttp.fetchRepeaters] (`export.php`, `stype=gmrs`)
  * for the same repeater so PL/TSQ can still be filled.
  */
 object RepeaterBookDetailsTones {
@@ -329,7 +328,7 @@ object RepeaterBookDetailsTones {
         stateId: String,
         repeaterId: String,
     ): TonePair? {
-        if (BuildConfig.REPEATERBOOK_APP_TOKEN.isBlank()) return null
+        if (!RepeaterBookCredentialStore.hasToken()) return null
         val freqMhz = obj.optFreqMhzField("Frequency") ?: return null
         val callsign = obj.optString("Callsign", "").trim()
         val freqQ = formatApiFrequencyMhz(freqMhz)
@@ -348,6 +347,9 @@ object RepeaterBookDetailsTones {
                 val list = try {
                     val json = RepeaterBookHttp.fetchRepeaters(query)
                     RepeaterBookJsonParser.parseResults(json)
+                } catch (e: RepeaterBookApiException) {
+                    if (e.terminal) return null
+                    continue
                 } catch (_: Exception) {
                     continue
                 }
@@ -361,8 +363,8 @@ object RepeaterBookDetailsTones {
         val cacheKeyPrefix = "$stateId|"
         for (country in countries) {
             val cacheKey = "$cacheKeyPrefix$country"
-            val wideList = gmrsExportStateListCache.computeIfAbsent(cacheKey) {
-                try {
+            val wideList = try {
+                gmrsExportStateListCache.computeIfAbsent(cacheKey) {
                     val json = RepeaterBookHttp.fetchRepeaters(
                         RepeaterBookQuery(
                             northAmerica = true,
@@ -372,9 +374,12 @@ object RepeaterBookDetailsTones {
                         ),
                     )
                     RepeaterBookJsonParser.parseResults(json)
-                } catch (_: Exception) {
-                    emptyList()
                 }
+            } catch (e: RepeaterBookApiException) {
+                if (e.terminal) return null
+                continue
+            } catch (_: Exception) {
+                continue
             }
             val match = wideList.firstOrNull {
                 gmrsExportRowMatches(it, stateId, repeaterId, freqMhz, callsign)

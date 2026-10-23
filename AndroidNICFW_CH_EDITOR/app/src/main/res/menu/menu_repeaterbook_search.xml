@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/repeaterbook_menu_token"
+        android:title="@string/repeaterbook_token_menu"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/repeaterbook_menu_select_all"
         android:title="@string/repeaterbook_menu_select_all"
         app:showAsAction="never" />

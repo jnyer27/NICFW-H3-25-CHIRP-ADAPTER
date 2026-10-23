@@ -77,6 +77,20 @@ gradlew.bat assembleRelease  # Windows
 Output: `app/build/outputs/apk/release/app-release.apk`  
 Release notes: [CHANGELOG.md](CHANGELOG.md). GitHub **Releases** may attach a renamed copy (e.g. `TD-H3-Editor-1.1.0-release.apk`).
 
+### RepeaterBook credentials
+
+This app does not embed a RepeaterBook token. Each user pastes a personal token in **Search RepeaterBook → ⋮ → RepeaterBook token**. It is stored encrypted on the device and sent only as the `X-RB-App-Token` header.
+
+Do not put a token in `local.properties`. Optional `REPEATERBOOK_CONTACT_EMAIL`, `REPEATERBOOK_APP_URL`, and `REPEATERBOOK_USER_AGENT` are public app identity for the User-Agent, not credentials. The build fails if a token property or an old authentication-mode property is set.
+
+Before publishing an APK:
+
+```bash
+python3 scripts/verify_no_repeaterbook_shared_credential.py --apk app/build/outputs/apk/release/app-release.apk
+```
+
+The command prints counts only. Details and the released-build assessment are in [REPEATERBOOK_API.md](REPEATERBOOK_API.md).
+
 **Android Studio:** Open this folder as a project and click **Run**.
 
 Toolchain: Kotlin 2.0.21 · AGP 8.7.3 · Gradle 9.1 · minSdk 24 · targetSdk 35

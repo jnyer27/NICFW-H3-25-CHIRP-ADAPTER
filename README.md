@@ -140,6 +140,10 @@ In nicFW V2.5 the **XTAL (crystal) calibration** is stored at **EEPROM 0x1DFB**,
 | 6 | Busy Lock bit written even when a TX offset or duplex mode is configured (radio does not support Busy Lock on repeater channels) | `set_memory()` now forces `_mem.busyLock = 0` when `mem.duplex` is `+`, `−`, or `split` |
 | 7 | Same Busy Lock / duplex rule missing from `get_memory()` return path | `busyLock` field cleared in the returned `mem` object when duplex offset is present, so round-trip read–modify–write cannot re-enable Busy Lock on a repeater channel |
 
+## Android channel editor
+
+The Android app lives in `AndroidNICFW_CH_EDITOR/`. RepeaterBook access uses a personal token entered on the device. It is not compiled into the APK. See [AndroidNICFW_CH_EDITOR/REPEATERBOOK_API.md](AndroidNICFW_CH_EDITOR/REPEATERBOOK_API.md).
+
 ## License
 
 GPL v2+. See the header in `tidradio_h3_nicfw25.py`.

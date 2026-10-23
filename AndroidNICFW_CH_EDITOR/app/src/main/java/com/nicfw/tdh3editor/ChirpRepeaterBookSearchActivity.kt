@@ -37,10 +37,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
-import com.nicfw.tdh3editor.BuildConfig
 import com.nicfw.tdh3editor.databinding.ActivityChirpRepeaterbookSearchBinding
 import com.nicfw.tdh3editor.radio.ChirpCsvExporter
-import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookApiException
+import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookCredentialStore
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookDetailsTones
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookGmrsProx
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookHttp
@@ -191,8 +190,9 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
 
         binding.editFilter.doAfterTextChanged { applyQuickFilter() }
 
-        if (!hasRepeaterBookConfig()) {
-            Toast.makeText(this, R.string.repeaterbook_configure_token, Toast.LENGTH_LONG).show()
+        RepeaterBookCredentialStore.install(this)
+        if (!RepeaterBookCredentialStore.hasToken()) {
+            binding.root.post { RepeaterBookTokenDialog.show(this) }
         }
     }
 
@@ -203,6 +203,10 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.repeaterbook_menu_token -> {
+                RepeaterBookTokenDialog.show(this)
+                return true
+            }
             R.id.repeaterbook_menu_select_all -> {
                 selectAllVisible()
                 return true
@@ -310,10 +314,6 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
 
         return lastBest?.let { Pair(it.latitude, it.longitude) }
     }
-
-    private fun hasRepeaterBookConfig(): Boolean =
-        BuildConfig.REPEATERBOOK_APP_TOKEN.isNotBlank() &&
-            BuildConfig.REPEATERBOOK_CONTACT_EMAIL.isNotBlank()
 
     private fun selectedCountry(): String =
         binding.spinnerCountry.selectedItem?.toString().orEmpty()
@@ -491,8 +491,9 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
     }
 
     private fun runSearch() {
-        if (!hasRepeaterBookConfig()) {
+        if (!RepeaterBookCredentialStore.hasToken()) {
             Toast.makeText(this, R.string.repeaterbook_configure_token, Toast.LENGTH_LONG).show()
+            RepeaterBookTokenDialog.show(this)
             return
         }
         val country = selectedCountry()
@@ -654,30 +655,7 @@ class ChirpRepeaterBookSearchActivity : AppCompatActivity() {
                 }
                 updateImportButton()
             }.onFailure { e ->
-                val act = this@ChirpRepeaterBookSearchActivity
-                if (e is RepeaterBookApiException && e.statusCode == 401) {
-                    val detail = buildString {
-                        append(getString(R.string.repeaterbook_search_failed, e.message ?: ""))
-                        val body = e.errorBody?.trim().orEmpty()
-                        if (body.isNotEmpty()) {
-                            append("\n\n")
-                            append(body.take(400))
-                        }
-                        append("\n\n")
-                        append(getString(R.string.repeaterbook_error_401_hint))
-                    }
-                    AlertDialog.Builder(act)
-                        .setTitle(R.string.repeaterbook_error_401_title)
-                        .setMessage(detail)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show()
-                } else {
-                    Toast.makeText(
-                        act,
-                        getString(R.string.repeaterbook_search_failed, e.message ?: e.toString()),
-                        Toast.LENGTH_LONG,
-                    ).show()
-                }
+                RepeaterBookTokenDialog.showSearchFailure(this@ChirpRepeaterBookSearchActivity, e)
             }
         }
     }

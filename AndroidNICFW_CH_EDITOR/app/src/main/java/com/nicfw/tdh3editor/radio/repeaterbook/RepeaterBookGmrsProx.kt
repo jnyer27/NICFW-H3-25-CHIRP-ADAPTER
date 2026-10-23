@@ -34,7 +34,7 @@ object RepeaterBookGmrsProx {
     /**
      * @param enrichFromDetails when true, one GET per repeater to [gmrs/details.php] fills **PL** / **TSQ**;
      * if tones are login-gated in HTML, [RepeaterBookDetailsTones] falls back to JSON **export.php**
-     * when [com.nicfw.tdh3editor.BuildConfig.REPEATERBOOK_APP_TOKEN] is configured.
+     * when a personal RepeaterBook token is stored on the device.
      * When false, internal `_rb_state_id` / `_rb_repeater_id` are kept for deferred enrichment.
      */
     @Throws(IOException::class)

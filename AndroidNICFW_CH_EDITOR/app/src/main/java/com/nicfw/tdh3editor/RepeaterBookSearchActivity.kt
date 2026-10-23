@@ -7,7 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import androidx.core.view.ViewCompat
@@ -17,10 +16,9 @@ import androidx.core.view.updatePadding
 import androidx.core.widget.doAfterTextChanged
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nicfw.tdh3editor.BuildConfig
 import com.nicfw.tdh3editor.databinding.ActivityRepeaterbookSearchBinding
 import com.nicfw.tdh3editor.radio.ChirpCsvExporter
-import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookApiException
+import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookCredentialStore
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookHttp
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookJsonParser
 import com.nicfw.tdh3editor.radio.repeaterbook.RepeaterBookJsonRow
@@ -91,8 +89,9 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
 
         binding.editFilter.doAfterTextChanged { applyFilter() }
 
-        if (!hasRepeaterBookConfig()) {
-            Toast.makeText(this, R.string.repeaterbook_configure_token, Toast.LENGTH_LONG).show()
+        RepeaterBookCredentialStore.install(this)
+        if (!RepeaterBookCredentialStore.hasToken()) {
+            binding.root.post { RepeaterBookTokenDialog.show(this) }
         }
     }
 
@@ -103,6 +102,10 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.repeaterbook_menu_token -> {
+                RepeaterBookTokenDialog.show(this)
+                return true
+            }
             R.id.repeaterbook_menu_select_all -> {
                 visibleRows.forEach { it.selected = true }
                 adapter.notifyDataSetChanged()
@@ -118,10 +121,6 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun hasRepeaterBookConfig(): Boolean =
-        BuildConfig.REPEATERBOOK_APP_TOKEN.isNotBlank() &&
-            BuildConfig.REPEATERBOOK_CONTACT_EMAIL.isNotBlank()
 
     private fun updateRegionFields() {
         val na = binding.radioNa.isChecked
@@ -152,8 +151,9 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
     }
 
     private fun runSearch() {
-        if (!hasRepeaterBookConfig()) {
+        if (!RepeaterBookCredentialStore.hasToken()) {
             Toast.makeText(this, R.string.repeaterbook_configure_token, Toast.LENGTH_LONG).show()
+            RepeaterBookTokenDialog.show(this)
             return
         }
         binding.btnSearch.isEnabled = false
@@ -183,30 +183,7 @@ class RepeaterBookSearchActivity : AppCompatActivity() {
                 }
                 updateImportButton()
             }.onFailure { e ->
-                val act = this@RepeaterBookSearchActivity
-                if (e is RepeaterBookApiException && e.statusCode == 401) {
-                    val detail = buildString {
-                        append(getString(R.string.repeaterbook_search_failed, e.message ?: ""))
-                        val body = e.errorBody?.trim().orEmpty()
-                        if (body.isNotEmpty()) {
-                            append("\n\n")
-                            append(body.take(400))
-                        }
-                        append("\n\n")
-                        append(getString(R.string.repeaterbook_error_401_hint))
-                    }
-                    AlertDialog.Builder(act)
-                        .setTitle(R.string.repeaterbook_error_401_title)
-                        .setMessage(detail)
-                        .setPositiveButton(android.R.string.ok, null)
-                        .show()
-                } else {
-                    Toast.makeText(
-                        act,
-                        getString(R.string.repeaterbook_search_failed, e.message ?: e.toString()),
-                        Toast.LENGTH_LONG,
-                    ).show()
-                }
+                RepeaterBookTokenDialog.showSearchFailure(this@RepeaterBookSearchActivity, e)
             }
         }
     }
