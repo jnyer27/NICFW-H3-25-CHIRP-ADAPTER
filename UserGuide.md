@@ -685,7 +685,7 @@ Use **⋮ → Search RepeaterBook…** after loading EEPROM from the radio. The 
 
 **What you need**
 
-- Valid RepeaterBook API credentials in `local.properties` (see [Developer setup](#repeaterbook-developer-setup) below).
+- Your own RepeaterBook token, saved in the app (see [Your RepeaterBook token](#repeaterbook-developer-setup) below). The app does not contain a shared token.
 - For **proximity (HTML) search** in the United States: set **Country** to **United States**, enter **non-zero latitude and longitude**, and a **distance** greater than zero (see [Location and distance](#repeaterbook-location-and-distance)).
 
 ##### How the search screen works
@@ -714,7 +714,7 @@ The app uses **two different data paths**. Only one applies per search.
 | **GMRS** | Same JSON endpoints | HTML from [`gmrs/prox_result.php`](https://www.repeaterbook.com/gmrs/prox_result.php) |
 | **Radius** | If you provide lat/lon + distance, the app can **filter/sort** JSON rows by distance when records include coordinates (Haversine, miles converted to km internally). Otherwise state/country drive the query. | Radius is whatever RepeaterBook returns for your **miles** + **`Dunit=m`** request (same convention as the website). |
 | **Tones** | Whatever fields exist in the JSON record (`PL`, `TSQ`, etc.) | List pages show a single **Access** column; the app can **follow each repeater’s detail page** to read **Uplink Tone** / **Downlink Tone** and map them to **PL** / **TSQ** when available. |
-| **Token / HTTP client** | Uses your configured token, auth mode, and User-Agent on **export** requests | Proximity pages are normal **HTML GET** requests using the same HTTP client (still subject to site behavior and your allowlisted **User-Agent** if required). |
+| **Token / HTTP client** | Sends your personal token only in the **`X-RB-App-Token`** header on **export** requests. The token is never put in the URL. | Proximity pages are normal **HTML GET** requests. They do not receive the API token. The app still sends its User-Agent. |
 
 In short: **export API** = documented JSON export, best for **country/state** (and worldwide) workflows; **proximity** = same idea as using RepeaterBook’s **location + radius** search on the web, for **US** users who enter coordinates and a **miles** radius.
 
@@ -724,21 +724,32 @@ In short: **export API** = documented JSON export, best for **country/state** (a
 - **Use my location** helps fill coordinates; if distance was blank or zero, **30** miles is suggested so proximity mode can run without an extra step.
 
 <a id="repeaterbook-developer-setup"></a>
-##### Developer / build setup (do not commit secrets)
+##### Your RepeaterBook token
 
-In the project’s `local.properties` (next to the Android module), add:
+This app is a distributed client. It does not ship a RepeaterBook credential, and it does not accept a shared application token.
 
-- `REPEATERBOOK_APP_TOKEN=` — your RepeaterBook app token  
-- `REPEATERBOOK_CONTACT_EMAIL=` — contact email required in the API User-Agent  
-- `REPEATERBOOK_APP_URL=` *(optional)* — public project or support URL included in the User-Agent  
-- `REPEATERBOOK_AUTH_MODE=` *(optional)* — how the token is sent: `x_rb_app_token` (canonical header `X-RB-App-Token`, when your approval email specifies it), `bearer` (`Authorization: Bearer`, optional compatibility), or `raw`, `token`, `query_key`, `query_token`, `query_api_key`, `x_api_key` — match your approval email  
-- `REPEATERBOOK_USER_AGENT=` *(optional)* — if RepeaterBook allowlisted an **exact** User-Agent string, set it here; otherwise the app builds one from version, URL, and email  
+1. Log in at [RepeaterBook](https://www.repeaterbook.com).
+2. Open [API Apps](https://www.repeaterbook.com/user/api_apps.php) and generate a personal token for this app. It starts with `rbuapp_`.
+3. In the app, open **Search RepeaterBook** and choose **⋮ → RepeaterBook token**. Paste the token. It is stored encrypted on the device and is not shown again.
+4. Search once. If RepeaterBook rejects the token, the scope, or the User-Agent, correct the token and try again once. Do not experiment with other authentication styles.
+
+The app sends that token only as the `X-RB-App-Token` header on `https://www.repeaterbook.com/api/` requests. It never puts the token in a query string. On HTTP 429 it waits the full `Retry-After` time before another request.
+
+If a token is exposed, revoke it on the API Apps page and create a new one. Do not send the token value by email.
+
+##### Public app identity (not a credential)
+
+Optional entries in `local.properties` (next to the Android module) identify the app. They are not secrets, and they must not contain a token:
+
+- `REPEATERBOOK_CONTACT_EMAIL=` — public contact email included in the User-Agent
+- `REPEATERBOOK_APP_URL=` — public project or support URL included in the User-Agent
+- `REPEATERBOOK_USER_AGENT=` — set this only when RepeaterBook has approved one exact User-Agent string. Do not change it while troubleshooting a rejected request.
+
+Do not set a build-time token or an authentication-mode property. The build fails if either is present, or if one of the identity values contains a token. Rebuild after changing the public User-Agent identity.
 
 **North America** queries use `export.php` (parameters include `state_id`, `county`, `emcomm`, `stype`); **rest of world** uses `exportROW.php` (parameters include `region` only — no `state_id`, `county`, `emcomm`, or `stype` in the documented ROW API). You can enter **multiple countries** separated by commas; the app sends repeated `country=` query arguments like the wiki’s US+Canada example.
 
-As of early 2026, RepeaterBook may deny requests whose User-Agent is not on their allowlist. HTTP **401** usually means the allowlisted string does not match what the app sends, or the token is missing/wrong format — try `REPEATERBOOK_USER_AGENT` first, then `REPEATERBOOK_AUTH_MODE`.
-
-Rebuild the app after changing these values. Data use is subject to [RepeaterBook API terms](https://www.repeaterbook.com/wiki/doku.php?id=api).
+Data use is subject to [RepeaterBook API terms](https://www.repeaterbook.com/wiki/doku.php?id=api). The search screen credits RepeaterBook and links back to RepeaterBook.com.
 
 ---
 

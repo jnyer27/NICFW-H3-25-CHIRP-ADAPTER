@@ -105,7 +105,7 @@
     <string name="feat_wide_area">Wide Area</string>
     <string name="feat_wx">WX</string>
     <string name="chirp_rb_pick_country">Choose a country</string>
-    <string name="chirp_rb_attribution_html"><![CDATA[CHIRP-style filters with data from the official <a href="https://www.repeaterbook.com/api">RepeaterBook API</a> (export.php / exportROW.php). Repeater data © <a href="https://www.repeaterbook.com">RepeaterBook.com</a>. Same User-Agent and token as the other RepeaterBook search.]]></string>
+    <string name="chirp_rb_attribution_html"><![CDATA[Data courtesy of <a href="https://www.repeaterbook.com">RepeaterBook.com</a>. CHIRP-style filters use the official <a href="https://www.repeaterbook.com/api">RepeaterBook API</a> (export.php / exportROW.php) under their API terms.]]></string>
     <string name="repeaterbook_title">Search RepeaterBook</string>
     <string name="repeaterbook_search">Search</string>
     <string name="repeaterbook_import_selected">Import selected</string>
@@ -127,13 +127,29 @@
     <string name="repeaterbook_filter_results">Filter results</string>
     <string name="repeaterbook_no_results">No repeaters returned. Try broader filters.</string>
     <string name="repeaterbook_need_eeprom">Load EEPROM from the radio before searching RepeaterBook.</string>
-    <string name="repeaterbook_configure_token">Add REPEATERBOOK_APP_TOKEN and REPEATERBOOK_CONTACT_EMAIL to local.properties (see UserGuide).</string>
+    <string name="repeaterbook_configure_token">Save your personal RepeaterBook token from the API Apps page. Open the RepeaterBook token menu. This app does not include a shared token.</string>
     <string name="repeaterbook_search_failed">Search failed: %1$s</string>
-    <string name="repeaterbook_error_401_title">RepeaterBook access denied (401)</string>
-    <string name="repeaterbook_error_401_hint">RepeaterBook allowlists clients by User-Agent (see their API wiki). If your approval email gave an exact User-Agent string, set REPEATERBOOK_USER_AGENT in local.properties to that value and rebuild.\n\nIf the email specified X-RB-App-Token, set REPEATERBOOK_AUTH_MODE to x_rb_app_token. Otherwise try bearer, raw, query_key, query_token, query_api_key, token, or x_api_key.</string>
+    <string name="repeaterbook_error_401_title">RepeaterBook rejected the request</string>
+    <string name="repeaterbook_error_401_hint">RepeaterBook refused this request because of the token, its scope, or the User-Agent. Check that the saved value is your own personal token for this app, then search once. This app does not try other authentication methods and does not put the token in the URL. If the token was exposed, revoke it on the RepeaterBook API Apps page and create a new one.</string>
+    <string name="repeaterbook_error_429_title">RepeaterBook asked the app to wait</string>
+    <string name="repeaterbook_token_menu">RepeaterBook token</string>
+    <string name="repeaterbook_token_title">Your RepeaterBook token</string>
+    <string name="repeaterbook_token_hint">Personal token</string>
+    <string name="repeaterbook_token_help_html"><![CDATA[Log in to RepeaterBook and create a personal token for this app on the <a href="https://www.repeaterbook.com/user/api_apps.php">API Apps</a> page. It starts with rbuapp_. Shared app tokens are refused. The value stays encrypted on this device and is sent only in the X-RB-App-Token header.]]></string>
+    <string name="repeaterbook_token_status_saved">A personal token is stored on this device. Paste a replacement, or remove it.</string>
+    <string name="repeaterbook_token_status_empty">No token is stored on this device.</string>
+    <string name="repeaterbook_token_save">Save</string>
+    <string name="repeaterbook_token_clear">Remove</string>
+    <string name="repeaterbook_token_saved">Token saved on this device.</string>
+    <string name="repeaterbook_token_cleared">Token removed from this device.</string>
+    <string name="repeaterbook_token_rejected_blank">Paste a personal token, or use Remove.</string>
+    <string name="repeaterbook_token_rejected_shared">Shared app tokens cannot be stored in this app. Create a personal token on the RepeaterBook API Apps page.</string>
+    <string name="repeaterbook_token_rejected_url">Paste only the token. Do not paste a URL or a query string.</string>
+    <string name="repeaterbook_token_rejected_malformed">That value is not a personal RepeaterBook token for this app.</string>
+    <string name="repeaterbook_token_rejected_storage">The token could not be stored in encrypted device storage. It was not saved.</string>
     <string name="repeaterbook_select_one">Select at least one repeater to import.</string>
     <string name="repeaterbook_menu_select_all">Select all visible</string>
     <string name="repeaterbook_select_all_visible">Select all visible</string>
     <string name="repeaterbook_menu_clear">Clear selection</string>
-    <string name="repeaterbook_attribution_html"><![CDATA[Repeater data © <a href="https://www.repeaterbook.com">RepeaterBook.com</a> — used under their API terms.]]></string>
+    <string name="repeaterbook_attribution_html"><![CDATA[Data courtesy of <a href="https://www.repeaterbook.com">RepeaterBook.com</a>. Used under the <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">RepeaterBook API terms</a>.]]></string>
 </resources>

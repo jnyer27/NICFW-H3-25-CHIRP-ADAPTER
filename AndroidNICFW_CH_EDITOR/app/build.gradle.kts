@@ -15,13 +15,40 @@ val localProps = Properties().apply {
 fun String?.forBuildConfig(): String =
     (this ?: "").replace("\\", "\\\\").replace("\"", "\\\"")
 
-val repeaterBookToken = localProps.getProperty("REPEATERBOOK_APP_TOKEN", "").forBuildConfig()
-val repeaterBookEmail = localProps.getProperty("REPEATERBOOK_CONTACT_EMAIL", "").forBuildConfig()
-val repeaterBookUrl = localProps.getProperty("REPEATERBOOK_APP_URL", "").forBuildConfig()
-/** x_rb_app_token | bearer | raw | token | query_* | x_api_key — see UserGuide / local.properties */
-val repeaterBookAuthMode = localProps.getProperty("REPEATERBOOK_AUTH_MODE", "bearer").forBuildConfig()
-/** If set, sent as User-Agent verbatim (allowlist must match this string). */
-val repeaterBookUserAgent = localProps.getProperty("REPEATERBOOK_USER_AGENT", "").forBuildConfig()
+fun rejectRepeaterBookCredential(property: String, value: String?) {
+    val text = value?.trim().orEmpty()
+    if (text.isEmpty()) return
+    val token = Regex("(?i)(?<![A-Za-z0-9])(?:rbuapp_|app_)[A-Za-z0-9_\\-]{8,}")
+    if (token.containsMatchIn(text)) {
+        throw GradleException(
+            "$property contains a RepeaterBook token. Remove it from local.properties. " +
+                "This app does not embed credentials. Users enter a personal token at runtime.",
+        )
+    }
+}
+
+val embeddedToken = localProps.getProperty("REPEATERBOOK_APP_TOKEN")?.trim().orEmpty()
+if (embeddedToken.isNotEmpty()) {
+    throw GradleException(
+        "REPEATERBOOK_APP_TOKEN is set in local.properties. Do not compile a RepeaterBook credential into the app. " +
+            "Delete that property. Each user enters a personal rbuapp_ token in the app.",
+    )
+}
+val legacyAuthMode = localProps.getProperty("REPEATERBOOK_AUTH_MODE")?.trim().orEmpty()
+if (legacyAuthMode.isNotEmpty()) {
+    throw GradleException(
+        "REPEATERBOOK_AUTH_MODE is no longer supported, including query-string authentication. " +
+            "Remove it from local.properties. Export requests send the X-RB-App-Token header only.",
+    )
+}
+
+val repeaterBookEmail = localProps.getProperty("REPEATERBOOK_CONTACT_EMAIL", "")
+val repeaterBookUrl = localProps.getProperty("REPEATERBOOK_APP_URL", "")
+/** If set, sent as User-Agent verbatim. This is the approved public identity, not a credential. */
+val repeaterBookUserAgent = localProps.getProperty("REPEATERBOOK_USER_AGENT", "")
+rejectRepeaterBookCredential("REPEATERBOOK_CONTACT_EMAIL", repeaterBookEmail)
+rejectRepeaterBookCredential("REPEATERBOOK_APP_URL", repeaterBookUrl)
+rejectRepeaterBookCredential("REPEATERBOOK_USER_AGENT", repeaterBookUserAgent)
 
 android {
     namespace = "com.nicfw.tdh3editor"
@@ -31,13 +58,11 @@ android {
         applicationId = "com.nicfw.tdh3editor"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 9
-        versionName = "2.4.0"
-        buildConfigField("String", "REPEATERBOOK_APP_TOKEN", "\"$repeaterBookToken\"")
-        buildConfigField("String", "REPEATERBOOK_CONTACT_EMAIL", "\"$repeaterBookEmail\"")
-        buildConfigField("String", "REPEATERBOOK_APP_URL", "\"$repeaterBookUrl\"")
-        buildConfigField("String", "REPEATERBOOK_AUTH_MODE", "\"$repeaterBookAuthMode\"")
-        buildConfigField("String", "REPEATERBOOK_USER_AGENT", "\"$repeaterBookUserAgent\"")
+        versionCode = 10
+        versionName = "2.4.1"
+        buildConfigField("String", "REPEATERBOOK_CONTACT_EMAIL", "\"${repeaterBookEmail.forBuildConfig()}\"")
+        buildConfigField("String", "REPEATERBOOK_APP_URL", "\"${repeaterBookUrl.forBuildConfig()}\"")
+        buildConfigField("String", "REPEATERBOOK_USER_AGENT", "\"${repeaterBookUserAgent.forBuildConfig()}\"")
     }
 
     signingConfigs {
@@ -96,5 +121,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.okhttp)
     implementation(libs.jsoup)
+    implementation(libs.security.crypto)
 }
 

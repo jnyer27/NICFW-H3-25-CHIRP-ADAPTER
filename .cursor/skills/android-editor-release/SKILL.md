@@ -78,6 +78,8 @@ Use **`gh release create`** / **`gh release edit`** with a logged-in `gh` (`repo
 - [ ] `CHANGELOG.md` has `[X.Y.Z]`
 - [ ] Commit + push `main`
 - [ ] `assembleRelease` succeeds with local signing props
+- [ ] `local.properties` has no RepeaterBook token or authentication-mode property
+- [ ] `python3 scripts/verify_no_repeaterbook_shared_credential.py --apk app/build/outputs/apk/release/app-release.apk` prints `source_ok` and zero token counts
 - [ ] `output-metadata.json` matches Gradle version fields
 - [ ] Annotated tag `android-editor-vX.Y.Z` on that commit, pushed
 - [ ] GitHub Release assets + notes (if publishing)

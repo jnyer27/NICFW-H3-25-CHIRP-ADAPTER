@@ -4,6 +4,17 @@ All notable changes to this app are documented here. Version numbers follow [Sem
 
 ## Unreleased
 
+## [2.4.1] — 2026-10-23
+
+### RepeaterBook credential handling
+
+- **No shared credential in the app.** `REPEATERBOOK_APP_TOKEN` is no longer a build input. The build fails if that property, or an old authentication-mode property, is still set in `local.properties`.
+- **Personal token at runtime.** Search RepeaterBook → **⋮ → RepeaterBook token**. Paste the personal `rbuapp_` token from RepeaterBook’s API Apps page. It is stored with encrypted preferences and is not shown again.
+- **Approved header only.** Export requests send `X-RB-App-Token`. The token is not added to query strings, and proximity HTML requests do not receive it.
+- **Retry-After.** A 429 waits the full header delay before another request. There is no 60-second cap. Authentication, scope, and User-Agent failures are not retried.
+- **Attribution.** Search screens still credit RepeaterBook and link to RepeaterBook.com and the API terms.
+- **Check a build.** `python3 scripts/verify_no_repeaterbook_shared_credential.py --apk path/to/app.apk` reports token-shaped strings without printing them. Published APKs 2.0.0 through 2.4.0 need the live credential revoked; see `REPEATERBOOK_API.md`.
+
 ## [2.4.0] — 2026-03-28
 
 ### RepeaterBook

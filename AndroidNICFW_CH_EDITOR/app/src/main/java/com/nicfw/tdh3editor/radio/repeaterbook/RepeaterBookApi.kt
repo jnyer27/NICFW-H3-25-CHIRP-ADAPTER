@@ -7,7 +7,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
 import java.io.IOException
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 import kotlin.math.min
 
@@ -41,60 +40,48 @@ class RepeaterBookApiException(
     val statusCode: Int,
     message: String,
     val errorBody: String? = null,
+    /** Authentication, scope, User-Agent, or an unexpired Retry-After. Callers must not try again immediately. */
+    val terminal: Boolean = false,
 ) : IOException(message)
 
 /**
- * HTTP client for RepeaterBook JSON export. Sets User-Agent and token from [BuildConfig].
+ * HTTP client for RepeaterBook JSON export.
  *
- * Auth style is [BuildConfig.REPEATERBOOK_AUTH_MODE] (`local.properties` → `REPEATERBOOK_AUTH_MODE`).
- * Modes include `x_rb_app_token` (canonical `X-RB-App-Token`), `bearer` (`Authorization: Bearer`),
- * and others — see `local.properties` / UserGuide.
+ * The personal token comes from [RepeaterBookCredentialStore] and is sent only as
+ * [RepeaterBookTokenPolicy.HEADER_NAME] on `/api/` requests. Query-string authentication is not supported.
  */
 object RepeaterBookHttp {
 
     private const val BASE = "https://www.repeaterbook.com/api"
+    private const val PUBLIC_PROJECT_URL = "https://github.com/jnyer27/NICFW-H3-25-CHIRP-ADAPTER"
 
     fun userAgent(): String {
         val override = BuildConfig.REPEATERBOOK_USER_AGENT.trim()
         if (override.isNotEmpty()) return override
-        val email = BuildConfig.REPEATERBOOK_CONTACT_EMAIL.ifBlank { "configure@local.properties" }
-        val url = BuildConfig.REPEATERBOOK_APP_URL.trim()
+        val email = BuildConfig.REPEATERBOOK_CONTACT_EMAIL.trim()
+        val url = BuildConfig.REPEATERBOOK_APP_URL.trim().ifEmpty { PUBLIC_PROJECT_URL }
         val ver = BuildConfig.VERSION_NAME
-        return if (url.isNotEmpty()) {
+        return if (email.isNotEmpty()) {
             "NicFwChannelEditor/$ver (+$url; $email)"
         } else {
-            "NicFwChannelEditor/$ver ($email)"
+            "NicFwChannelEditor/$ver (+$url)"
         }
     }
 
     private val authInterceptor = Interceptor { chain ->
-        val token = BuildConfig.REPEATERBOOK_APP_TOKEN.trim()
-        val mode = BuildConfig.REPEATERBOOK_AUTH_MODE.lowercase(Locale.US)
         val original = chain.request()
-        var url = original.url
-
-        if (token.isNotEmpty()) {
-            when (mode) {
-                "query_key" ->
-                    url = url.newBuilder().addQueryParameter("key", token).build()
-                "query_token" ->
-                    url = url.newBuilder().addQueryParameter("token", token).build()
-                "query_api_key" ->
-                    url = url.newBuilder().addQueryParameter("api_key", token).build()
-            }
+        val sanitized = RepeaterBookTokenPolicy.stripCredentialQuery(original.url.toString())
+        val header = RepeaterBookTokenPolicy.headerValueForApiRequest(
+            sanitized,
+            RepeaterBookCredentialStore.currentToken(),
+        )
+        val builder = original.newBuilder()
+            .url(sanitized)
+            .header("User-Agent", userAgent())
+        if (header != null) {
+            builder.header(RepeaterBookTokenPolicy.HEADER_NAME, header)
         }
-
-        val b = original.newBuilder().url(url).header("User-Agent", userAgent())
-        if (token.isNotEmpty() && !mode.startsWith("query_")) {
-            when (mode) {
-                "x_rb_app_token" -> b.header("X-RB-App-Token", token)
-                "raw" -> b.header("Authorization", token)
-                "token", "token_prefix" -> b.header("Authorization", "Token $token")
-                "x_api_key" -> b.header("X-API-Key", token)
-                else -> b.header("Authorization", "Bearer $token")
-            }
-        }
-        chain.proceed(b.build())
+        chain.proceed(builder.build())
     }
 
     private val client: OkHttpClient = OkHttpClient.Builder()
@@ -107,7 +94,9 @@ object RepeaterBookHttp {
     fun httpClient(): OkHttpClient = client
 
     /**
-     * Executes GET export with [query]. Retries on HTTP 429 with simple backoff.
+     * Executes GET export with [query].
+     * A 429 waits out the full Retry-After before one inline retry. Authentication, scope,
+     * and User-Agent failures are not retried.
      */
     @Throws(IOException::class)
     fun fetchRepeaters(query: RepeaterBookQuery): String {
@@ -147,36 +136,70 @@ object RepeaterBookHttp {
             .header("Accept", "application/json")
             .get()
             .build()
-        var attempt = 0
-        while (attempt < 4) {
+        var networkRetries = 0
+        var rateLimitRetries = 0
+        var skipGate = false
+        while (true) {
+            if (!skipGate) {
+                val remaining = RepeaterBookRateLimit.remainingMs(System.currentTimeMillis())
+                if (remaining > 0L) {
+                    throw RepeaterBookApiException(
+                        429,
+                        "RepeaterBook Retry-After is still in effect. Wait ${(remaining + 999) / 1000} seconds before another request.",
+                        terminal = true,
+                    )
+                }
+            }
+            skipGate = false
             try {
+                var successBody: String? = null
+                var inlineDelayMs: Long? = null
                 client.newCall(request).execute().use { response ->
                     val body = response.body?.string().orEmpty()
                     when {
                         response.code == 429 -> {
-                            val waitSec = (response.header("Retry-After")?.toLongOrNull()
-                                ?: (2L shl attempt)).coerceIn(1L, 60L)
-                            Thread.sleep(TimeUnit.SECONDS.toMillis(waitSec))
-                            attempt++
+                            val now = System.currentTimeMillis()
+                            val delay = RepeaterBookRetryPolicy.retryAfterMillis(
+                                response.header("Retry-After"),
+                                now,
+                            ) ?: RepeaterBookRetryPolicy.MISSING_HEADER_BACKOFF_MS
+                            RepeaterBookRateLimit.blockUntil(now + delay)
+                            if (rateLimitRetries < 1 && delay <= RepeaterBookRetryPolicy.INLINE_WAIT_MAX_MS) {
+                                rateLimitRetries += 1
+                                inlineDelayMs = delay
+                            } else {
+                                throw RepeaterBookApiException(
+                                    429,
+                                    "RepeaterBook rate limit. Wait the full Retry-After of ${(delay + 999) / 1000} seconds before another request.",
+                                    body,
+                                    terminal = true,
+                                )
+                            }
                         }
                         !response.isSuccessful ->
                             throw RepeaterBookApiException(
                                 response.code,
                                 "HTTP ${response.code}: ${response.message}",
                                 body,
+                                terminal = RepeaterBookRetryPolicy.isTerminalFailure(response.code, body),
                             )
-                        else -> return body
+                        else -> successBody = body
                     }
+                }
+                if (successBody != null) return successBody
+                val delay = inlineDelayMs
+                if (delay != null) {
+                    Thread.sleep(delay)
+                    skipGate = true
                 }
             } catch (e: RepeaterBookApiException) {
                 throw e
             } catch (e: IOException) {
-                attempt++
-                if (attempt >= 4) throw e
-                Thread.sleep(min(2000L * attempt, 8000L))
+                networkRetries += 1
+                if (networkRetries >= 3) throw e
+                Thread.sleep(min(1000L * networkRetries, 4000L))
             }
         }
-        throw IOException("RepeaterBook: too many retries")
     }
 }
 

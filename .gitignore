@@ -23,3 +23,5 @@ site/
 # MkDocs generated file — single source of truth is UserGuide.md
 docs/index.md
 docs/__pycache__/
+__pycache__/
+*.pyc
