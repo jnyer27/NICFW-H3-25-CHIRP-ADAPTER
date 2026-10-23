@@ -7,9 +7,9 @@
 <meta content="NICFW" name="author"/>
 <link href="https://jnyer27.github.io/NICFW-H3-25-CHIRP-ADAPTER/" rel="canonical"/>
 <link href="assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.6.1, mkdocs-material-9.7.6" name="generator"/>
+<meta content="mkdocs-1.6.1, mkdocs-material-9.7.7" name="generator"/>
 <title>NICFW TD-H3 25 Channel Editor</title>
-<link href="assets/stylesheets/main.484c7ddc.min.css" rel="stylesheet"/>
+<link href="assets/stylesheets/main.ec1eaa64.min.css" rel="stylesheet"/>
 <link href="assets/stylesheets/palette.ab4e12ef.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&amp;display=fallback" rel="stylesheet"/>
@@ -484,10 +484,19 @@
 </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="#developer-build-setup-do-not-commit-secrets">
+<a class="md-nav__link" href="#your-repeaterbook-token">
 <span class="md-ellipsis">
       
-        Developer / build setup (do not commit secrets)
+        Your RepeaterBook token
+      
+    </span>
+</a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#public-app-identity-not-a-credential">
+<span class="md-ellipsis">
+      
+        Public app identity (not a credential)
       
     </span>
 </a>
@@ -1796,7 +1805,7 @@ to <code>88.5</code>) before importing.</p>
 <p>Use <strong>⋮ → Search RepeaterBook…</strong> after loading EEPROM from the radio. The <strong>Search RepeaterBook</strong> screen queries <a href="https://www.repeaterbook.com">RepeaterBook</a>, lets you multi-select repeaters, then <strong>Import selected</strong> opens the same <strong>Import CHIRP CSV</strong> flow as file/clipboard (groups, power, starting channel, preview).</p>
 <p><strong>What you need</strong></p>
 <ul>
-<li>Valid RepeaterBook API credentials in <code>local.properties</code> (see <a href="#repeaterbook-developer-setup">Developer setup</a> below).</li>
+<li>Your own RepeaterBook token, saved in the app (see <a href="#repeaterbook-developer-setup">Your RepeaterBook token</a> below). The app does not contain a shared token.</li>
 <li>For <strong>proximity (HTML) search</strong> in the United States: set <strong>Country</strong> to <strong>United States</strong>, enter <strong>non-zero latitude and longitude</strong>, and a <strong>distance</strong> greater than zero (see <a href="#repeaterbook-location-and-distance">Location and distance</a>).</li>
 </ul>
 <h5 id="how-the-search-screen-works">How the search screen works<a class="headerlink" href="#how-the-search-screen-works" title="Permanent link">¶</a></h5>
@@ -1881,8 +1890,8 @@ to <code>88.5</code>) before importing.</p>
 </tr>
 <tr>
 <td><strong>Token / HTTP client</strong></td>
-<td>Uses your configured token, auth mode, and User-Agent on <strong>export</strong> requests</td>
-<td>Proximity pages are normal <strong>HTML GET</strong> requests using the same HTTP client (still subject to site behavior and your allowlisted <strong>User-Agent</strong> if required).</td>
+<td>Sends your personal token only in the <strong><code>X-RB-App-Token</code></strong> header on <strong>export</strong> requests. The token is never put in the URL.</td>
+<td>Proximity pages are normal <strong>HTML GET</strong> requests. They do not receive the API token. The app still sends its User-Agent.</td>
 </tr>
 </tbody>
 </table>
@@ -1893,18 +1902,26 @@ to <code>88.5</code>) before importing.</p>
 <li><strong>Use my location</strong> helps fill coordinates; if distance was blank or zero, <strong>30</strong> miles is suggested so proximity mode can run without an extra step.</li>
 </ul>
 <p><a id="repeaterbook-developer-setup"></a></p>
-<h5 id="developer-build-setup-do-not-commit-secrets">Developer / build setup (do not commit secrets)<a class="headerlink" href="#developer-build-setup-do-not-commit-secrets" title="Permanent link">¶</a></h5>
-<p>In the project’s <code>local.properties</code> (next to the Android module), add:</p>
+<h5 id="your-repeaterbook-token">Your RepeaterBook token<a class="headerlink" href="#your-repeaterbook-token" title="Permanent link">¶</a></h5>
+<p>This app is a distributed client. It does not ship a RepeaterBook credential, and it does not accept a shared application token.</p>
+<ol>
+<li>Log in at <a href="https://www.repeaterbook.com">RepeaterBook</a>.</li>
+<li>Open <a href="https://www.repeaterbook.com/user/api_apps.php">API Apps</a> and generate a personal token for this app. It starts with <code>rbuapp_</code>.</li>
+<li>In the app, open <strong>Search RepeaterBook</strong> and choose <strong>⋮ → RepeaterBook token</strong>. Paste the token. It is stored encrypted on the device and is not shown again.</li>
+<li>Search once. If RepeaterBook rejects the token, the scope, or the User-Agent, correct the token and try again once. Do not experiment with other authentication styles.</li>
+</ol>
+<p>The app sends that token only as the <code>X-RB-App-Token</code> header on <code>https://www.repeaterbook.com/api/</code> requests. It never puts the token in a query string. On HTTP 429 it waits the full <code>Retry-After</code> time before another request.</p>
+<p>If a token is exposed, revoke it on the API Apps page and create a new one. Do not send the token value by email.</p>
+<h5 id="public-app-identity-not-a-credential">Public app identity (not a credential)<a class="headerlink" href="#public-app-identity-not-a-credential" title="Permanent link">¶</a></h5>
+<p>Optional entries in <code>local.properties</code> (next to the Android module) identify the app. They are not secrets, and they must not contain a token:</p>
 <ul>
-<li><code>REPEATERBOOK_APP_TOKEN=</code> — your RepeaterBook app token  </li>
-<li><code>REPEATERBOOK_CONTACT_EMAIL=</code> — contact email required in the API User-Agent  </li>
-<li><code>REPEATERBOOK_APP_URL=</code> <em>(optional)</em> — public project or support URL included in the User-Agent  </li>
-<li><code>REPEATERBOOK_AUTH_MODE=</code> <em>(optional)</em> — how the token is sent: <code>x_rb_app_token</code> (canonical header <code>X-RB-App-Token</code>, when your approval email specifies it), <code>bearer</code> (<code>Authorization: Bearer</code>, optional compatibility), or <code>raw</code>, <code>token</code>, <code>query_key</code>, <code>query_token</code>, <code>query_api_key</code>, <code>x_api_key</code> — match your approval email  </li>
-<li><code>REPEATERBOOK_USER_AGENT=</code> <em>(optional)</em> — if RepeaterBook allowlisted an <strong>exact</strong> User-Agent string, set it here; otherwise the app builds one from version, URL, and email  </li>
+<li><code>REPEATERBOOK_CONTACT_EMAIL=</code> — public contact email included in the User-Agent</li>
+<li><code>REPEATERBOOK_APP_URL=</code> — public project or support URL included in the User-Agent</li>
+<li><code>REPEATERBOOK_USER_AGENT=</code> — set this only when RepeaterBook has approved one exact User-Agent string. Do not change it while troubleshooting a rejected request.</li>
 </ul>
+<p>Do not set a build-time token or an authentication-mode property. The build fails if either is present, or if one of the identity values contains a token. Rebuild after changing the public User-Agent identity.</p>
 <p><strong>North America</strong> queries use <code>export.php</code> (parameters include <code>state_id</code>, <code>county</code>, <code>emcomm</code>, <code>stype</code>); <strong>rest of world</strong> uses <code>exportROW.php</code> (parameters include <code>region</code> only — no <code>state_id</code>, <code>county</code>, <code>emcomm</code>, or <code>stype</code> in the documented ROW API). You can enter <strong>multiple countries</strong> separated by commas; the app sends repeated <code>country=</code> query arguments like the wiki’s US+Canada example.</p>
-<p>As of early 2026, RepeaterBook may deny requests whose User-Agent is not on their allowlist. HTTP <strong>401</strong> usually means the allowlisted string does not match what the app sends, or the token is missing/wrong format — try <code>REPEATERBOOK_USER_AGENT</code> first, then <code>REPEATERBOOK_AUTH_MODE</code>.</p>
-<p>Rebuild the app after changing these values. Data use is subject to <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">RepeaterBook API terms</a>.</p>
+<p>Data use is subject to <a href="https://www.repeaterbook.com/wiki/doku.php?id=api">RepeaterBook API terms</a>. The search screen credits RepeaterBook and links back to RepeaterBook.com.</p>
 <hr/>
 <h3 id="82-sort-channels-by-group">8.2 Sort Channels by Group<a class="headerlink" href="#82-sort-channels-by-group" title="Permanent link">¶</a></h3>
 <p>Automatically reorganize all channels so that each group's channels are contiguous in
@@ -3325,7 +3342,7 @@ field label.</p>
 <div class="md-dialog" data-md-component="dialog">
 <div class="md-dialog__inner md-typeset"></div>
 </div>
-<script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "toc.integrate", "search.highlight", "search.share", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.4.0"}</script>
-<script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+<script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.top", "navigation.sections", "navigation.expand", "toc.integrate", "search.highlight", "search.share", "content.code.copy"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": "2.4.1"}</script>
+<script src="assets/javascripts/bundle.d7400e89.min.js"></script>
 </body>
 </html>
